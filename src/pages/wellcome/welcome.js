@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Image } from "react-native";
+import * as Animatable from 'react-native-animatable'
 
 
 
@@ -10,12 +11,19 @@ export default function Wellcome(){
                 <View>
                     <Image source={require('../../../assets/NutrIA_IMG.jpeg')} style={styles.imagem}/>
                 </View>
-                <View style={styles.container2}>
+                <Animatable.View
+                animation="fadeInUp"
+                duration={1000}
+                style={styles.container2}>
                     <Text style={styles.tituloWellcome}>Bem Vindo</Text>
-                    <TouchableOpacity onPress={()=>navigation.navigate("Login")} style={styles.botao}>
-                        <Text style={styles.textoBotao}>Começar</Text>
+                    <TouchableOpacity
+                    onPress={()=>navigation.navigate("Login")} 
+                    style={styles.botao}>
+                        <View animation="bounceIn" duration={1500}>
+                            <Text style={styles.textoBotao}>Começar</Text>
+                        </View>
                     </TouchableOpacity>
-                </View>
+                </Animatable.View>
         </SafeAreaView>
     )
 }
@@ -54,8 +62,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     imagem:{
-        height: 190,
-        width:240,
+        height: 220,
+        width:270,
         borderRadius: 12
     }
 })
