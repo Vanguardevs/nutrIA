@@ -1,6 +1,7 @@
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
 import { useState } from "react";
-import loginC from '../../database/controller/auth.js';
+import database from "../../database/config/firebase.js";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
 export default function LoginPag(){
@@ -11,11 +12,13 @@ export default function LoginPag(){
 
     async function logar(){
       try{
-      await loginC.Login(email, password);
-      return navegacao.navigate("Home");
-      }catch(error){
-        console.log(error)
-      }
+        await signInWithEmailAndPassword(database.auth, email, password);
+        console.log("Sucesso ao fazer o login!");
+        navegacao.navigate("Home");
+        }catch(error){
+            console.log(`O erro é: ${error}`)
+            sucesso = 0;
+    }
     }
 
     return(
