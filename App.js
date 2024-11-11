@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { NavigationContainer} from "@react-navigation/native";
+import RoutePag from './src/route/route.js'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Nome:</Text>
-      <TextInput style={styles.input} placeholder='Insira seu nome:'></TextInput>
-      <Text>Email:</Text>
-      <TextInput style={styles.input} placeholder='Insira seu email:'></TextInput>
-      <Button title=''></Button>
-    </View>
+    <NavigationContainer>
+      <StatusBar/>
+      <RoutePag/>
+    </NavigationContainer>
   );
 }
 
