@@ -1,8 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Image } from "react-native";
-import * as Animatable from 'react-native-animatable'
-
-
+import * as Animatable from 'react-native-animatable';
 
 export default function Home(){
     const navigation = useNavigation();
@@ -23,6 +21,7 @@ export default function Home(){
                             <Text style={styles.textoBotao}>Começar</Text>
                         </View>
                     </TouchableOpacity>
+                    
                 </Animatable.View>
         </SafeAreaView>
     )

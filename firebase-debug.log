@@ -1,0 +1,162 @@
+[debug] [2024-11-12T22:31:27.276Z] ----------------------------------------------------------------------
+[debug] [2024-11-12T22:31:27.279Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\aluno\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-11-12T22:31:27.279Z] CLI Version:   13.25.0
+[debug] [2024-11-12T22:31:27.279Z] Platform:      win32
+[debug] [2024-11-12T22:31:27.279Z] Node Version:  v22.4.1
+[debug] [2024-11-12T22:31:27.279Z] Time:          Tue Nov 12 2024 19:31:27 GMT-0300 (Horário Padrão de Brasília)
+[debug] [2024-11-12T22:31:27.279Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-11-12T22:31:27.336Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-11-12T22:31:27.336Z] > authorizing via signed-in user (vanguard.dev.br@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\cmder\nutrIA
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-11-12T22:31:37.980Z] Using project from CLI flag: nutria-eafaa
+[debug] [2024-11-12T22:31:37.983Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:37.983Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:37.984Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nutria-eafaa [none]
+[debug] [2024-11-12T22:31:38.409Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nutria-eafaa 200
+[debug] [2024-11-12T22:31:38.409Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nutria-eafaa {"projectId":"nutria-eafaa","projectNumber":"697528025140","displayName":"nutria","name":"projects/nutria-eafaa","resources":{"hostingSite":"nutria-eafaa"},"state":"ACTIVE","etag":"1_72d13d11-9346-488b-a1df-92f1fe3a4ffa"}
+[info] i  Using project nutria-eafaa (nutria) 
+[info] 
+=== Dataconnect Setup
+[debug] [2024-11-12T22:31:38.422Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:38.422Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:38.422Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/nutria-eafaa/billingInfo [none]
+[debug] [2024-11-12T22:31:39.945Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/nutria-eafaa/billingInfo 200
+[debug] [2024-11-12T22:31:39.946Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/nutria-eafaa/billingInfo {"name":"projects/nutria-eafaa/billingInfo","projectId":"nutria-eafaa","billingAccountName":"","billingEnabled":false}
+[info] i  dataconnect: ensuring required API sqladmin.googleapis.com is enabled... 
+[debug] [2024-11-12T22:31:39.948Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:39.948Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:39.948Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com [none]
+[debug] [2024-11-12T22:31:39.948Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com x-goog-quota-user=projects/nutria-eafaa
+[debug] [2024-11-12T22:31:48.849Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com 200
+[debug] [2024-11-12T22:31:48.849Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com [omitted]
+[warn] !  dataconnect: missing required API sqladmin.googleapis.com. Enabling now... 
+[debug] [2024-11-12T22:31:48.850Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:48.850Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:48.851Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com:enable [none]
+[debug] [2024-11-12T22:31:48.851Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com:enable x-goog-quota-user=projects/nutria-eafaa
+[debug] [2024-11-12T22:31:49.601Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com:enable 200
+[debug] [2024-11-12T22:31:49.601Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com:enable [omitted]
+[debug] [2024-11-12T22:31:59.615Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:59.615Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:31:59.615Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com [none]
+[debug] [2024-11-12T22:31:59.616Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com x-goog-quota-user=projects/nutria-eafaa
+[debug] [2024-11-12T22:32:01.715Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com 200
+[debug] [2024-11-12T22:32:01.716Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/sqladmin.googleapis.com [omitted]
+[info] +  dataconnect: required API sqladmin.googleapis.com is enabled 
+[info] +  Wrote dataconnect\dataconnect.yaml 
+[info] +  Wrote dataconnect\schema\schema.gql 
+[info] +  Wrote dataconnect\connector\connector.yaml 
+[info] +  Wrote dataconnect\connector\queries.gql 
+[info] +  Wrote dataconnect\connector\mutations.gql 
+[info] +  Detected WEB app in directory C:\cmder\nutrIA 
+[info] i  Wrote new config to C:\cmder\nutrIA\dataconnect\connector/connector.yaml 
+[info] i  dataconnect: downloading dataconnect-emulator-1.7.0.exe... {"metadata":{"emulator":{"name":"dataconnect"},"message":"downloading dataconnect-emulator-1.7.0.exe..."}}
+[debug] [2024-11-12T22:32:51.626Z] >>> [apiv2][query] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-windows-v1.7.0 
+[debug] [2024-11-12T22:32:56.887Z] <<< [apiv2][status] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-windows-v1.7.0 200
+[debug] [2024-11-12T22:32:56.887Z] <<< [apiv2][body] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-windows-v1.7.0 [stream]
+[info] I1112 19:32:59.010413    1976 codegen.go:82] [connector "default" javascriptSdk] Generating sources into "C:\\cmder\\nutrIA\\dataconnect-generated\\js\\default-connector"
+I1112 19:32:59.031254    1976 generate.go:40] Generated all sources. Writing them to disk...
+I1112 19:32:59.033240    1976 collector.go:107] connector "default" javascriptSdk wrote into "C:\\cmder\\nutrIA\\dataconnect-generated\\js\\default-connector"
+Generated sources: index.d.ts [264B] esm\index.esm.js [179B] esm\package.json [17B] index.cjs.js [220B] package.json [623B] 
+I1112 19:32:59.040742    1976 installsdk.go:76] Running command: C:\Users\aluno\AppData\Roaming\npm\yarn.cmd add link:dataconnect-generated\js\default-connector
+
+[info] i  Generated SDK code for default 
+[info] +  If you'd like to add more generated SDKs to your app your later, run firebase init dataconnect:sdk again 
+[info] i  If you'd like to provision a CloudSQL Postgres instance on the Firebase Data Connect no-cost trial:
+1. Please upgrade to the pay-as-you-go (Blaze) billing plan. Visit the following page:
+     https://console.firebase.google.com/project/nutria-eafaa/usage/details
+2. Run firebase init dataconnect again to configure the Cloud SQL instance.
+3. Run firebase deploy --only dataconnect to deploy your Data Connect service. 
+[info] 
+=== Firestore Setup
+[debug] [2024-11-12T22:33:01.965Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:01.965Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:01.965Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/firestore.googleapis.com [none]
+[debug] [2024-11-12T22:33:01.965Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/firestore.googleapis.com x-goog-quota-user=projects/nutria-eafaa
+[debug] [2024-11-12T22:33:03.507Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/firestore.googleapis.com 200
+[debug] [2024-11-12T22:33:03.507Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/nutria-eafaa/services/firestore.googleapis.com [omitted]
+[debug] [2024-11-12T22:33:03.508Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:03.508Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:03.508Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default) [none]
+[debug] [2024-11-12T22:33:09.977Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default) 200
+[debug] [2024-11-12T22:33:09.977Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default) {"name":"projects/nutria-eafaa/databases/(default)","uid":"e4197133-56fa-4d56-af26-fde3f1b833bf","createTime":"2024-11-12T22:22:48.374322Z","updateTime":"2024-11-12T22:22:48.374322Z","locationId":"southamerica-east1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2024-11-12T22:22:48.374322Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"i","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","etag":"IKTEoOrs14kDMLLo7cHq14kD"}
+[debug] [2024-11-12T22:33:09.977Z] database_type: FIRESTORE_NATIVE
+[debug] [2024-11-12T22:33:09.977Z] database_type: FIRESTORE_NATIVE
+[debug] [2024-11-12T22:33:09.978Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-11-12T22:33:09.978Z] > authorizing via signed-in user (vanguard.dev.br@gmail.com)
+[debug] [2024-11-12T22:33:09.978Z] [iam] checking project nutria-eafaa for permissions ["firebase.projects.get"]
+[debug] [2024-11-12T22:33:09.978Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:09.978Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:09.978Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/nutria-eafaa:testIamPermissions [none]
+[debug] [2024-11-12T22:33:09.978Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/nutria-eafaa:testIamPermissions x-goog-quota-user=projects/nutria-eafaa
+[debug] [2024-11-12T22:33:09.978Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/nutria-eafaa:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-11-12T22:33:13.874Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/nutria-eafaa:testIamPermissions 200
+[debug] [2024-11-12T22:33:13.874Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/nutria-eafaa:testIamPermissions {"permissions":["firebase.projects.get"]}
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2024-11-12T22:33:18.301Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:18.301Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:18.301Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/nutria-eafaa/releases pageSize=10&pageToken=
+[debug] [2024-11-12T22:33:19.747Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/nutria-eafaa/releases 200
+[debug] [2024-11-12T22:33:19.747Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/nutria-eafaa/releases {"releases":[{"name":"projects/nutria-eafaa/releases/cloud.firestore","rulesetName":"projects/nutria-eafaa/rulesets/88138f1b-d9b9-479c-92a4-e19e19c5e1a2","createTime":"2024-11-12T22:22:55.259581Z","updateTime":"2024-11-12T22:22:55.259581Z"}]}
+[debug] [2024-11-12T22:33:19.747Z] Found ruleset: projects/nutria-eafaa/rulesets/88138f1b-d9b9-479c-92a4-e19e19c5e1a2
+[debug] [2024-11-12T22:33:19.747Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:19.747Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:19.747Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/nutria-eafaa/rulesets/88138f1b-d9b9-479c-92a4-e19e19c5e1a2 [none]
+[debug] [2024-11-12T22:33:20.806Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/nutria-eafaa/rulesets/88138f1b-d9b9-479c-92a4-e19e19c5e1a2 200
+[debug] [2024-11-12T22:33:20.806Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/nutria-eafaa/rulesets/88138f1b-d9b9-479c-92a4-e19e19c5e1a2 [omitted]
+[info] 
+[info] Firestore indexes allow you to perform complex queries while
+[info] maintaining performance that scales with the size of the result
+[info] set. You can keep index definitions in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2024-11-12T22:33:43.556Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:43.556Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:43.556Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:43.556Z] Checked if tokens are valid: true, expires at: 1731454067427
+[debug] [2024-11-12T22:33:43.556Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default)/collectionGroups/-/indexes [none]
+[debug] [2024-11-12T22:33:43.557Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* [none]
+[debug] [2024-11-12T22:33:43.726Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default)/collectionGroups/-/indexes 200
+[debug] [2024-11-12T22:33:43.726Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default)/collectionGroups/-/indexes {}
+[debug] [2024-11-12T22:33:43.819Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* 200
+[debug] [2024-11-12T22:33:43.819Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/nutria-eafaa/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* {"fields":[{"name":"projects/nutria-eafaa/databases/(default)/collectionGroups/__default__/fields/*","indexConfig":{"indexes":[{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"ASCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"DESCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","arrayConfig":"CONTAINS"}],"state":"READY"}]}}]}
+[info] 
+=== Genkit Setup
+[debug] [2024-11-12T22:33:43.944Z] Error: spawnSync npm ENOENT
+    at Object.spawnSync (node:internal/child_process:1124:20)
+    at spawnSync (node:child_process:875:24)
+    at execFileSync (node:child_process:918:15)
+    at getGenkitVersion (C:\Users\aluno\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\features\genkit\index.js:29:58)
+    at doSetup (C:\Users\aluno\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\features\genkit\index.js:56:30)
+    at init (C:\Users\aluno\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\index.js:41:15)
+    at init (C:\Users\aluno\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\index.js:42:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: An unexpected error has occurred.

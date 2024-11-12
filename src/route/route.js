@@ -21,11 +21,6 @@ export default function RoutePag(){
         options={{headerShown: false}}
         />
         <Stack.Screen
-        name="createUser"
-        component={createUser}
-        options={{headerShown: false}}
-        />
-        <Stack.Screen
         name="Home"
         component={Home}
         options={{headerShown: false}}
