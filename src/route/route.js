@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Wellcome from '../pages/wellcome/welcome.js';
 import LoginPag from "../pages/loginUser/login.js";
-import createUser from "../pages/registerUser/register.js";
+import createUser from "../pages/loginUser/register.js";
 import Home from '../pages/Main/Home.js';
 
 
@@ -18,6 +18,11 @@ export default function RoutePag(){
         <Stack.Screen
         name="Login"
         component={LoginPag}
+        options={{headerShown: false}}
+        />
+        <Stack.Screen
+        name='Cadastro'
+        component={createUser}
         options={{headerShown: false}}
         />
         <Stack.Screen

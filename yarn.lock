@@ -1447,7 +1447,7 @@
   resolved "https://registry.npmjs.org/@firebase/webchannel-wrapper/-/webchannel-wrapper-1.0.2.tgz"
   integrity sha512-3F4iA2E+NtdMbOU0XC1cHE8q6MqpGIKRj62oGOF38S6AAx5VHR9cXmoDUSj7ejvTAT7m6jxuEeQkHeq0F+mU2w==
 
-"@firebasegen/default-connector@link:dataconnect-generated\\js\\default-connector":
+"@firebasegen/default-connector@link:dataconnect-generated/js/default-connector":
   version "0.0.0"
   uid ""
 

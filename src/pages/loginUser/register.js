@@ -1,4 +1,6 @@
 import {Text, TouchableOpacity, StyleSheet, View, SafeAreaView, TextInput} from "react-native";
+import database from "../../database/config/firebase.js";
+import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {useState} from 'react';
 
@@ -8,9 +10,16 @@ export default function createUser(){
 const [nome, setNome] = useState('');
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
+const navegacao = useNavigation();
 
 async function createUser(){
-    createUserWithEmailAndPassword(email, password);
+    try{
+    await createUserWithEmailAndPassword(database.auth, email, password);
+    console.log("Usuário cadastrado com sucesso!");
+    navegacao.navigate('login');
+    }catch(error){
+        console.log(error)
+    }
 }
 
     return(
@@ -38,7 +47,6 @@ async function createUser(){
             <TouchableOpacity style={styles.botao} onPress={createUser}>
                 <Text>Criar a conta</Text>
             </TouchableOpacity>
-
         </SafeAreaView>
     )
 }
