@@ -24,6 +24,7 @@ export default function LoginPag(){
       await signInWithEmailAndPassword(database.auth, email, password);
       console.log("Sucesso ao fazer o login!");
       setModal(true);
+      navegacao.navigate("appTab")
       }catch(error){
           console.log(`O erro é: ${error}`)
           sucesso = 0;
@@ -32,7 +33,6 @@ export default function LoginPag(){
 
     return(
       <SafeAreaView style={styles.container}>
-        <View>
 
           <Modal
           visible={modal}
@@ -44,6 +44,8 @@ export default function LoginPag(){
               <Button title="Fechar" onPress={()=> setModal(false)}/>
             </View>
           </Modal>
+
+          <View>
 
           <Text>Email:</Text>
           <TextInput style={styles.input} placeholder='Insira seu email:' value={email} onChangeText={setEmail}></TextInput>
@@ -57,6 +59,7 @@ export default function LoginPag(){
             <Text>Cadastrar usuario</Text>
           </TouchableOpacity>
         </View>
+
       </SafeAreaView>
     )
 }
