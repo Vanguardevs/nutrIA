@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Image } from "react-native";
-import * as Animatable from 'react-native-animatable'
+import * as Animatable from 'react-native-animatable';
 
 
 

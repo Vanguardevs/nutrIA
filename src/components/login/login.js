@@ -1,6 +1,6 @@
 import { View, Text, Button, TextInput, StyleSheet, Modal} from "react-native";
 import { useState } from "react";
-import database from "../../database/config/firebase.js";
+import database from "../../database/firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
