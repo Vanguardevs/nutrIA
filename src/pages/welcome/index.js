@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, SafeAreaView, Image } from "react-native"
 import * as Animatable from 'react-native-animatable';
 import styles from "../../theme/styles";
 
-export default function Wellcome() {
+export default function Welcome() {
     const navigation = useNavigation();
     return (
         <SafeAreaView style={styles.container1}>
