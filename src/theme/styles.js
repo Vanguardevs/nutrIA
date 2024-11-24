@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  container1: {
+  welcomeContainer: {
     flex: 1,
     backgroundColor: 'green',
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
-  container2: {
+  curtain: {
     backgroundColor: 'white',
     justifyContent: 'space-evenly',
     height: 250,
@@ -17,23 +17,23 @@ const styles = StyleSheet.create({
     marginTop: '40%',
     alignItems: 'center'
   },
-  botao: {
+  welcomeButton: {
     backgroundColor: 'blue',
     borderRadius: 26,
     height: 80,
     width: 160,
     justifyContent: 'center'
   },
-  textoBotao: {
+  welcomeButtonText: {
     fontSize: 27,
     textAlign: 'center',
     color: 'white'
   },
-  tituloWellcome: {
+  welcomeTitle: {
     fontSize: 30,
     fontWeight: 'bold'
   },
-  imagem: {
+  welcomeImage: {
     height: 220,
     width: 270,
     borderRadius: 12

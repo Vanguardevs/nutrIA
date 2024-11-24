@@ -6,20 +6,20 @@ import styles from "../../theme/styles";
 export default function Welcome() {
     const navigation = useNavigation();
     return (
-        <SafeAreaView style={styles.container1}>
+        <SafeAreaView style={styles.welcomeContainer}>
             <View>
-                <Image source={require('../../../assets/NutrIA_IMG.jpeg')} style={styles.imagem} />
+                <Image source={require('../../../assets/NutrIA_IMG.jpeg')} style={styles.welcomeImage} />
             </View>
             <Animatable.View
                 animation="fadeInUp"
                 duration={1000}
-                style={styles.container2}>
-                <Text style={styles.tituloWellcome}>Bem Vindo</Text>
+                style={styles.curtain}>
+                <Text style={styles.welcomeTitle}>Bem Vindo</Text>
                 <TouchableOpacity
                     onPress={() => navigation.navigate("Login")}
-                    style={styles.botao}>
+                    style={styles.welcomeButton}>
                     <View animation="bounceIn" duration={1500}>
-                        <Text style={styles.textoBotao}>Começar</Text>
+                        <Text style={styles.welcomeButtonText}>Começar</Text>
                     </View>
                 </TouchableOpacity>
             </Animatable.View>
