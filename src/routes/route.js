@@ -30,7 +30,7 @@ export default function TesteStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name='Cadastro'
+        name='Register'
         component={createUser}
         options={{ headerShown: false }}
       />

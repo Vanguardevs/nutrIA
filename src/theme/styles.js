@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import Theme from './theme.js'
 
 const styles = StyleSheet.create({
   welcomeContainer: {
     flex: 1,
-    backgroundColor: 'green',
+    backgroundColor: Theme.colors.secondary,
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
@@ -12,14 +13,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     height: 250,
     width: '100%',
-    borderTopRightRadius: 21,
-    borderTopLeftRadius: 21,
+    borderTopRightRadius: Theme.borderRadius,
+    borderTopLeftRadius: Theme.borderRadius,
     marginTop: '40%',
     alignItems: 'center'
   },
-  welcomeButton: {
-    backgroundColor: 'blue',
-    borderRadius: 26,
+  button: {
+    backgroundColor: Theme.colors.primary,
+    borderRadius: Theme.borderRadius,
     height: 80,
     width: 160,
     justifyContent: 'center'
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   welcomeImage: {
     height: 220,
     width: 270,
-    borderRadius: 12
+    borderRadius: Theme.borderRadius
   }
 });
 
