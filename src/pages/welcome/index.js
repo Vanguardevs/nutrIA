@@ -9,7 +9,7 @@ export default function Welcome() {
     return (
         <SafeAreaView style={styles.welcomeContainer}>
             <View>
-                <Image source={require('../../../assets/Nutria.png')} style={styles.welcomeImage} />
+                <Image source={require('../../../assets/Nutria_logo.png')} style={styles.welcomeImage} />
             </View>
             <Animatable.View
                 animation="fadeInUp"
