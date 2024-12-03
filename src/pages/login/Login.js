@@ -16,13 +16,12 @@ export default function LoginPag() {
 
   async function logar() {
     try {
-      // await signInWithEmailAndPassword(database.auth, email, password); //Comentar para logar sem login XD  
+      // await signInWithEmailAndPassword(database.auth, email, password); 
       console.log("Sucesso ao fazer o login!");
-      setModal(true);
-      navegacao.navigate("appTab")
+      navegacao.replace("appTab")
     } catch (error) {
+      setModal(true)
       console.log(`O erro é: ${error}`)
-      const sucesso = 0;
     }
   }
 
@@ -35,33 +34,19 @@ export default function LoginPag() {
         animationType="slide"
         transparent={true}>
         <View>
-          <Text>Sucesso ao cadastrar</Text>
+          <Text>Erro ao fazer o login. Tente novamente</Text>
           <Button title="Fechar" onPress={() => setModal(false)} />
         </View>
       </Modal>
-
       <View style={stylesLocal.centerContainer}>
-
         <CustomField title='Email' placeholder="Insira seu email" keyboardType='email-address' value={email} setValue={setEmail} />
-
-        <CustomField title='Senha' placeholder="Insira sua senha"
+        <CustomField title='Senha' placeholder="Insira sua senha" keyboardType="text"
           secureTextEntry value={password} setValue={setPassword} />
-
-        {/* 
-        <Text>Email:</Text>
-        <TextInput style={stylesLocal.input} placeholder='Insira seu email:' value={email} onChangeText={setEmail}></TextInput>
-
-        <Text>Senha:</Text>
-        <TextInput style={stylesLocal.input} placeholder='Insira sua senha:' value={password} onChangeText={setPassword}></TextInput> 
-
-        Mudamos isso para algo setado no 'components'
-      */}
-
       </View>
 
       <View style={stylesLocal.bottomContainer}>
         <CustomButton title="Login" onPress={logar} />
-        <TouchableOpacity onPress={() => navegacao.navigate('Register')}>
+        <TouchableOpacity onPress={() => navegacao.push('Registro')}>
           <Text>Não é cadastrado?</Text>
         </TouchableOpacity>
       </View>

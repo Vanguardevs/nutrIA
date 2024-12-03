@@ -18,7 +18,7 @@ export default function Welcome() {
                 <Text style={styles.welcomeTitle}>Bem Vindo</Text>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("Login")}
+                    onPress={() => navigation.replace("Login")}
                     style={styles.button}>
                     <View animation="bounceIn" duration={1500}>
                         <Text style={styles.welcomeButtonText}>Começar</Text>
