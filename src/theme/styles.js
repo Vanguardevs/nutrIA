@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     flex: 1,
     backgroundColor: Theme.colors.secondary,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex',
     alignItems: 'center'
   },
   curtain: {
@@ -18,27 +18,49 @@ const styles = StyleSheet.create({
     marginTop: '40%',
     alignItems: 'center'
   },
-  button: {
+  welcomeButton: {
     backgroundColor: Theme.colors.primary,
     borderRadius: Theme.borderRadius,
     height: 80,
     width: 160,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 260,
   },
   welcomeButtonText: {
     fontSize: 27,
     textAlign: 'center',
     color: 'white'
   },
+  welcomeText: {
+    fontSize: 35,
+    textAlign: 'center',
+    color: '#016E3A',
+    fontFamily: 'K2D-BoldItalic',
+    width: 230,
+    marginTop: 100,
+  },
   welcomeTitle: {
     fontSize: 30,
     fontWeight: 'bold'
   },
   welcomeImage: {
-    height: 220,
-    width: 270,
-    borderRadius: Theme.borderRadius
+    height: 230,
+    width: 295,
+    borderRadius: Theme.borderRadius,
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 20,
+    marginTop: 80,
+  },
+  welcomeBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 800,
+    width: 400,
   }
+
 });
 
 export default styles;
