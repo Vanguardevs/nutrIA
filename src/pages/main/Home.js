@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Image, Button} from "react-native";
+import dadosUser from "../../database/services/GETdados.js"
 import CustomField from "../../components/CustomField";
 import * as Animatable from 'react-native-animatable';
 import {TextInput } from "react-native-paper";

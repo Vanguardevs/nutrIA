@@ -1,10 +1,10 @@
 import {Text, TouchableOpacity, StyleSheet, View, SafeAreaView, TextInput} from "react-native";
-import database from "../../database/firebase";
 import { useNavigation } from "@react-navigation/native";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import database from "../../database/services/PostDados.js"
 import {useState} from 'react';
 import CustomField from "../../components/CustomField";
 import CustomButton from "../../components/CustomButton";
+import { use } from "react";
 
 export default function createUser(){
 
@@ -12,13 +12,16 @@ export default function createUser(){
 const [nome, setNome] = useState('');
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
+const [idade, setIdade] = useState(null);
+const [sexo, setSexo] = useState(null);
+const [type_user, setType_user] = useState("default");
 const navegacao = useNavigation();
 
 async function createUser(){
     try{
-    await createUserWithEmailAndPassword(database.auth, email, password);
-    console.log("Usuário cadastrado com sucesso!");
-    navegacao.navigate('Login');
+        database.CadastroUser(nome, email, password, idade, sexo, type_user);//Essa função faz um insert no banco na tabela usuario e no firebase auth de uma só vez e ela se encontra em services no database
+        console.log("Usuário cadastrado com sucesso!");
+        navegacao.navigate('Login');
     }catch(error){
         if(nome.length == '' || password.length == '' || nome.length == ''){
             console.log("Alguns dos campos de cadastro estão vazios, Tente novamente")
