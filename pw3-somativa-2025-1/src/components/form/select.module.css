@@ -1,0 +1,28 @@
+.form_control{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1em;
+}
+
+.form_control label{
+    padding: .7em;
+    border-radius: 0;
+    border: none;
+    color: #000154;
+    font-weight: bold;
+}
+
+.form_control select{
+    width: 1000px;
+    padding: 20px;
+    border-radius: 11px;
+    border: none;
+    color: #7B7B7B;
+    background-color: rgb(241, 241, 241);
+}
+
+.form_control select:hover{
+    border-style:solid;
+    border-color: black;
+    font-weight: bold; 
+}

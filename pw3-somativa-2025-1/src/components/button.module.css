@@ -1,0 +1,15 @@
+.buttonContainer{
+    width: 100%;
+}
+button{
+    width: 100%;
+    font-family: Helvetica;
+    border: 1px solid #FFF;
+    border-radius: 5px;
+    background: linear-gradient(180deg, rgba(17,179,53,0.9940709560191264) 0%, rgba(19,215,2,1) 100%);
+    color: #FFF;
+}
+button:hover{
+    background: linear-gradient(180deg, rgba(17,179,53,0.9940709560191264) 0%, rgb(121, 228, 111) 100%);
+    cursor:pointer
+}
