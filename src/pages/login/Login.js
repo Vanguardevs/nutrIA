@@ -16,7 +16,7 @@ export default function LoginPag() {
 
   async function logar() {
     try {
-      // await signInWithEmailAndPassword(database.auth, email, password); 
+      // await signInWithEmailAndPassword(database.auth, email, password);       //COMENTAR PARA LOGAR INSTÂNTANEO
       console.log("Sucesso ao fazer o login!");
       navegacao.replace("appTab")
     } catch (error) {

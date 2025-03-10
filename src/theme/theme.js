@@ -1,7 +1,7 @@
 const Theme = {
   colors: {
-    primary: '#4CAF50',
-    secondary: '#EEEDE7',
+    primary: '#068f25', // Verde
+    secondary: '#EEEDE7', //branco
     success: '#28A745',
     danger: '#DC3545',
   },
