@@ -1,19 +1,20 @@
 import { useNavigation } from "@react-navigation/native";
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Image, Button, ImageBackground,} from "react-native";
-import {useState} from 'react'
+import {useState} from 'react';
+import axios from "axios";
 import {TextInput } from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GiftedChat } from "react-native-gifted-chat";
 
 
 export default function Home() {
-
+    
     const navigation = useNavigation();
-
+    
     const [messages, setMessages] = useState([]);
     const [InputMessage, setInputMessage] = useState("")            /* CRIANDO O MOLDADOR DA MENSAGEM, E RECEBENDO QUAL A MENSAGEM */
     const [outputMessage, setOutputMessage] = useState("Resultados aqui")  
-
+    
     const enviarMensagem = async() => {
 
         const message = {                                           /* CRIANDO OBJETO: MENSAGEM */
@@ -22,22 +23,28 @@ export default function Home() {
             createdAt:new Date(),                                   /*Mostrando o tempo da mensagem*/
             user: {_id:1}                                           /* Diferenciar mensagem da resposta */
         }
-    
+        
         setMessages((previousMessages)=>                           /* MONSTRANDO OBJETO: MENSAGEM NO CHAT DA TELA */
-            GiftedChat.append(previousMessages,[message])
+        GiftedChat.append(previousMessages,[message])
     )
 
-        const gemini = new GoogleGenerativeAI("AIzaSyC-9oOoUxE0v13DNuE37qBzClAfhJrxRJs");
-        const model = await gemini.getGenerativeModel({model:"gemini-1.5-flash"});
-        const result = await model.generateContent(InputMessage);                          
-        console.log(result.response.text());
-        setOutputMessage(result.response.text);
+    const response = await axios.post("https://nutria-6uny.onrender.com/question", {"pergunta":InputMessage}); 
+    console.log(response.data.message.resposta);   /* ENVIANDO MENSAGEM PARA O BACKEND NUTRIA */
+    setOutputMessage(response.data.message.resposta);
+    
+    // const gemini = new GoogleGenerativeAI("AIzaSyC-9oOoUxE0v13DNuE37qBzClAfhJrxRJs");
+    // const model = await gemini.getGenerativeModel({model:"gemini-1.5-flash"});
+    // const result = await model.generateContent(InputMessage);                          
+    // console.log(result.response.text());
+    // setOutputMessage(result.response.text);
+    
+    //Criando uma requisição post no back end nutria
 
-        const messageR = {                                           /* CRIANDO OBJETO: MENSAGEM */
-            _id:Math.random().toString(36).substring(7),            /*Cada mensagem vai ter seu próprio id, para não aparecer mensagens que ja apareceram na tela. */
-            text: result.response.text(),                                      /* Texto dentro da mensagem */
-            createdAt:new Date(),                                   /*Mostrando o tempo da mensagem*/
-            user: {_id:2, name: "Nutria"}                             /* Diferenciar mensagem da resposta e pergunta (nomes também)*/
+        const messageR = {                                                          /* CRIANDO OBJETO: MENSAGEM */
+            _id:Math.random().toString(36).substring(7),                         /*Cada mensagem vai ter seu próprio id, para não aparecer mensagens que ja apareceram na tela. */
+            text: response.data.message.resposta,                                         /* Texto dentro da mensagem */
+            createdAt:new Date(),                                                 /*Mostrando o tempo da mensagem*/
+            user: {_id:2, name: "Nutria"}                                       /* Diferenciar mensagem da resposta e pergunta (nomes também)*/
         }
     
         setMessages((previousMessages)=>                           /* MONSTRANDO OBJETO: MENSAGEM NO CHAT DA TELA */
