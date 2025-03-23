@@ -52,7 +52,6 @@ export default function Home() {
     )
     }
 
- 
     const receberMensagem = async(text) => {
         await setInputMessage(text);
     }
@@ -102,7 +101,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        height: '100%',
+        width: '100%'
     },
     homeBackground: {
         flex: 1,
