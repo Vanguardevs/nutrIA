@@ -3,13 +3,16 @@ import { View, Text, StyleSheet, SafeAreaView, StatusBar, Image, TouchableOpacit
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-export default function Header(props: NativeStackHeaderProps) {
+export default function Header(props) {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>{props.options.title || ""}</Text>
-            <View>
+            <View style={styles.opcoes}>
                 <TouchableOpacity>
                     <Image source={require('../../../assets/key.png')} style={styles.image}/>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Image source={require('../../../assets/setting.png')} style={styles.image}/>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
@@ -37,5 +40,11 @@ const styles = StyleSheet.create({
     image: {
         width: 37,
         height: 37,
+        marginLeft: '0.67em'
+    },
+    opcoes:{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
     }
 })

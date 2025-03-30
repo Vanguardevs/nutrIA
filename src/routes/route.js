@@ -8,16 +8,37 @@ import LoginPag from '../pages/login/Login.js';
 import CreateUser from "../pages/login/Registro.js";
 import Progress from "../pages/main/Progress.js";
 import Diary from "../pages/main/Diary.js";
-import { Button } from "react-native";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import React from "react";
 
 
 const Tab = createBottomTabNavigator();
 
 function TesteTabs() {
   return (
-    <Tab.Navigator options={{Header}}>
-      <Tab.Screen name="Agendas" component={Diary} options={{header:(props)=><Header {...props}/>, title: "Agendas"}}/>
+    <Tab.Navigator
+    //Essa confiuração é para o tabBar, onde está definindo os icons da aba de navegação
+    screenOptions={({route}) =>({
+      tabBarIcon: ({focused, color, size}) => {
+        let iconName;
+
+        if(route.name === 'Agendas') {
+          iconName = focused ? 'calendar' : 'calendar-outline';
+        }
+        if(route.name === 'Nutria') {
+          iconName = focused ? 'home' : 'home-outline';
+        }
+        if(route.name === 'Progresso') {
+          iconName = focused ? 'analytics' : 'analytics-outline';
+        }
+        return <Ionicons name={iconName} size={size} color={color} />;
+      }
+
+    })}
+    >
+
       <Tab.Screen name="Nutria" component={Home} options={{header: (props)=><Header {...props} />, title:"Nutria"}}/>
+      <Tab.Screen name="Agendas" component={Diary} options={{header:(props)=><Header {...props}/>, title: "Agendas"}}/>
       <Tab.Screen name="Progresso" component={Progress} options={{header:(props)=><Header {...props} />, title: "Progresso"}}/>
     </Tab.Navigator>
   )
