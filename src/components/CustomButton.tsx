@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: Theme.colors.primary,
     borderRadius: Theme.borderRadius,
-    height: 50,
-    width: 300,
+    height: 30,
+    width: '100%',
     justifyContent: 'center'
   },
   welcomeButtonText: {

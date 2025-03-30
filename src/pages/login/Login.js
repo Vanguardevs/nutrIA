@@ -10,6 +10,7 @@ import CustomField from "../../components/CustomField";
 export default function LoginPag() {
 
   const navegacao = useNavigation();
+  
   const [modal, setModal] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home from '../pages/main/Home.js'
+import Home from '../pages/main/Home.js';
+import { CustomModal } from "../pages/modal/Pagamento.js";
 import Settings from '../pages/main/Config.js';
 import Header from "../pages/cabecalho/header.js";
 import Wellcome from '../pages/welcome';  //Index representa a pasta
@@ -62,6 +63,7 @@ export default function TesteStack() {
         component={CreateUser}
         options={{headerShown: false}}
       />
+      <Stack.Screen name="Config" component={Settings}/>
     </Stack.Navigator>
   )
 }
