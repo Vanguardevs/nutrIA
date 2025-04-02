@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "nutrIA",
-    "slug": "snack-df4cf990-667b-4a55-ac88-389696fd10a9",
+    "slug": "nutria-kpg7uvvwaun8w72c5wvm",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,10 +18,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.vanguardnutria.softwareAssistant"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e02f7476-de94-4d3f-b571-f429ee9c38c0"
+      }
+    },
+    "owner": "vanguard-nutria"
   }
 }
