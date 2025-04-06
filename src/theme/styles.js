@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 160,
     justifyContent: 'center',
-    marginTop: 150,
+    marginTop: 260,
   },
   welcomeButtonText: {
     fontSize: 27,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     color: '#016E3A',
     fontFamily: 'K2D-BoldItalic',
     width: 230,
-    marginTop: 10,
+    marginTop: 100,
   },
   welcomeTitle: {
     fontSize: 30,
@@ -57,12 +57,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
-  
-  },
- 
-
+    height: 800,
+    width: 400,
+  }
 });
 
 export default styles;
