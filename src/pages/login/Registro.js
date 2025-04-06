@@ -6,7 +6,7 @@ import {useState} from 'react';
 import CustomField from "../../components/CustomField";
 import CustomButton from "../../components/CustomButton";
 
-export default function createUser(){
+export default function CreateUser(){
 
 //Criação de uma variavel para pegar o nome do usuario
 const [nome, setNome] = useState('');
@@ -30,6 +30,10 @@ async function createUser(){
 
     return(
         <SafeAreaView style={styles.container}>
+            <TouchableOpacity onPress={() => navegacao.navigate('Login')} style={{backgroundColor: 'gray', padding: 10, borderRadius: 10, margin: 10, height: 40, width: 40}}>
+                <Text>{"<"}</Text>
+            </TouchableOpacity>
+
             <View style={styles.centerContainer}>
                 <CustomField title="Nome" value={nome} setValue={setNome} keyboardType="text" placeholder="Insira seu nome"/>
                 <CustomField title="Email" value={email} setValue={setEmail} keyboardType="email-address" placeholder="Insira seu email"/>

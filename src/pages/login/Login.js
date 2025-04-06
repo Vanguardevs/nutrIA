@@ -10,13 +10,14 @@ import CustomField from "../../components/CustomField";
 export default function LoginPag() {
 
   const navegacao = useNavigation();
+  
   const [modal, setModal] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   async function logar() {
     try {
-      // await signInWithEmailAndPassword(database.auth, email, password); 
+      // await signInWithEmailAndPassword(database.auth, email, password);       //COMENTAR PARA LOGAR INSTÂNTANEO
       console.log("Sucesso ao fazer o login!");
       navegacao.replace("appTab")
     } catch (error) {
