@@ -9,7 +9,7 @@ export default function Settings(){
     return(
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text>Configurações</Text>
-            <CustomButton title="Sair" onPress={() => {navigation.navigate("Login")}}/>
+            <CustomButton title="Sair" onPress={() => {navigation.replace("Login")}}/>
         </View>
     )
 }

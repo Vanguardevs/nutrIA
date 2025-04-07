@@ -19,7 +19,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.vanguardnutria.softwareAssistant"
+      "package": "com.vanguardnutria.softwareAssistant",
+      "newArchEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

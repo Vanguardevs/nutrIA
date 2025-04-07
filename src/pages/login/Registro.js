@@ -30,7 +30,7 @@ async function createUser(){
 
     return(
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity onPress={() => navegacao.navigate('Login')} style={{backgroundColor: 'gray', padding: 10, borderRadius: 10, margin: 10, height: 40, width: 40}}>
+            <TouchableOpacity onPress={() => navegacao.goBack()} style={{backgroundColor: 'gray', padding: 10, borderRadius: 10, margin: 10, height: 40, width: 40}}>
                 <Text>{"<"}</Text>
             </TouchableOpacity>
 

@@ -1,8 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Image, Button, ImageBackground,} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground,} from "react-native";
 import {useState} from 'react';
 import axios from "axios";
-import {TextInput } from "react-native-paper";
+import {TextInput} from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GiftedChat } from "react-native-gifted-chat";
 
@@ -12,19 +12,19 @@ export default function Home() {
     const navigation = useNavigation();
     
     const [messages, setMessages] = useState([]);
-    const [InputMessage, setInputMessage] = useState("")            /* CRIANDO O MOLDADOR DA MENSAGEM, E RECEBENDO QUAL A MENSAGEM */
+    const [InputMessage, setInputMessage] = useState("")            
     const [outputMessage, setOutputMessage] = useState("Resultados aqui")  
     
     const enviarMensagem = async() => {
 
-        const message = {                                           /* CRIANDO OBJETO: MENSAGEM */
-            _id:Math.random().toString(36).substring(7),            /*Cada mensagem vai ter seu próprio id, para não aparecer mensagens que ja apareceram na tela. */
-            text:InputMessage,                                      /* Texto dentro da mensagem */
-            createdAt:new Date(),                                   /*Mostrando o tempo da mensagem*/
-            user: {_id:1}                                           /* Diferenciar mensagem da resposta */
+        const message = {                                          
+            _id:Math.random().toString(36).substring(7),            
+            text:InputMessage,                                    
+            createdAt:new Date(),                                 
+            user: {_id:1}                                           
         }
         
-        setMessages((previousMessages)=>                           /* MONSTRANDO OBJETO: MENSAGEM NO CHAT DA TELA */
+        setMessages((previousMessages)=>                          
         GiftedChat.append(previousMessages,[message])
     )
 
@@ -40,20 +40,16 @@ export default function Home() {
     
     //Criando uma requisição post no back end nutria
 
-        const messageR = {                                                          /* CRIANDO OBJETO: MENSAGEM */
-            _id:Math.random().toString(36).substring(7),                         /*Cada mensagem vai ter seu próprio id, para não aparecer mensagens que ja apareceram na tela. */
-            text: response.data.message.resposta,                                         /* Texto dentro da mensagem */
-            createdAt:new Date(),                                                 /*Mostrando o tempo da mensagem*/
-            user: {_id:2, name: "Nutria"}                                       /* Diferenciar mensagem da resposta e pergunta (nomes também)*/
+        const messageR = {                                                       
+            _id:Math.random().toString(36).substring(7),                         
+            text: response.data.message.resposta,                                         
+            createdAt:new Date(),                                                 
+            user: {_id:2, name: "Nutria"}                                      
         }
     
-        setMessages((previousMessages)=>                           /* MONSTRANDO OBJETO: MENSAGEM NO CHAT DA TELA */
+        setMessages((previousMessages)=>                           
             GiftedChat.append(previousMessages,[messageR])
     )
-    }
-
-    const receberMensagem = async(text) => {
-        await setInputMessage(text);
     }
     
 
@@ -73,19 +69,19 @@ export default function Home() {
 
         <View style={styles.homeMid}>               {/*   MID?   */}
             
-            {/* <Text>{outputMessage}</Text> */}
-            <GiftedChat messages={messages} renderInputToolbar={() => {}} user={{_id:1}}> </GiftedChat>
+            <Text>{outputMessage}</Text>
+            <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat>
 
         </View>
 
         <View style={styles.homeFooter}>        {/*      FOOTER    */}
             <View style={styles.homeText}>
-            <TextInput placeholder="Mande sua pergunta" onChangeText={receberMensagem}/>
+            <TextInput placeholder="Mande sua pergunta" onChangeText={setInputMessage}/>
             </View>
 
-                <TouchableOpacity onPress={enviarMensagem}>
+                <TouchableOpacity onPress={async() => {await enviarMensagem();}}>
                     <View>
-                    <Image source={require('../../../assets/homeButton.png')} style= {styles.homeImage}/>
+                        <Image source={require('../../../assets/homeButton.png')} style= {styles.homeImage}/>
                     </View>
                 </TouchableOpacity>
         </View>

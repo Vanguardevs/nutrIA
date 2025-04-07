@@ -5,8 +5,8 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     flex: 1,
     backgroundColor: Theme.colors.secondary,
-    justifyContent: 'flex',
-    alignItems: 'center'
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   curtain: {
     backgroundColor: 'white',
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 160,
     justifyContent: 'center',
-    marginTop: 260,
+    marginTop: 190,
   },
   welcomeButtonText: {
     fontSize: 27,
@@ -37,28 +37,24 @@ const styles = StyleSheet.create({
     color: '#016E3A',
     fontFamily: 'K2D-BoldItalic',
     width: 230,
-    marginTop: 100,
+    marginTop: 20,
   },
   welcomeTitle: {
     fontSize: 30,
     fontWeight: 'bold'
   },
   welcomeImage: {
-    height: 230,
-    width: 295,
-    borderRadius: Theme.borderRadius,
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    height: 210,
+    width: 280,
     paddingTop: 20,
-    marginTop: 80,
+    marginTop: 60,
   },
   welcomeBackground: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 800,
-    width: 400,
+    height: '100%',
+    width: '100%',
   }
 });
 

@@ -46,7 +46,7 @@ function TesteTabs() {
 }
 
 
-export default function TesteStack() {
+export default function RoutePag() {
   const Stack = createNativeStackNavigator();
 
   return (

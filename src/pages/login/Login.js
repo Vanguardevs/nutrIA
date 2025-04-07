@@ -1,9 +1,8 @@
-import { View, Text, Button, TextInput, StyleSheet, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import database from "../../database/firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-web";
 import CustomButton from "../../components/CustomButton";
 import CustomField from "../../components/CustomField";
 
@@ -39,6 +38,7 @@ export default function LoginPag() {
           <Button title="Fechar" onPress={() => setModal(false)} />
         </View>
       </Modal>
+
       <View style={stylesLocal.centerContainer}>
         <CustomField title='Email' placeholder="Insira seu email" keyboardType='email-address' value={email} setValue={setEmail} />
         <CustomField title='Senha' placeholder="Insira sua senha" keyboardType="text"
@@ -46,10 +46,13 @@ export default function LoginPag() {
       </View>
 
       <View style={stylesLocal.bottomContainer}>
-        <CustomButton title="Login" onPress={logar} />
+
+        <CustomButton title="Login" onPress={logar}/>
+
         <TouchableOpacity onPress={() => navegacao.push('Registro')}>
           <Text>Não é cadastrado?</Text>
         </TouchableOpacity>
+
       </View>
 
     </SafeAreaView>
