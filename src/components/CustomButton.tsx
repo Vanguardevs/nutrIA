@@ -1,5 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, Modal } from "react-native";
-import { TouchableOpacity } from "react-native";
+import {  TouchableOpacity, View, Text, Button, TextInput, StyleSheet, Modal } from "react-native";
 import Theme from "../theme/theme";
 
 interface CustomButtonProps {
@@ -19,9 +18,11 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: Theme.colors.primary,
     borderRadius: Theme.borderRadius,
-    height: 30,
-    width: '100%',
-    justifyContent: 'center'
+    height: 38,
+    width: '90%',
+    justifyContent: 'center',
+    marginTop:3,
+    alignItems: 'center'
   },
   welcomeButtonText: {
     fontFamily: Theme.font.fontFamily,

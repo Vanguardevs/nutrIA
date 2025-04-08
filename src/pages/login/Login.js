@@ -28,15 +28,21 @@ export default function LoginPag() {
   return (
     <SafeAreaView style={stylesLocal.container}>
 
-      <Modal
+      <Modal 
+        style={stylesLocal.containterModal}
         visible={modal}
         onRequestClose={() => setModal(false)}
         animationType="slide"
-        transparent={true}>
-        <View>
-          <Text>Erro ao fazer o login. Tente novamente</Text>
-          <Button title="Fechar" onPress={() => setModal(false)} />
-        </View>
+        transparent={true}
+        theme={{colors: {backdrop: 'transparent', }, }}
+        >
+
+            <View style={stylesLocal.modalMessage}>
+              <Text>Erro ao fazer o login. Tente novamente</Text>
+              <Button title="Fechar" onPress={() => setModal(false)} />
+            </View>
+
+
       </Modal>
 
       <View style={stylesLocal.centerContainer}>
@@ -80,5 +86,19 @@ const stylesLocal = StyleSheet.create({
     justifyContent: 'flex-end', // Align to the bottom
     alignItems: 'center', // Center horizontally
     padding: 16, // Add padding for better spacing
-  }
+  },
+  containterModal: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'black', 
+    borderRadius: 10, 
+    opacity: 1
+},
+  modalMessage: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
 });

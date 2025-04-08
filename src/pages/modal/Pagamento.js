@@ -14,10 +14,8 @@ export function CustomModal({modalVisible, setModalVisible}) {
                 <Text>Pague para ter acesso a:</Text>
                 <Text>1. Atendimento totalmente personalizado</Text>
 
-                <View>
                     <CustomButton title="Fechar" onPress={() => setModalVisible(false)}/>
                     <CustomButton title="9,90" onPress={() => setModalVisible(false)}/>
-                </View>
 
             </SafeAreaView>
         </Modal>

@@ -15,16 +15,23 @@ export default function Header(props) {
 
     return (
         <SafeAreaView style={styles.container}>
-        <CustomModal style={{display: 'none', }} modalVisible={modalOptions} setModalVisible={setModalOptions}/>
+
+            <CustomModal style={{display: 'none', }} modalVisible={modalOptions} setModalVisible={setModalOptions}/>
+
             <Text style={styles.title}>{props.options.title || ""}</Text>
+
             <View style={styles.opcoes}>
-                <TouchableOpacity onPress={()=> setModalOptions(true)}>
+
+                <TouchableOpacity onPress={()=> setModalOptions(true)} >
                     <Image source={require('../../../assets/key.png')} style={styles.image}/>
                 </TouchableOpacity>
+
                 <TouchableOpacity onPress={()=> navigation.navigate('Config')}>
                     <Image source={require('../../../assets/setting.png')} style={styles.image}/>
                 </TouchableOpacity>
+
             </View>
+
         </SafeAreaView>
     )
 } 
@@ -36,7 +43,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: StatusBar.currentHeight,
         backgroundColor: '#f8f8f8',
         height: 70, 
         paddingHorizontal: 10, 
@@ -55,6 +61,6 @@ const styles = StyleSheet.create({
     opcoes:{
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'center'
     }
 })

@@ -27,7 +27,7 @@ function TesteTabs() {
           iconName = focused ? 'calendar' : 'calendar-outline';
         }
         if(route.name === 'Nutria') {
-          iconName = focused ? 'home' : 'home-outline';
+          iconName = focused ? 'leaf' : 'leaf-outline';
         }
         if(route.name === 'Progresso') {
           iconName = focused ? 'analytics' : 'analytics-outline';

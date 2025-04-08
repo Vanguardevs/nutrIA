@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground,} from "react-native";
 import {useState} from 'react';
 import axios from "axios";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import {TextInput} from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GiftedChat } from "react-native-gifted-chat";
@@ -59,35 +60,30 @@ export default function Home() {
     //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
     return(
         <SafeAreaView style={styles.homeContainer}>
-        <ImageBackground
-            source={require('../../../assets/Frutas_home.png')}
-            style={styles.homeBackground}>
+            <ImageBackground
+                source={require('../../../assets/Frutas_home.png')}
+                style={styles.homeBackground}>
 
+                <View style={styles.homeMid}>
+                    
+                    <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat>
 
-        <View style={styles.homeHeader}>          {/*   HEADER   */}
-        </View>
+                </View>
 
-        <View style={styles.homeMid}>               {/*   MID?   */}
-            
-            <Text>{outputMessage}</Text>
-            <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat>
+        <View style={styles.homeFooter}>   
 
-        </View>
-
-        <View style={styles.homeFooter}>        {/*      FOOTER    */}
             <View style={styles.homeText}>
-            <TextInput placeholder="Mande sua pergunta" onChangeText={setInputMessage}/>
-            </View>
 
-                <TouchableOpacity onPress={async() => {await enviarMensagem();}}>
-                    <View>
-                        <Image source={require('../../../assets/homeButton.png')} style= {styles.homeImage}/>
-                    </View>
+                <TextInput placeholder="Mande sua pergunta" onChangeText={setInputMessage}/>
+
+            </View>
+                <TouchableOpacity  style={{backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius:29, marginLeft: 12, marginRight:9}}  onPress={async() => await enviarMensagem()}>
+                        <Ionicons name="send" size={29} color="black" style={styles.homeImage}/>
                 </TouchableOpacity>
         </View>
 
 
-        </ImageBackground>
+            </ImageBackground>
         </SafeAreaView>
     )
 }
@@ -105,21 +101,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        height: 800,
-        width: 400,
+        height: '100%',
+        width: '100%',
     },
     homeImage: {
-        height: 55,
-        width: 55,
-        flex: 1,
+        height: 30,
+        width: 49,
         marginLeft: 10,
-        marginRight: 30,
     },
     homeFooter: {
         flexDirection: "row",
-        width: 400,
-        marginLeft: 30,
-
+        width: '100%',
     },
     homeHeader: {
         flex: 1,
@@ -132,6 +124,7 @@ const styles = StyleSheet.create({
     },
     homeMid: {
         flex: 1,
+        height: '100%',
         justifyContent: "center",
     },
 })
