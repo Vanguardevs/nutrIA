@@ -1,6 +1,6 @@
 import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity } from "react-native";
 import { useState } from "react";
-import database from "../../database/firebase.js";
+import {auth} from "../../database/firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton";
@@ -15,14 +15,16 @@ export default function LoginPag() {
   const [password, setPassword] = useState('');
 
   async function logar() {
-    try {
-      // await signInWithEmailAndPassword(database.auth, email, password);       //COMENTAR PARA LOGAR INSTÂNTANEO
-      console.log("Sucesso ao fazer o login!");
-      navegacao.replace("appTab")
-    } catch (error) {
-      setModal(true)
-      console.log(`O erro é: ${error}`)
-    }
+      await signInWithEmailAndPassword(auth, email, password).then(()=>{
+
+        console.log("Sucesso ao fazer o login!");
+        navegacao.replace("appTab")
+
+      }).catch((error) => {  
+
+              setModal(true)
+              console.log(`O erro é: ${error}`)
+      })
   }
 
   return (

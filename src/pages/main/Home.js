@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     homeMid: {
         flex: 1,
         height: '100%',
+        width: '100%',
         justifyContent: "center",
     },
 })

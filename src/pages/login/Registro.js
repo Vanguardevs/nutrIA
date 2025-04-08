@@ -16,7 +16,7 @@ const navegacao = useNavigation();
 
 async function createUser(){
     try{
-    // await createUserWithEmailAndPassword(database.auth, email, password);
+    await createUserWithEmailAndPassword(database.auth, email, password);
     console.log("Usuário cadastrado com sucesso!");
     navegacao.navigate('Login');
     }catch(error){
