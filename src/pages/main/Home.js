@@ -51,6 +51,7 @@ export default function Home() {
         setMessages((previousMessages)=>                           
             GiftedChat.append(previousMessages,[messageR])
     )
+    setInputMessage("");
     }
     
 
@@ -74,7 +75,7 @@ export default function Home() {
 
             <View style={styles.homeText}>
 
-                <TextInput placeholder="Mande sua pergunta" onChangeText={setInputMessage}/>
+                <TextInput placeholder="Mande sua pergunta" value={InputMessage} onChangeText={setInputMessage}/>
 
             </View>
                 <TouchableOpacity  style={{backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius:29, marginLeft: 12, marginRight:9}}  onPress={async() => await enviarMensagem()}>
