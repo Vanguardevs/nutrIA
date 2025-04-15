@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground,} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground} from "react-native";
 import {useState} from 'react';
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -78,7 +78,7 @@ export default function Home() {
                 <TextInput placeholder="Mande sua pergunta" value={InputMessage} onChangeText={setInputMessage}/>
 
             </View>
-                <TouchableOpacity  style={{backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius:29, marginLeft: 12, marginRight:9}}  onPress={async() => await enviarMensagem()}>
+                <TouchableOpacity  style={{backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius:29, marginLeft: 12, marginRight:9, paddingLeft: 12}}  onPress={async() => await enviarMensagem()}>
                         <Ionicons name="send" size={29} color="black" style={styles.homeImage}/>
                 </TouchableOpacity>
         </View>

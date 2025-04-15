@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
 import {auth} from "../../database/firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -8,9 +8,12 @@ import CustomField from "../../components/CustomField";
 
 export default function LoginPag() {
 
+  const AlertaError = ()=> Alert.alert('Error', "Erro ao fazer o login. Tente novamente",[{text: "OK", onPress:()=>console.log("")}],{});
+
+
+
   const navegacao = useNavigation();
   
-  const [modal, setModal] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,34 +21,16 @@ export default function LoginPag() {
       await signInWithEmailAndPassword(auth, email, password).then(()=>{
 
         console.log("Sucesso ao fazer o login!");
-        navegacao.replace("appTab")
+        navegacao.replace("appTab");
 
       }).catch((error) => {  
-
-              setModal(true)
-              console.log(`O erro é: ${error}`)
+        console.log(error);
+        AlertaError();
       })
   }
 
   return (
     <SafeAreaView style={stylesLocal.container}>
-
-      <Modal 
-        style={stylesLocal.containterModal}
-        visible={modal}
-        onRequestClose={() => setModal(false)}
-        animationType="slide"
-        transparent={true}
-        theme={{colors: {backdrop: 'transparent', }, }}
-        >
-
-            <View style={stylesLocal.modalMessage}>
-              <Text>Erro ao fazer o login. Tente novamente</Text>
-              <Button title="Fechar" onPress={() => setModal(false)} />
-            </View>
-
-
-      </Modal>
 
       <View style={stylesLocal.centerContainer}>
         <CustomField title='Email' placeholder="Insira seu email" keyboardType='email-address' value={email} setValue={setEmail} />

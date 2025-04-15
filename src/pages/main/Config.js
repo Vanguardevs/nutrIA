@@ -1,7 +1,7 @@
 import { View, Image, StyleSheet } from "react-native";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton";
-import CustomCard from "../../components/CustomCard";
+import CustomCardO from "../../components/CustomButtonConfig";
 import { auth } from "../../database/firebase";
 import { signOut } from "firebase/auth";
 
@@ -17,6 +17,7 @@ export default function Settings(){
                     routes: [{ name: 'Login' }],
                 })
             );
+            navigation.replace("Login")
         }).catch((error) => {
             console.log(error);
         });
@@ -26,9 +27,9 @@ export default function Settings(){
     return(
         <View style={styles.container}>
             <Image source={require("../../../assets/logoWelcome.png")} style={styles.imageStyle}/>
-            <CustomCard title="Dados Pessoais" onPress={()=>console.log(null)} nameImg="happy-outline"/>
-            <CustomCard title="Conta" onPress={()=>console.log(null)} nameImg="person-circle-outline"/>
-            <CustomCard title="Seguraça" onPress={()=>console.log(null)} nameImg="lock-closed"/>
+            <CustomCardO title="Dados Pessoais" onPress={()=>console.log(null)} nameImg="happy-outline"/>
+            <CustomCardO title="Conta" onPress={()=>console.log(null)} nameImg="person-circle-outline"/>
+            <CustomCardO title="Seguraça" onPress={()=>console.log(null)} nameImg="lock-closed"/>
             <CustomButton title="Sair" onPress={loggout}/>
         </View>
     )

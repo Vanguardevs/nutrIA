@@ -22,9 +22,9 @@ export default function Header(props) {
 
             <View style={styles.opcoes}>
 
-                <TouchableOpacity onPress={()=> setModalOptions(true)} >
+                {/* <TouchableOpacity onPress={()=> setModalOptions(true)} >
                     <Image source={require('../../../assets/key.png')} style={styles.image}/>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity onPress={()=> navigation.navigate('Config')}>
                     <Image source={require('../../../assets/setting.png')} style={styles.image}/>

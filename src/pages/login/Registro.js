@@ -12,6 +12,7 @@ export default function CreateUser(){
 const [nome, setNome] = useState('');
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
+const [old, setOld] = useState(0)
 const navegacao = useNavigation();
 
 async function createUser(){
@@ -39,7 +40,9 @@ async function createUser(){
                 <CustomField title="Email" value={email} setValue={setEmail} keyboardType="email-address" placeholder="Insira seu email"/>
                 <CustomField title="Senha" value={password} setValue={setPassword} keyboardType="text" placeholder="Insira sua senha"
                 secureTextEntry/>
+                <CustomField title="idade" value={old} setValue={setOld} keyboardType="number" placeholder="Insira sua idade"/>
             </View>
+
             <View style={styles.bottomContainer}>
                 <CustomButton title="Criar usuário" onPress={createUser}/>
             </View>
