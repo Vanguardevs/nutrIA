@@ -12,7 +12,8 @@ export default function CreateUser(){
 const [nome, setNome] = useState('');
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
-const [old, setOld] = useState(0)
+const [old, setOld] = useState(0);
+const [sex, setSex] = useState('')
 const navegacao = useNavigation();
 
 async function createUser(){
@@ -36,11 +37,18 @@ async function createUser(){
             </TouchableOpacity>
 
             <View style={styles.centerContainer}>
-                <CustomField title="Nome" value={nome} setValue={setNome} keyboardType="text" placeholder="Insira seu nome"/>
-                <CustomField title="Email" value={email} setValue={setEmail} keyboardType="email-address" placeholder="Insira seu email"/>
-                <CustomField title="Senha" value={password} setValue={setPassword} keyboardType="text" placeholder="Insira sua senha"
+                <CustomField title="Nome" value={nome} setValue={setNome} keyboardType="text" placeholder="Insira seu nome:"/>
+                <CustomField title="Email" value={email} setValue={setEmail} keyboardType="email-address" placeholder="Insira seu email:"/>
+                <CustomField title="Senha" value={password} setValue={setPassword} keyboardType="text" placeholder="Insira sua senha:"
                 secureTextEntry/>
-                <CustomField title="idade" value={old} setValue={setOld} keyboardType="number" placeholder="Insira sua idade"/>
+
+                <View style={{flexDirection: 'row', width: '80%', margin: '2%'}}>
+
+                    <CustomField title="Idade" value={old} setValue={setOld} keyboardType="number" placeholder="Insira sua idade:" style={styles.miniField}/>
+                    <CustomField title="Sexo" value={sex} setValue={setSex} keyboardType="text" placeholder="Insira seu sexo:" style={styles.miniField}/>
+                    
+                </View>
+
             </View>
 
             <View style={styles.bottomContainer}>
@@ -57,7 +65,6 @@ const styles = StyleSheet.create({
       centerContainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
       },
       input: {
         backgroundColor: 'gray',
@@ -70,5 +77,15 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
         padding: 16,
+      },
+      miniField:{
+        height: 35,
+        borderColor: "#ccc",
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom:15,
+        width: '65%',
+        marginLeft: '5%'
       }
 })

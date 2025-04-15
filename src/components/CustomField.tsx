@@ -10,16 +10,18 @@ interface CustomFieldProps extends TextInput { //Extende pra tudo que seja texti
 
 const CustomField: React.FC<CustomFieldProps> = ({ title, placeholder, value, setValue, ...props }) => {
   return (
-    <>
-      <Text style={styles.label}>{title}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        value={value}
-        onChangeText={setValue}
-        {...props}
-      />
-    </>
+      <>
+        <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+          <Text style={styles.label}>{title}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder={placeholder}
+            value={value}
+            onChangeText={setValue}
+            {...props}
+          />
+        </View>
+      </>
   );
 }
 
@@ -37,6 +39,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
     width: '85%',
+    marginLeft: '1%'
   },
 
 });

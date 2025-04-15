@@ -60,7 +60,6 @@ const stylesLocal = StyleSheet.create({
   centerContainer: {
     flex: 1,
     justifyContent: 'center', // Center vertically
-    alignItems: 'center', // Center horizontally
   },
   input: {
     backgroundColor: 'gray',

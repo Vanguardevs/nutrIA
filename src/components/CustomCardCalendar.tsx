@@ -4,9 +4,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 interface CustomCard{
     horario:string;
     alimentacao:string;
+    onPressEdit: ()=>void;
 }
 
-const CardCustomCalendar = ({horario, alimentacao}:CustomCard) =>{
+const CardCustomCalendar = ({horario, alimentacao, onPressEdit}:CustomCard) =>{
     return(
         <View style={styles.container}>
 
@@ -14,7 +15,7 @@ const CardCustomCalendar = ({horario, alimentacao}:CustomCard) =>{
 
                 <View></View>
                 <Text style={{textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center', fontSize: 19, marginLeft: '8%'}}>{alimentacao}</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={onPressEdit}>
                     <Ionicons name="create-outline" size={42} color="black"/>
                 </TouchableOpacity>
 

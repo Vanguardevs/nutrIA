@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Progress from "../pages/main/Progress.js";
-import Diary from "../pages/main/Diary.js";
+import CreateDiary from '../pages/main/Diary/CreateDiary.js';
+import EditDiary from '../pages/main/Diary/EditDiary.js';
+import Diary from "../pages/main/Diary/Diary.js";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from "../pages/cabecalho/header.js";
 import Home from '../pages/main/Home.js';
@@ -73,6 +75,8 @@ export default function AppTabs() {
                 options={{ headerShown: false }}
             />
             <Stack.Screen name="Config" component={Settings} />
+            <Stack.Screen name="Create-Diary" component={CreateDiary} options={{headerShown: false}}/>
+            <Stack.Screen name="Edit-Diary" component={EditDiary} options={{headerShown: false}}/>
         </Stack.Navigator>
     );
 }
