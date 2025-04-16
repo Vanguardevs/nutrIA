@@ -2,13 +2,15 @@ import { StyleSheet } from 'react-native';
 import Theme from './theme.js'
 
 const styles = StyleSheet.create({
+
+  // WELCOME === INDEX.JS
   welcomeContainer: {
     flex: 1,
     backgroundColor: Theme.colors.secondary,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  curtain: {
+  welcomeCurtain: {
     backgroundColor: 'white',
     justifyContent: 'space-evenly',
     height: 250,
@@ -20,11 +22,14 @@ const styles = StyleSheet.create({
   },
   welcomeButton: {
     backgroundColor: Theme.colors.primary,
-    borderRadius: Theme.borderRadius,
-    height: 80,
-    width: 160,
+    height: 60,
+    width: "55vh",
     justifyContent: 'center',
     marginTop: 190,
+    borderWidth: 2,
+    borderColor: "white",
+    borderRadius: 12,
+    
   },
   welcomeButtonText: {
     fontSize: 27,
@@ -55,7 +60,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
     width: '100%',
-  }
+  },
+  gradientContainer: {
+    height: 60,
+    width: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+  },
 });
 
 export default styles;

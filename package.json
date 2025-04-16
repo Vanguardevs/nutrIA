@@ -20,6 +20,7 @@
     "axios": "^1.8.4",
     "expo": "^52.0.44",
     "expo-font": "^13.0.1",
+    "expo-linear-gradient": "~14.0.2",
     "expo-status-bar": "~2.0.1",
     "firebase": "^11.0.2",
     "picker": "^0.1.4",

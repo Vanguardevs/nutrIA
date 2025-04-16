@@ -35,22 +35,31 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
     marginBottom: 15,
   },
-  label: {
+  label: {               // TEXTO EM CIMA DO INPUT
     fontSize: 19,
     marginBottom: 5,
     textAlign: 'center',
     fontWeight: "bold",
   },
-  pickerWrapper: {
+  pickerWrapper: {      // INPUT
     borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 16,
+    borderColor: '#ccc',
+    borderRadius: 5,
     overflow: 'hidden',
   },
   picker: {
-    height: 40,
+    height: 35,
     width: '100%',
   },
 });
+
+// height: 35,
+// borderColor: "#ccc",
+// borderWidth: 1,
+// borderRadius: 5,
+// paddingHorizontal: 10,
+// marginBottom:15,
+// width: '65%',
+// marginLeft: '5%'
 
 export default CustomPicker;

@@ -15,8 +15,8 @@ export default function CreateUser(){
 const [nome, setNome] = useState('');
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
-const [old, setOld] = useState(0);
-const [sex, setSex] = useState('')
+const [idade, setIdade] = useState(0);
+const [sexo, setSexo] = useState('')
 const navegacao = useNavigation();
 
 async function createUser(){
@@ -44,12 +44,12 @@ async function createUser(){
 
                 <View style={{flexDirection: 'row', width: '80%', margin: '2%'}}>
 
-                    <CustomField title="Idade" value={old} setValue={setOld} keyboardType="numeric" placeholder="Insira sua idade:" style={styles.miniField}/>
+                    <CustomField title="Idade" value={idade} setValue={setIdade} keyboardType="numeric" placeholder="Insira sua idade:" style={styles.miniField}/>
 
                 <CustomPicker
                   label="Sexo"
-                  selectedValue={sex}
-                  onValueChange={setSex}
+                  setValue={sexo}
+                  onValueChange={setSexo}
                   options={[
                     { label: "Selecione...", value: "" },
                     { label: "Masculino", value: "masculino" },
