@@ -5,6 +5,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton";
 import CustomField from "../../components/CustomField";
+import styles from "../../theme/styles";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginPag() {
 
@@ -30,19 +32,21 @@ export default function LoginPag() {
   }
 
   return (
-    <SafeAreaView style={stylesLocal.container}>
+    <SafeAreaView style={styles.loginContainer}>
 
-      <View style={stylesLocal.centerContainer}>
+      <View style={styles.loginCenter}>
         <CustomField title='Email' placeholder="Insira seu email" keyboardType='email-address' value={email} setValue={setEmail} />
         <CustomField title='Senha' placeholder="Insira sua senha" keyboardType="text"
           secureTextEntry value={password} setValue={setPassword} />
       </View>
 
-      <View style={stylesLocal.bottomContainer}>
-
-        <CustomButton title="Login" onPress={logar}/>
+      <View>
+     
+        <CustomButton style={styles.loginBottom} title="Login" onPress={logar}/>
 
         <TouchableOpacity onPress={() => navegacao.push('Registro')}>
+
+
           <Text>Não é cadastrado?</Text>
         </TouchableOpacity>
 
@@ -53,38 +57,7 @@ export default function LoginPag() {
 }
 
 const stylesLocal = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center', // Center vertically
-  },
-  input: {
-    backgroundColor: 'gray',
-    width: '80%', // Adjust the width as needed
-    marginVertical: 10, // Add some vertical margin for spacing
-    padding: 10,
-    borderRadius: 10, // Add padding for better text input appearance
-  },
-  bottomContainer: {
-    justifyContent: 'flex-end', // Align to the bottom
-    alignItems: 'center', // Center horizontally
-    padding: 16, // Add padding for better spacing
-  },
-  containterModal: {
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: 'black', 
-    borderRadius: 10, 
-    opacity: 1
-},
-  modalMessage: {
-    flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
+
+
+
 });

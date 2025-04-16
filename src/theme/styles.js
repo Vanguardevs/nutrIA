@@ -3,7 +3,7 @@ import Theme from './theme.js'
 
 const styles = StyleSheet.create({
 
-  // WELCOME === INDEX.JS
+     // WELCOME === INDEX.JS
   welcomeContainer: {
     flex: 1,
     backgroundColor: Theme.colors.secondary,
@@ -68,6 +68,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 12,
   },
+
+
+   // LOGIN === LOGIN.JS
+
+  loginContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  loginCenter: {
+    flex: 1,
+    justifyContent: 'center', // Center vertically
+  },
+  loginInput: {
+    backgroundColor: 'gray',
+    width: '80%', // Adjust the width as needed
+    marginVertical: 10, // Add some vertical margin for spacing
+    padding: 10,
+    borderRadius: 10, // Add padding for better text input appearance
+  },
+  loginBottom: {
+    justifyContent: 'flex-end', // Align to the bottom
+    alignItems: 'center', // Center horizontally
+    padding: 16, // Add padding for better spacing
+  },
+  loginModal: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'black', 
+    borderRadius: 10, 
+    opacity: 1
+},
+  loginModalMessage: {
+   flex: 1,
+   justifyContent: 'center', 
+   alignItems: 'center',
+   backgroundColor: 'white',
+},
 });
 
 export default styles;
