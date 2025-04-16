@@ -5,6 +5,9 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import {useState} from 'react';
 import CustomField from "../../components/CustomField";
 import CustomButton from "../../components/CustomButton";
+import CustomPicker from "../../components/CustomPicker";
+import { Picker } from '@react-native-picker/picker';
+
 
 export default function CreateUser(){
 
@@ -32,9 +35,6 @@ async function createUser(){
 
     return(
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity onPress={() => navegacao.goBack()} style={{backgroundColor: 'gray', padding: 10, borderRadius: 10, margin: 10, height: 40, width: 40}}>
-                <Text>{"<"}</Text>
-            </TouchableOpacity>
 
             <View style={styles.centerContainer}>
                 <CustomField title="Nome" value={nome} setValue={setNome} keyboardType="text" placeholder="Insira seu nome:"/>
@@ -44,8 +44,20 @@ async function createUser(){
 
                 <View style={{flexDirection: 'row', width: '80%', margin: '2%'}}>
 
-                    <CustomField title="Idade" value={old} setValue={setOld} keyboardType="number" placeholder="Insira sua idade:" style={styles.miniField}/>
-                    <CustomField title="Sexo" value={sex} setValue={setSex} keyboardType="text" placeholder="Insira seu sexo:" style={styles.miniField}/>
+                    <CustomField title="Idade" value={old} setValue={setOld} keyboardType="numeric" placeholder="Insira sua idade:" style={styles.miniField}/>
+
+                <CustomPicker
+                  label="Sexo"
+                  selectedValue={sex}
+                  onValueChange={setSex}
+                  options={[
+                    { label: "Selecione...", value: "" },
+                    { label: "Masculino", value: "masculino" },
+                    { label: "Feminino", value: "feminino" },
+                    { label: "Outro", value: "outro" }
+                  ]}
+                  />
+
                     
                 </View>
 
@@ -54,6 +66,7 @@ async function createUser(){
             <View style={styles.bottomContainer}>
                 <CustomButton title="Criar usuário" onPress={createUser}/>
             </View>
+
         </SafeAreaView>
     )
 }

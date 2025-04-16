@@ -4,27 +4,19 @@ import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../../components/CustomButton';
-import { CustomModal } from '../modal/Pagamento';
+
 
 
 export default function Header(props) {
 
     const navigation = useNavigation();
-    const [modalOptions, setModalOptions] = useState(false);
-
 
     return (
         <SafeAreaView style={styles.container}>
 
-            <CustomModal style={{display: 'none', }} modalVisible={modalOptions} setModalVisible={setModalOptions}/>
-
             <Text style={styles.title}>{props.options.title || ""}</Text>
 
             <View style={styles.opcoes}>
-
-                {/* <TouchableOpacity onPress={()=> setModalOptions(true)} >
-                    <Image source={require('../../../assets/key.png')} style={styles.image}/>
-                </TouchableOpacity> */}
 
                 <TouchableOpacity onPress={()=> navigation.navigate('Config')}>
                     <Image source={require('../../../assets/setting.png')} style={styles.image}/>
@@ -52,11 +44,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
+        marginLeft: "4%"
     },
     image: {
         width: 37,
         height: 37,
-        marginLeft: '0.67em'
+        marginLeft: '0.67em',
+        marginRight: '1,0em'
     },
     opcoes:{
         display: 'flex',
