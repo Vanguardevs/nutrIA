@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
+    backgroundColor: "#BEBEBE",
     height: 40,
     borderColor: "#ccc",
     borderWidth: 1,

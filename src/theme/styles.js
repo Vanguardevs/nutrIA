@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   welcomeButton: {
     backgroundColor: Theme.colors.primary,
     height: 60,
-    width: "55vh",
+    width: "50vh",
     justifyContent: 'center',
     marginTop: 190,
     borderWidth: 2,
@@ -34,15 +34,15 @@ const styles = StyleSheet.create({
   welcomeButtonText: {
     fontSize: 27,
     textAlign: 'center',
-    color: 'white'
+    color: 'white',
+    fontFamily: 'K2D-Regular',
   },
   welcomeText: {
     fontSize: 35,
     textAlign: 'center',
     color: '#016E3A',
-    fontFamily: 'K2D-BoldItalic',
-    width: 230,
-    marginTop: 20,
+    fontFamily: 'K2D-Regular',
+    width: '100%',
   },
   welcomeTitle: {
     fontSize: 30,
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
   },
   loginCenter: {
     flex: 1,
+    width: '50vg',
     justifyContent: 'center', // Center vertically
   },
   loginInput: {
@@ -88,9 +89,10 @@ const styles = StyleSheet.create({
     borderRadius: 10, // Add padding for better text input appearance
   },
   loginBottom: {
+    flex: 1,
     justifyContent: 'flex-end', // Align to the bottom
     alignItems: 'center', // Center horizontally
-    padding: 16, // Add padding for better spacing
+    marginBottom: '10vh'
   },
   loginModal: {
     flex: 1, 
@@ -105,6 +107,11 @@ const styles = StyleSheet.create({
    justifyContent: 'center', 
    alignItems: 'center',
    backgroundColor: 'white',
+},
+  loginBackground: {
+
+   height: '100%',
+   width: '100%',
 },
 });
 

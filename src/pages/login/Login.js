@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import { useState } from "react";
 import {auth} from "../../database/firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -34,30 +34,49 @@ export default function LoginPag() {
   return (
     <SafeAreaView style={styles.loginContainer}>
 
+      <ImageBackground
+      source={require('../../../assets/Frutas_home.png')}
+      style={styles.loginBackground}>
+
+
       <View style={styles.loginCenter}>
-        <CustomField title='Email' placeholder="Insira seu email" keyboardType='email-address' value={email} setValue={setEmail} />
-        <CustomField title='Senha' placeholder="Insira sua senha" keyboardType="text"
-          secureTextEntry value={password} setValue={setPassword} />
+        <CustomField 
+        title='Email' 
+        placeholder="Insira seu email" 
+        keyboardType='email-address' 
+        value={email} 
+        setValue={setEmail}/>
+        
+
+        <CustomField 
+        title='Senha' 
+        placeholder="Insira sua senha" 
+        keyboardType="text"
+        secureTextEntry value={password} 
+        setValue={setPassword} />
       </View>
 
-      <View>
+      <View style={styles.loginBottom}>
      
-        <CustomButton style={styles.loginBottom} title="Login" onPress={logar}/>
-
-        <TouchableOpacity onPress={() => navegacao.push('Registro')}>
+        <CustomButton title="Login" onPress={logar}/>
 
 
-          <Text>Não é cadastrado?</Text>
+        <TouchableOpacity 
+        onPress={() => navegacao.push('Registro')}
+        style={{margin: 10}}
+        >
+          <Text>Não possui conta? Crie agora</Text>
         </TouchableOpacity>
 
       </View>
-
+      </ImageBackground>
     </SafeAreaView>
+
   )
 }
 
 const stylesLocal = StyleSheet.create({
-
+  
 
 
 });

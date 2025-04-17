@@ -29,23 +29,23 @@ const CustomButton = ({ title, onPress }: CustomButtonProps) => {
   )
 }
 
-const styless = StyleSheet.create({
-  button: {
-    backgroundColor: Theme.colors.primary,
-    borderRadius: Theme.borderRadius,
-    height: 38,
-    width: '90%',
-    justifyContent: 'center',
-    marginTop:3,
-    alignItems: 'center'
-  },
-  welcomeButtonText: {
-    fontFamily: Theme.font.fontFamily,
-    fontSize: Theme.font.fontSize,
-    textAlign: 'center',
-    color: 'white'
-  },
-});
+// const styless = StyleSheet.create({
+//   button: {
+//     backgroundColor: Theme.colors.primary,
+//     borderRadius: Theme.borderRadius,
+//     height: 38,
+//     width: '90%',
+//     justifyContent: 'center',
+//     marginTop:3,
+//     alignItems: 'center'
+//   },
+//   welcomeButtonText: {
+//     fontFamily: Theme.font.fontFamily,
+//     fontSize: Theme.font.fontSize,
+//     textAlign: 'center',
+//     color: 'white',
+//   },
+// });
 
 
 export default CustomButton;
