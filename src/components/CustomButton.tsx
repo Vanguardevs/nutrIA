@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 interface CustomButtonProps {
   title: string;
   onPress: () => void;
+  style: StyleSheet;
 }
 
 const CustomButton = ({ title, onPress }: CustomButtonProps) => {

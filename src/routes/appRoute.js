@@ -10,9 +10,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Settings from '../pages/main/Config.js';
 
 const TabArr = [
-    {"route":'Nutria', "label": Home, "icon_active": 'leaf-outline', "icon": 'leaf'},
-    {"route":'Agendas', "label": Diary, "icon_active": 'calendar-outline', "icon": 'calendar'},
-    {"route":'Progresso', "label": Progress, "icon_active": 'analytics-outline', "icon": 'analytics'},
+    {"route":'Nutria', "label": Home, "icon_active": 'leaf-outline', "icon": 'leaf', 'color_basic': 'gray', "color_hover": "green"},
+    {"route":'Agendas', "label": Diary, "icon_active": 'calendar-outline', "icon": 'calendar', 'color_basic': 'gray', "color_hover": "green"},
+    {"route":'Progresso', "label": Progress, "icon_active": 'analytics-outline', "icon": 'analytics', 'color_basic': 'gray', "color_hover": "green"},
 ];
 
 
@@ -28,10 +28,11 @@ export default function AppTabs() {
                 screenOptions={{
                     tabBarStyle: {
                         position: 'relative',
-                        bottom: '5%',
-                        top: '0.5%',
+                        top: '0.3%',
                         right: '0.5%',
                         left: '0.5%',
+                        height:'8%',
+                        marginBottom: '2%',
                         elevation: 3,
                         backgroundColor: '#f5f5f5',
                         borderRadius: 15,
@@ -57,9 +58,10 @@ export default function AppTabs() {
                                 <Ionicons
                                     name={focused ? item.icon_active : item.icon}
                                     size={22}
-                                    color={color}
+                                    color={focused ? item.color_hover : item.color_basic}
                                 />
                             ),
+                            tabBarActiveTintColor: 'green'
                         }}
                     />
                 ))}

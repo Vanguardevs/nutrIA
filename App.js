@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppTabs from './src/routes/appRoute.js';
 import RoutePag from './src/routes/authRoute.js';
 import { auth } from './src/database/firebase.js';
+import LoginPag from './src/pages/login/Login.js';
 
 // IMPORTS para fontes
 import { useFonts, K2D_400Regular } from '@expo-google-fonts/k2d';
@@ -29,11 +30,12 @@ export default function App() {
   // Esperando fonte ou autenticação
   if (initializing || !fontsLoaded) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
-        <StatusBar hidden={false} />
-        <Text>Carregando...</Text>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <NavigationContainer>
+        
+        <StatusBar hidden={false}/>
+        <RoutePag/>
+
+      </NavigationContainer>
     );
   }
 

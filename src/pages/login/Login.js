@@ -10,9 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginPag() {
 
-  const AlertaError = ()=> Alert.alert('Error', "Erro ao fazer o login. Tente novamente",[{text: "OK", onPress:()=>console.log("")}],{});
-
-
+  const AlertaError = () => Alert.alert('Error');
 
   const navegacao = useNavigation();
   
@@ -58,7 +56,7 @@ export default function LoginPag() {
 
       <View style={styles.loginBottom}>
      
-        <CustomButton title="Login" onPress={logar}/>
+        <CustomButton title="Login" onPress={logar} style={{width: '100%'}}/>
 
 
         <TouchableOpacity 
