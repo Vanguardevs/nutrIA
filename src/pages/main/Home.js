@@ -75,7 +75,7 @@ export default function Home() {
 
             <View style={styles.homeText}>
 
-                <TextInput placeholder="Mande sua pergunta" value={InputMessage} onChangeText={setInputMessage}/>
+                <TextInput placeholder="Mande sua pergunta" value={InputMessage} onChangeText={setInputMessage} mode='outlined'/>
 
             </View>
                 <TouchableOpacity  style={{backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius:29, marginLeft: 12, marginRight:9, paddingLeft: 12}}  onPress={async() => await enviarMensagem()}>

@@ -17,7 +17,6 @@ export default function Settings(){
                     routes: [{ name: 'Login' }],
                 })
             );
-            navigation.replace("Login")
         }).catch((error) => {
             console.log(error);
         });

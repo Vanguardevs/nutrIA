@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StatusBar, View, ActivityIndicator, Text } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppTabs from './src/routes/appRoute.js';
 import RoutePag from './src/routes/authRoute.js';
 import { auth } from './src/database/firebase.js';

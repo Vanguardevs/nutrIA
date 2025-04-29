@@ -76,18 +76,18 @@ export default function AppTabs() {
                 component={TabNavigator}
                 options={{ headerShown: false }}
             />
-            <Stack.Screen name="Config" component={Settings} options={{headerTitle: 'Configurações', headerTitleStyle:{fontWeight: 'bold', fontSize: 23.5}}}/>
+            <Stack.Screen name="Config" component={Settings} options={{headerTitle: 'Configurações', headerTitleStyle:{fontWeight: 'bold', fontSize: 24}}}/>
 
             <Stack.Screen name="Create-Diary" 
             component={CreateDiary} 
             options={
-                {headerTitle: 'Criar agenda', headerTitleStyle:{fontWeight: 'bold',fontSize: 23.5}}
+                {headerTitle: 'Criar agenda', headerTitleStyle:{fontWeight: 'bold',fontSize: 24}}
             }/>
 
             <Stack.Screen 
             name="Edit-Diary" 
             component={EditDiary} 
-            options={{headerTitle: 'Editar Agenda', headerTitleStyle:{fontWeight: 'bold', fontSize: 23.5}}}/>
+            options={{headerTitle: 'Editar Agenda', headerTitleStyle:{fontWeight: 'bold', fontSize: 24}}}/>
 
         </Stack.Navigator>
     );
