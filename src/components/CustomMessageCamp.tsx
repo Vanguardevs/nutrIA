@@ -4,7 +4,7 @@ import { View, TouchableOpacity, StyleSheet, TextInput } from "react-native";
 interface PropsCutomMessageCamp {
     message: string;
     setMessage: (text: string) => void;
-    onSend?: () => void; // Prop opcional para o botão de enviar
+    onSend?: () => void;
 }
 
 const CustomMessageCamp = ({ message, setMessage, onSend }: PropsCutomMessageCamp) => {
@@ -52,12 +52,14 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         color: '#333',
+        textAlign: 'center',
+        
     },
     sendButton: {
         backgroundColor: '#2E8331',
         borderRadius: 20,
-        width: 40,
-        height: 40,
+        width: 50,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 10,

@@ -72,10 +72,7 @@ export default function Home() {
 
                 </View>
 
-
-            <View style={{flexDirection: "row", width: '100%', justifyContent: "space-between", alignItems: "center"}}>
-                <CustomMessageCamp placeholder="Mande sua pergunta" message={InputMessage} setMessage={setInputMessage}/>
-            </View>
+                <CustomMessageCamp placeholder="Mande sua pergunta" message={InputMessage} setMessage={setInputMessage} onSend={async() => await enviarMensagem()}/>
 
             </ImageBackground>
         </SafeAreaView>
