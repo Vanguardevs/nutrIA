@@ -1,0 +1,67 @@
+import { Ionicons } from "@expo/vector-icons";
+import { View, TouchableOpacity, StyleSheet, TextInput } from "react-native";
+
+interface PropsCutomMessageCamp {
+    message: string;
+    setMessage: (text: string) => void;
+    onSend?: () => void; // Prop opcional para o botão de enviar
+}
+
+const CustomMessageCamp = ({ message, setMessage, onSend }: PropsCutomMessageCamp) => {
+    return (
+        <View style={styles.container}>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    value={message}
+                    onChangeText={text => setMessage(text)}
+                    placeholder="Digite sua mensagem..."
+                    multiline={true}
+                    style={styles.textInput}
+                />
+                <TouchableOpacity style={styles.sendButton} onPress={onSend}>
+                    <Ionicons name="send" size={24} color="white" />
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        backgroundColor: '#f5f5f5',
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 25,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    textInput: {
+        flex: 1,
+        fontSize: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        color: '#333',
+    },
+    sendButton: {
+        backgroundColor: '#2E8331',
+        borderRadius: 20,
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 10,
+    },
+});
+
+export default CustomMessageCamp;

@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
     persistence: browserLocalPersistence,
   });
 
-//Modo Mobile
+// Modo Mobile
 // const auth = initializeAuth(app, {
 //   persistence: getReactNativePersistence(AsyncStorage),
 // });

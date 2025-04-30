@@ -5,6 +5,7 @@ import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {TextInput} from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import CustomMessageCamp from "../../components/CustomMessageCamp";
 // import { GiftedChat } from "react-native-gifted-chat";
 
 
@@ -71,18 +72,10 @@ export default function Home() {
 
                 </View>
 
-        <View style={styles.homeFooter}>   
 
-            <View style={styles.homeText}>
-
-                <TextInput placeholder="Mande sua pergunta" value={InputMessage} onChangeText={setInputMessage} mode='outlined'/>
-
+            <View style={{flexDirection: "row", width: '100%', justifyContent: "space-between", alignItems: "center"}}>
+                <CustomMessageCamp placeholder="Mande sua pergunta" message={InputMessage} setMessage={setInputMessage}/>
             </View>
-                <TouchableOpacity  style={{backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius:29, marginLeft: 12, marginRight:9, paddingLeft: 12}}  onPress={async() => await enviarMensagem()}>
-                        <Ionicons name="send" size={29} color="black" style={styles.homeImage}/>
-                </TouchableOpacity>
-        </View>
-
 
             </ImageBackground>
         </SafeAreaView>
@@ -104,6 +97,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: '100%',
         width: '100%',
+        overflow: 'hidden',
     },
     homeImage: {
         height: 30,
@@ -113,9 +107,6 @@ const styles = StyleSheet.create({
     homeFooter: {
         flexDirection: "row",
         width: '100%',
-    },
-    homeHeader: {
-        flex: 1,
     },
     homeText: {
         flex: 1,

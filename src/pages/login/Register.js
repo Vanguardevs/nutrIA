@@ -53,6 +53,7 @@ export default function CreateUser() {
               { label: "Feminino", value: "feminino" },
               { label: "Outro", value: "outro" }
             ]}
+            style={{ width: '75%', overflow: 'hidden' }}
           />
         </View>
       </View>
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 20,
+    overflow: 'hidden',
   },
   centerContainer: {
     flex: 1,
@@ -87,11 +89,12 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   miniField: {
-    height: 40,
+    height: 45,
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
-    width: '45%',
+    width: '75%',
+    overflow: 'hidden',
   },
 });

@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
   loginCenter: {
     flex: 1,
     width: '50vg',
-    justifyContent: 'center', // Center vertically
+    justifyContent: 'center',
+    marginTop: '50%',
   },
   loginInput: {
     backgroundColor: 'gray',
@@ -112,10 +113,9 @@ const styles = StyleSheet.create({
    backgroundColor: 'white',
 },
   loginBackground: {
-
    height: '100%',
    width: '100%',
-},
+   },
 });
 
 export default styles;

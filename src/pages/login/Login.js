@@ -21,8 +21,7 @@ export default function LoginPag() {
       await signInWithEmailAndPassword(auth, email, password).then(()=>{
 
         console.log("Sucesso ao fazer o login!");
-        navegacao.replace("appTab");
-
+        
       }).catch((error) => {  
         console.log(error);
         AlertaError();
@@ -37,36 +36,37 @@ export default function LoginPag() {
       style={styles.loginBackground}>
 
 
-      <View style={styles.loginCenter}>
-        <CustomField 
-        title='Email' 
-        placeholder="Insira seu email" 
-        keyboardType='email-address' 
-        value={email} 
-        setValue={setEmail}/>
+        <View style={styles.loginCenter}>
+          <CustomField 
+          title='Email' 
+          placeholder="Insira seu email" 
+          keyboardType='email-address' 
+          value={email} 
+          setValue={setEmail}/>
+          
+
+          <CustomField 
+          title='Senha' 
+          placeholder="Insira sua senha" 
+          keyboardType="text"
+          secureTextEntry value={password} 
+          setValue={setPassword} />
+        </View>
+
+        <View style={styles.loginBottom}>
+      
+          <CustomButton title="Login" onPress={logar} style={{width: '100%'}} modeButton={true}/>
+
+
+          <TouchableOpacity 
+          onPress={() => navegacao.push('Registro')}
+          style={{margin: 10}}
+          >
+            <Text>Não possui conta? Crie agora</Text>
+          </TouchableOpacity>
+
+        </View>
         
-
-        <CustomField 
-        title='Senha' 
-        placeholder="Insira sua senha" 
-        keyboardType="text"
-        secureTextEntry value={password} 
-        setValue={setPassword} />
-      </View>
-
-      <View style={styles.loginBottom}>
-     
-        <CustomButton title="Login" onPress={logar} style={{width: '100%'}} modeButton={true}/>
-
-
-        <TouchableOpacity 
-        onPress={() => navegacao.push('Registro')}
-        style={{margin: 10}}
-        >
-          <Text>Não possui conta? Crie agora</Text>
-        </TouchableOpacity>
-
-      </View>
       </ImageBackground>
     </SafeAreaView>
 

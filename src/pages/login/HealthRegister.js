@@ -44,6 +44,7 @@ export default function HealthRegister() {
                         { label: "Emagrecer" },
                         { label: "Musculo" }
                     ]}
+                    style={{ }}
                 />
 
                 <TouchableOpacity onPress={() => navigation.navigate("Restricoes")} style={styles.link}>
