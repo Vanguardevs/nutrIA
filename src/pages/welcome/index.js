@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { ImageBackground, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Image } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import styles from "../../theme/styles";
-import { LinearGradient } from 'expo-linear-gradient';
+import CustomButton from "../../components/CustomButton";
 
 
 
@@ -28,20 +28,7 @@ export default function Welcome() {
                     <Image source={require('../../../assets/logoWelcome.png')} style={styles.welcomeImage} />
                 </View>
 
-            <TouchableOpacity 
-            onPress={() => navigation.replace("Login")}
-            style={styles.welcomeButton}>
-            
-            <LinearGradient
-            colors={['#2E8331', '#2F9933']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                
-                <Text style={styles.welcomeButtonText}>Começar</Text>
-            </LinearGradient>
-
-            </TouchableOpacity>
+                <CustomButton title="Começar" onPress={() => navigation.navigate("Login")} modeButton={true}/>
 
             </ImageBackground>
         </SafeAreaView>
