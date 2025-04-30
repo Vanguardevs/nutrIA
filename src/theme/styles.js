@@ -21,15 +21,15 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   welcomeButton: {
-    backgroundColor: Theme.colors.primary,
     height: 60,
-    width: "50vh",
+    width: 160,
+    alignSelf: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
     marginTop: 190,
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 12,
-    
   },
   welcomeButtonText: {
     fontSize: 27,
@@ -38,11 +38,14 @@ const styles = StyleSheet.create({
     fontFamily: 'K2D-Regular',
   },
   welcomeText: {
-    fontSize: 35,
+    fontSize: 30,
     textAlign: 'center',
     color: '#016E3A',
     fontFamily: 'K2D-Regular',
-    width: '100%',
+    width: '90%', 
+    flexWrap: 'wrap',
+    marginHorizontal: '5%',
+    lineHeight: 35, 
   },
   welcomeTitle: {
     fontSize: 30,

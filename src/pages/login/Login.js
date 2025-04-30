@@ -56,7 +56,7 @@ export default function LoginPag() {
 
       <View style={styles.loginBottom}>
      
-        <CustomButton title="Login" onPress={logar} style={{width: '100%'}}/>
+        <CustomButton title="Login" onPress={logar} style={{width: '100%'}} modeButton={true}/>
 
 
         <TouchableOpacity 

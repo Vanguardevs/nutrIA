@@ -29,7 +29,7 @@ export default function Settings(){
             <CustomCardO title="Dados Pessoais" onPress={()=>console.log(null)} nameImg="happy-outline"/>
             <CustomCardO title="Conta" onPress={()=>console.log(null)} nameImg="person-circle-outline"/>
             <CustomCardO title="Seguraça" onPress={()=>console.log(null)} nameImg="lock-closed"/>
-            <CustomButton title="Sair" onPress={loggout}/>
+            <CustomButton title="Sair" onPress={loggout} modeButton={false}/>
         </View>
     )
 }
