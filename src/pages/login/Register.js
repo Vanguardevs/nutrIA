@@ -45,8 +45,8 @@ export default function CreateUser() {
 
           <CustomPicker
             label="Sexo"
-            setValue={sexo}
-            onValueChange={setSexo}
+            selectedValue={sexo}
+            onValueChange={(value)=> setSexo(value)}
             options={[
               { label: "Selecione...", value: "" },
               { label: "Masculino", value: "masculino" },

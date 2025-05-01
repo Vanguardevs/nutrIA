@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import Theme from "../theme/theme";
+import RNPickerSelect from 'react-native-picker-select';
 
 interface CustomPickerProps {
   label: string;
@@ -14,52 +13,45 @@ const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPi
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={selectedValue}
-          onValueChange={onValueChange}
-          style={styles.picker}
-        >
-          {options.map((opt, index) => (
-            <Picker.Item key={index} label={opt.label} value={opt.value} />
-          ))}
-        </Picker>
-      </View>
+      <RNPickerSelect
+        onValueChange={onValueChange}
+        items={options}
+        value={selectedValue}
+        style={{
+          inputAndroid: styles.picker,
+          inputIOS: styles.picker,
+          placeholder: styles.placeholder,
+        }}
+        placeholder={{ label: "Selecione uma opção...", value: null }}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: '45%',
-    marginLeft: '5%',
+    width: '100%',
     marginBottom: 15,
   },
-  label: {               // TEXTO EM CIMA DO INPUT
-    fontSize: 19,
+  label: {
+    fontSize: 16,
     marginBottom: 5,
-    textAlign: 'center',
-    fontWeight: "bold",
-  },
-  pickerWrapper: {      // INPUT
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    overflow: 'hidden',
+    fontWeight: 'bold',
+    color: '#333',
   },
   picker: {
-    height: 35,
-    width: '100%',
+    height: 40,
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    color: '#333',
+  },
+  placeholder: {
+    color: '#999',
   },
 });
-
-// height: 35,
-// borderColor: "#ccc",
-// borderWidth: 1,
-// borderRadius: 5,
-// paddingHorizontal: 10,
-// marginBottom:15,
-// width: '65%',
-// marginLeft: '5%'
 
 export default CustomPicker;
