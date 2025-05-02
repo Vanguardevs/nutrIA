@@ -17,13 +17,13 @@ const app = initializeApp(firebaseConfig);
 
 
 //Modo Site
-//  const auth = initializeAuth(app, {
-//     persistence: browserLocalPersistence,
-//   });
+ const auth = initializeAuth(app, {
+    persistence: browserLocalPersistence,
+  });
 
 // Modo Mobile
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+// const auth = initializeAuth(app, {
+//   persistence: getReactNativePersistence(AsyncStorage),
+// });
 
 export { app, auth };

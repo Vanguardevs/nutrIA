@@ -16,7 +16,6 @@ export default function CreateUser() {
 
   async function nextPage() {
     try{
-
       if(nome.length === 0 || password.length === 0 || email.length === 0 || idade.length === 0 || sexo.length === 0){
         Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios")
         return;

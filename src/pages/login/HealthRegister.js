@@ -72,7 +72,7 @@ export default function HealthRegister() {
                     selectedValue={objetivo}
                     onValueChange={(value)=> setObjetivo(value)}
                     options={[
-                    { label: "Emagrecer", value: "Emagrecer" },
+                    { label: "Emagrecimento", value: "Emagrecimento" },
                     { label: "Saúde", value: "Saúde" },
                     { label: "Musculo", value: "Musculo" }
                     ]}

@@ -1,4 +1,6 @@
 import { View, Image, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import {ref, onValue, getDatabase} from "firebase/database";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import CustomButton from "../../../components/CustomButton";
 import CustomCardO from "../../../components/CustomButtonConfig";
@@ -6,6 +8,8 @@ import { auth } from "../../../database/firebase";
 import { signOut } from "firebase/auth";
 
 export default function Settings(){
+
+
 
     const navigation = useNavigation();
 
@@ -26,9 +30,9 @@ export default function Settings(){
     return(
         <View style={styles.container}>
             <Image source={require("../../../../assets/logoWelcome.png")} style={styles.imageStyle}/>
-            <CustomCardO title="Dados Pessoais" onPress={()=>console.log(null)} nameImg="happy-outline"/>
-            <CustomCardO title="Conta" onPress={()=>console.log(null)} nameImg="person-circle-outline"/>
-            <CustomCardO title="Seguraça" onPress={()=>console.log(null)} nameImg="lock-closed"/>
+            <CustomCardO title="Dados Pessoais" onPress={()=> navigation.navigate("DataUser")} nameImg="happy-outline"/>
+            <CustomCardO title="Conta" onPress={()=> navigation.navigate("AccountUser")} nameImg="person-circle-outline"/>
+            <CustomCardO title="Seguraça" onPress={()=> navigation.navigate("SecurityAccount")} nameImg="lock-closed"/>
             <CustomButton title="Sair" onPress={loggout} modeButton={false}/>
         </View>
     )
