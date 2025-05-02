@@ -13,7 +13,9 @@ export default function RoutePag() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Bem_Vindo" component={Wellcome} options={{ headerShown: false }} />
+
       <Stack.Screen name="appTab" component={AppTabs} options={{headerShown: false}}/>
+      
       <Stack.Screen
         name="Login"
         component={LoginPag}

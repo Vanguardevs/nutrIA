@@ -20,11 +20,31 @@ export default function LoginPag() {
   const [password, setPassword] = useState('');
 
   async function logar() {
+
+      if(email.length === 0 || password.length === 0){
+        Alert.alert("Erro", "Alguns dos campos de login estão vazios")
+        console.log("Alguns dos campos de login estão vazios")
+        return;
+      }
+
       await signInWithEmailAndPassword(auth, email, password).then(()=>{
 
-        console.log("Sucesso ao fazer o login!");
+      console.log("Sucesso ao fazer o login!");
+      })
+      .catch((error) => {
         
-      }).catch((error) => {  
+        if(error.code == 'auth/invalid-credential'){
+          console.log("Senha inválida")
+          Alert.alert("Inválida", "Senha Inválida!")
+          return;
+        } 
+
+        if(error.code == 'auth/invalid-email'){
+          console.log("Esse tipo de text não é email. Isso é inválido")
+          Alert.alert("Inválido", "Esse email não é válido")
+          return;
+        }
+
         Alert.alert("Erro ao fazer login", "Verifique seu email e senha e tente novamente")
         console.log("Erro ao fazer login:", error);
       })

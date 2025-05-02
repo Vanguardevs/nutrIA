@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
     title:{
         fontSize: 20,
         fontFamily: 'K2D-BoldItalic',
-        textAlign: 'center'
+        textAlign: 'center',
+        overflow: 'visible'
     },
     imageCard:{
         margin: 7

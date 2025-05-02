@@ -14,13 +14,9 @@ export default function Settings(){
     const navigation = useNavigation();
 
     function loggout(){
-        signOut(auth).then(() => {
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: 'Login' }],
-                })
-            );
+        signOut(auth)
+        .then(() => {
+            
         }).catch((error) => {
             console.log(error);
         });
