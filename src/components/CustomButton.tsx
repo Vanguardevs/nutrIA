@@ -25,7 +25,7 @@ const CustomButton = ({ title, onPress, modeButton }: CustomButtonProps) => {
         styless.button,
         mode
           ? styless.activeButton
-          : styless.inactiveButton
+          : styless.inactiveButton,
       ]}
     >
       <LinearGradient

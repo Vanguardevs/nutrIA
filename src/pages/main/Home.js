@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground} from "react-native";
+import { useColorScheme, Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground} from "react-native";
 import {useState} from 'react';
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -10,6 +10,10 @@ import CustomMessageCamp from "../../components/CustomMessageCamp";
 
 
 export default function Home() {
+
+        const colorSheme = useColorScheme();
+    
+        const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2";
     
     const navigation = useNavigation();
     
@@ -63,7 +67,7 @@ export default function Home() {
 
     //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
     return(
-        <SafeAreaView style={styles.homeContainer}>
+        <SafeAreaView style={[styles.homeContainer,{backgroundColor: background}]}>
             <ImageBackground
                 source={require('../../../assets/Frutas_home.png')}
                 style={styles.homeBackground}>

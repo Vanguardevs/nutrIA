@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert, ImageBackground } from "react-native";
+import { useColorScheme ,View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import { useState } from "react";
 import {auth} from "../../database/firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -10,7 +10,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginPag() {
 
-  const AlertaError = () => Alert.alert('Error');
+    const colorSheme = useColorScheme();
+  
+    const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2";
 
   const navegacao = useNavigation();
   
@@ -23,13 +25,13 @@ export default function LoginPag() {
         console.log("Sucesso ao fazer o login!");
         
       }).catch((error) => {  
-        console.log(error);
-        AlertaError();
+        Alert.alert("Erro ao fazer login", "Verifique seu email e senha e tente novamente")
+        console.log("Erro ao fazer login:", error);
       })
   }
 
   return (
-    <SafeAreaView style={styles.loginContainer}>
+    <SafeAreaView style={[styles.loginContainer,{backgroundColor: background}]}>
 
       <ImageBackground
       source={require('../../../assets/Frutas_home.png')}

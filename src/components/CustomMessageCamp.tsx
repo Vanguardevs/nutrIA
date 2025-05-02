@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { View, TouchableOpacity, StyleSheet, TextInput } from "react-native";
+import {useColorScheme, View, TouchableOpacity, StyleSheet, TextInput } from "react-native";
 
 interface PropsCutomMessageCamp {
     message: string;
@@ -8,8 +8,13 @@ interface PropsCutomMessageCamp {
 }
 
 const CustomMessageCamp = ({ message, setMessage, onSend }: PropsCutomMessageCamp) => {
+    
+    const colorSheme = useColorScheme();
+
+    const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2";
+    
     return (
-        <View style={styles.container}>
+        <View style={[styles.container,{ backgroundColor: background }]}>
             <View style={styles.inputContainer}>
                 <TextInput
                     value={message}

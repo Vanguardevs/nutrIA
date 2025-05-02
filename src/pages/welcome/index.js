@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { ImageBackground, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Image } from "react-native";
+import { useColorScheme, ImageBackground, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Image } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import styles from "../../theme/styles";
 import CustomButton from "../../components/CustomButton";
@@ -7,6 +7,10 @@ import CustomButton from "../../components/CustomButton";
 
 
 export default function Welcome() {
+
+    const colorSheme = useColorScheme();
+
+    const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2";
     
     const navigation = useNavigation();
 
@@ -16,7 +20,7 @@ export default function Welcome() {
 
             <ImageBackground
                 source={require('../../../assets/fundoWelcome.png')}
-                style={styles.welcomeBackground}
+                style={[styles.welcomeBackground, {backgroundColor: background}]}
             >
 
 
