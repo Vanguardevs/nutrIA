@@ -57,6 +57,7 @@ export default function Diary() {
           key={agenda.id}
           horario={agenda.hora}
           alimentacao={agenda.refeicao}
+          onPressEdit={()=>{navigate.navigate("Edit-Diary", {id: agenda.id, refeicao: agenda.refeicao, hora: agenda.hora})}}
           />
         ))}
 
