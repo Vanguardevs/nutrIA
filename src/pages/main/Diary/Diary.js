@@ -1,18 +1,65 @@
 import React,{useState, useEffect} from 'react';
-import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
 import CardCustomCalendar from '../../../components/CustomCardCalendar';
 import { useNavigation } from '@react-navigation/native';
+import {ref, onValue, getDatabase} from "firebase/database"
+import {auth} from "../../../database/firebase"
 
 export default function Diary() {
-  const navigate = useNavigation()
+
+  const navigate = useNavigation();
+  const [agendas, setAgendas] = useState([])
   const [concluido, setConcluido] = useState(false);
+  
+  async function verificarTodasAgendas(){
+    try{
+      const userID = auth.currentUser?.uid;
+      if(!userID){
+        console.log("Usuário não encontrado")
+        Alert.alert("Erro", "Não foi possível encontrar o usuário no banco. Tente Novamente!");
+      }
+
+      const db = getDatabase();
+      const agenaRef = ref(db, `users/${userID}/diaries`) 
+      
+      await onValue(agenaRef, (res)=>{
+        const data = res.val();
+        if(data){
+          const listaAgendas = Object.entries(data).map(([key,value])=>({
+            id: key,
+            ...value,
+          }));
+          setAgendas(listaAgendas);
+        }
+        else{
+          setAgendas([])
+        }
+      })
+
+    }catch(e){
+      console.log(e)
+      
+    }
+
+  }
+
+  useEffect(()=>{
+    verificarTodasAgendas()
+  },[])
 
   return (
     <SafeAreaView style={styles.container}>
       
       <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.homeBackground}>
 
-        <CardCustomCalendar horario='09:00' alimentacao='Café da manhã' onPressEdit={()=>{navigate.navigate("Edit-Diary")}}/>
+        {agendas.map((agenda)=>(
+          <CardCustomCalendar
+          key={agenda.id}
+          horario={agenda.hora}
+          alimentacao={agenda.refeicao}
+          />
+        ))}
+
 
         <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
           <Text style={{fontSize: 43, textAlign: 'center', paddingBottom: 11.5,}}>{"+"}</Text>

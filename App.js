@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { StatusBar, View, ActivityIndicator, Text } from 'react-native';
+import { StatusBar, View, ActivityIndicator, Text, Alert, Platform } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppTabs from './src/routes/appRoute.js';
 import RoutePag from './src/routes/authRoute.js';
 import { auth } from './src/database/firebase.js';
-import LoginPag from './src/pages/login/Login.js';
+import * as Notifications from 'expo-notifications';
 
 // IMPORTS para fontes
 import { useFonts, K2D_400Regular } from '@expo-google-fonts/k2d';
@@ -18,15 +18,36 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     'K2D-Regular': K2D_400Regular,
   });
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+  
+  function manterLoggado(){
+  const unsubscribe = auth.onAuthStateChanged((user) => {
       setUserState(user);
       if (initializing) setInitializing(false);
     });
 
     return unsubscribe;
+  }
+
+  async function verificarNotificação(){
+
+    const {status} = await Notifications.getPermissionsAsync()
+    if (status !== 'granted'){
+      Alert.alert("Permissão de notificação", "Para receber notificações, ative as permissões de notificação nas configurações do aplicativo.")
+      return;
+    }
+    if(Platform.OS === 'android'){
+      Notifications.setNotificationChannelAsync('default',{
+        name: 'nutria',
+        importance: Notifications.AndroidImportance.LOW,
+      });
+  }
+}
+
+  useEffect(() => {
+    manterLoggado()
+    verificarNotificação()
   }, []);
+
 
   // Esperando fonte ou autenticação
   if (initializing || !fontsLoaded) {

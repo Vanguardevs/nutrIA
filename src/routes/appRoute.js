@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from "../pages/cabecalho/header.js";
 import Home from '../pages/main/Home.js';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Settings from '../pages/main/Config.js';
+import Settings from '../pages/main/Config/Config.js';
 
 const TabArr = [
     {"route":'Nutria', "label": Home, "icon_active": 'leaf-outline', "icon": 'leaf', 'color_basic': 'gray', "color_hover": "green"},

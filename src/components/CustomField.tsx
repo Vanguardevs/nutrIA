@@ -32,15 +32,21 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    backgroundColor: "#BEBEBE",
+    backgroundColor: "#fff",
     height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 15,
     width: '85%',
-    marginLeft: '1%'
+    marginLeft: '1%',
+    borderColor: "#2E8331",
+    borderWidth: 2,
+    color:"#333",
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
 });

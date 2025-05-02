@@ -4,6 +4,9 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import CustomPicker from "../../components/CustomPicker";
 import CustomButton from "../../components/CustomButton";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, app } from "../../database/firebase";
+import {getDatabase, ref, set} from "firebase/database";
 
 export default function HealthRegister() {
 
@@ -11,18 +14,47 @@ export default function HealthRegister() {
     const {nome, email, password, idade, sexo} = route.params;
     const navigation = useNavigation();
 
-    const [Altura, setAltura] = useState(0);
-    const [Peso, setPeso] = useState(0);
+    const [altura, setAltura] = useState(0);
+    const [peso, setPeso] = useState(0);
     const [objetivo, setObjetivo] = useState('');
 
         function cadastro(){
             try {
-                if(Altura.length === 0 || objetivo.length === 0) {
+                if(altura == 0 || peso == 0){
                     Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios");
+                    console.log("Alguns dos campos de cadastro estão vazios")
                     return;
                 }
+                
+                createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
                     console.log("Usuário cadastrado com sucesso!");
-                    navigation.navigate('Login');
+
+                    const db = getDatabase(app);
+                    const userRef = ref(db, `users/${userCredential.user.uid}`);
+
+                    const userData = {
+                        nome,
+                        email,
+                        idade,
+                        sexo,
+                        altura,
+                        peso,
+                        objetivo
+                    }
+
+                    set(userRef, userData)
+                    .then(() => {
+                        console.log("Dados do usuário salvos com sucesso!");
+                    })
+
+                }).catch((error)=>{
+                    Alert.alert("Erro ao salvar dados do usuário", "Tente novamente mais tarde")
+                    console.log("Erro ao salvar dados do usuário:", error)
+
+                })
+
+
             } catch (error) { 
                 console.log(error)
             }
@@ -32,19 +64,19 @@ export default function HealthRegister() {
         <SafeAreaView style={styles.container}>
 
             <View style={styles.formContainer}>
-                <CustomField title="Altura" placeholder="Insira sua altura" value={Altura} setValue={setAltura} keyboardType='numeric'/>
-                <CustomField title="Peso" placeholder="Insira seu peso" value={Peso} onValueChange={setPeso} keyboardType='numeric'/>
+                <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={(d)=>setAltura(d)} keyboardType='numeric'/>
+                <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={(d)=>setPeso(d)} keyboardType='numeric'/>
 
                 <CustomPicker
-                    label="Objetivo"
-                    setValue={objetivo}
-                    onValueChange={setObjetivo}
+                    label="Meta"
+                    selectedValue={objetivo}
+                    onValueChange={(value)=> setObjetivo(value)}
                     options={[
-                        { label: "Saúde" },
-                        { label: "Emagrecer" },
-                        { label: "Musculo" }
+                    { label: "Emagrecer", value: "Emagrecer" },
+                    { label: "Saúde", value: "Saúde" },
+                    { label: "Musculo", value: "Musculo" }
                     ]}
-                    style={{ }}
+                    style={{ width: '75%', overflow: 'hidden' }}
                 />
 
                 <TouchableOpacity onPress={() => navigation.navigate("Restricoes")} style={styles.link}>
@@ -62,6 +94,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f5f5f5',
         paddingHorizontal: 20,
+
     },
     header: {
         marginTop: 20,
@@ -87,4 +120,10 @@ const styles = StyleSheet.create({
         color: '#2E8331',
         textDecorationLine: 'underline',
     },
+    picker:{
+        width: '75%', 
+        overflow: 'hidden',
+        alignItems: 'center',
+        marginLeft: 'auto'
+    }
 });

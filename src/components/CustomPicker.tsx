@@ -30,8 +30,9 @@ const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPi
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: '40%',
     marginBottom: 15,
+    marginRight: 'auto'
   },
   label: {
     fontSize: 16,
@@ -40,7 +41,8 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   picker: {
-    height: 40,
+    height: 60,
+    width: '80%',
     backgroundColor: '#fff',
     borderColor: '#ccc',
     borderWidth: 1,
@@ -48,6 +50,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 16,
     color: '#333',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   placeholder: {
     color: '#999',
