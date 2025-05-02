@@ -15,6 +15,18 @@ export default function CreateDiary(){
 
     const navigation = useNavigation();
 
+    function handleHora(input){
+
+        //Confesso q aqui tive que pedir ajuda pra IA, pq não consegui fazer o negócio dos : sozinho
+        const apenasNumero = input.replace(/[^0-9]/g, '');
+
+        let horaFormatada = apenasNumero;
+        if(apenasNumero.length > 2){
+            horaFormatada = `${apenasNumero.slice(0,2)}:${apenasNumero.slice(2,4)}`
+    }
+    setHora(horaFormatada);
+}
+
     async function salvarAgenda(){
         if(refeicao == '' || hora == ''){
             Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios");
@@ -64,7 +76,7 @@ export default function CreateDiary(){
                 <View style={styles.container_items}>
 
                     <CustomField title="Refeição" placeholder='Refeição' value={refeicao} setValue={(d)=>setRefeicao(d)}/>
-                    <CustomField title="Horario" placeholder='Horario' value={hora} setValue={(d)=>setHora(d)}/>
+                    <CustomField title="Horario" placeholder='Horario' value={hora} setValue={handleHora} keyboardType="numeric"/>
 
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>
 

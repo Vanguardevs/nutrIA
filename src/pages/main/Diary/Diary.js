@@ -61,7 +61,7 @@ export default function Diary() {
           />
         ))}
 
-
+        {/*Botão de adicionar agenda*/}
         <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
           <Text style={{fontSize: 43, textAlign: 'center', paddingBottom: 11.5,}}>{"+"}</Text>
         </TouchableOpacity>
@@ -73,12 +73,11 @@ export default function Diary() {
   );
 }
 
-
-const styles = StyleSheet.  create({
+const styles = StyleSheet.create({
   container: {
-  flex: 1,  
-  width: '100%',
-  height: '100%'
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   homeBackground: {
     flex: 1,
@@ -86,20 +85,28 @@ const styles = StyleSheet.  create({
     alignItems: 'center',
     height: '100%',
     width: '100%',
-},
+  },
   button: {
-    backgroundColor: '#068f25',
-    padding: 10,
-    borderRadius: 40,
-    height: '7.5%',
-    width:'13.5%',
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 50, 
+    height: 70,
+    width: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    left: '42.5%',
-    textAlign: 'center',
-    },
+    position: 'absolute', 
+    bottom: 30, 
+    right: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 40, 
+    fontWeight: 'bold', 
+    textAlign: 'center',
   },
-})
+});

@@ -21,7 +21,7 @@
     "expo": "~52.0.46",
     "expo-font": "^13.0.1",
     "expo-linear-gradient": "~14.0.2",
-    "expo-notifications": "^0.31.1",
+    "expo-notifications": "~0.29.14",
     "expo-status-bar": "~2.0.1",
     "firebase": "^11.0.2",
     "picker": "^0.1.4",

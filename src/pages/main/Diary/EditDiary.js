@@ -16,6 +16,20 @@ export default function EditDiary(){
     const [editRefeicao, setEditRefeicao] = useState(refeicao);
     const [editHora, setEditHora] = useState(hora);
 
+    function handleHora(input){
+
+        const apenasNumero = input.replace(/[^0-9]/g, '');
+
+        let horaFormatada = apenasNumero;
+        if(apenasNumero.length > 2){
+            horaFormatada = `${apenasNumero.slice(0,2)}:${apenasNumero.slice(2,4)}`
+    }
+    setEditHora(horaFormatada);
+}
+
+
+
+
     async function excluirAgenda(){
         try{
             const userID = auth.currentUser?.uid;
@@ -72,7 +86,7 @@ export default function EditDiary(){
                 <View style={styles.container_items}>
 
                     <CustomField title="Refeição" placeholder='Refeição' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
-                    <CustomField title="Horario" placeholder='Horario' value={editHora} setValue={(d)=>setEditHora(d)}/>
+                    <CustomField title="Horario" placeholder='Horario' value={editHora} setValue={handleHora} keyboardType="numeric"/>
 
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>
                     <CustomButton title="Excluir" onPress={excluirAgenda} modeButton={false}/>
