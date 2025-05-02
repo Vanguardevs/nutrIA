@@ -1,10 +1,10 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomButton from '../../../components/CustomButton';
 import React, { useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-import { getDatabase, ref, remove } from 'firebase/database';
+import { getDatabase, ref, remove, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 
 export default function EditDiary(){
@@ -25,9 +25,9 @@ export default function EditDiary(){
             }
 
             const db = getDatabase();
-            const agenaRef = ref(db, `users/${userID}/diaries/${id}`) 
+            const agendaRef = ref(db, `users/${userID}/diaries/${id}`) 
             
-            await remove(agenaRef)
+            await remove(agendaRef)
             .then(()=>{
                 console.log("Excluido com sucesso!")
                 navigation.goBack()
@@ -39,7 +39,30 @@ export default function EditDiary(){
     }
 
     async function salvarAgenda(){
+        try{
+            const userID = auth.currentUser?.uid;
+            if(!userID){
+                console.log("Usuário não encontrado")
+                Alert.alert("Erro", "Não foi possível encontrar o usuário no banco. Tente Novamente!");
+            }
 
+            const db = getDatabase();
+            const agendaRef = ref(db, `users/${userID}/diaries/${id}`)
+
+            await update(agendaRef,{
+                refeicao: editRefeicao,
+                hora: editHora
+            })
+            .then(()=>{
+                console.log("Atualizado com sucesso!")
+                Alert.alert("Atualizado com sucesso!")
+                navigation.goBack()
+            })
+        }
+        catch(e){
+            console.log(e)
+            Alert.alert("Erro", "Não foi possível salvar. Tente Novamente!");
+        }
     }
 
     return(
@@ -48,8 +71,8 @@ export default function EditDiary(){
 
                 <View style={styles.container_items}>
 
-                    <CustomField title="Refeição" placeholder='Refeição' value={refeicao} setValue={(d)=>setRefeicao(d)}/>
-                    <CustomField title="Horario" placeholder='Horario' value={hora} setValue={(d)=>setHora(d)}/>
+                    <CustomField title="Refeição" placeholder='Refeição' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
+                    <CustomField title="Horario" placeholder='Horario' value={editHora} setValue={(d)=>setEditHora(d)}/>
 
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>
                     <CustomButton title="Excluir" onPress={excluirAgenda} modeButton={false}/>
