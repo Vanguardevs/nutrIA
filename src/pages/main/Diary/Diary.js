@@ -20,8 +20,12 @@ export default function Diary() {
       }
 
       const db = getDatabase();
+
       const agenaRef = ref(db, `users/${userID}/diaries`) 
-      
+
+      // console.log(typeof userID + ": " + userID)
+
+
       await onValue(agenaRef, (res)=>{
         const data = res.val();
         if(data){

@@ -3,14 +3,13 @@ import { initializeAuth, getReactNativePersistence, browserLocalPersistence } fr
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAu78taqzJ5bTyeZ5YLoA0zBfJFTG-Y7yc",
-  authDomain: "nutria-unofficial.firebaseapp.com",
-  databaseURL: "https://nutria-unofficial-default-rtdb.firebaseio.com",
-  projectId: "nutria-unofficial",
-  storageBucket: "nutria-unofficial.firebasestorage.app",
-  messagingSenderId: "1018138205626",
-  appId: "1:1018138205626:web:0324ba08553142e30ed183",
-  measurementId: "G-568G9NLRXE"
+  apiKey: "AIzaSyD_XRGEfu32U4V1GIawL_CBvivf2CYeNmQ",
+  authDomain: "nutria-eafaa.firebaseapp.com",
+  projectId: "nutria-eafaa",
+  storageBucket: "nutria-eafaa.firebasestorage.app",
+  messagingSenderId: "697528025140",
+  appId: "1:697528025140:web:239547cb5c4db250884a61",
+  measurementId: "G-S784H05KTT"
 };
 
 const app = initializeApp(firebaseConfig);
