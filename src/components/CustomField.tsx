@@ -1,4 +1,4 @@
-import {TouchableOpacity, View, Text, Button, TextInput, StyleSheet, Modal } from "react-native";
+import {TouchableOpacity, View, Text, Button, TextInput, StyleSheet, Modal, useColorScheme } from "react-native";
 import Theme from "../theme/theme";
 
 interface CustomFieldProps extends TextInput { //Extende pra tudo que seja textinput
@@ -6,13 +6,20 @@ interface CustomFieldProps extends TextInput { //Extende pra tudo que seja texti
   placeholder: string;
   value: string;
   setValue: (text: string) => void;
+  darkMode:string;
 }
 
-const CustomField: React.FC<CustomFieldProps> = ({ title, placeholder, value, setValue, ...props }) => {
+const CustomField: React.FC<CustomFieldProps> = ({ title, placeholder, value, setValue,  darkMode, ...props}) => {
+
+  const colorSheme = useColorScheme();
+
+  const background = colorSheme === 'dark'? "#1C1C1E" : "white"
+  const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
   return (
       <>
-        <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-          <Text style={styles.label}>{title}</Text>
+        <View style={styles.container}>
+          <Text style={[styles.label,{color:texts}]}>{title}</Text>
           <TextInput
             style={styles.input}
             placeholder={placeholder}
@@ -26,10 +33,22 @@ const CustomField: React.FC<CustomFieldProps> = ({ title, placeholder, value, se
 }
 
 const styles = StyleSheet.create({
+  container:{
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    flexDirection: 'column'
+  },
   label: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
+  },
+  labelD:{
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color:'white',
+    textDecorationColor:'white'
   },
   input: {
     backgroundColor: "#fff",
@@ -47,8 +66,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
-
+  }
 });
 
 

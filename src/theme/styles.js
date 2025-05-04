@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   },
   welcomeBackground: {
     flex: 1,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
 
   loginContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EEEDE7',
   },
   loginCenter: {
     flex: 1,
@@ -87,15 +88,15 @@ const styles = StyleSheet.create({
   },
   loginInput: {
     backgroundColor: 'gray',
-    width: '80%', // Adjust the width as needed
-    marginVertical: 10, // Add some vertical margin for spacing
+    width: '80%',
+    marginVertical: 10,
     padding: 10,
-    borderRadius: 10, // Add padding for better text input appearance
+    borderRadius: 10,
   },
   loginBottom: {
     flex: 1,
-    justifyContent: 'flex-end', // Align to the bottom
-    alignItems: 'center', // Center horizontally
+    justifyContent: 'flex-end',
+    alignItems: 'center',
     marginBottom: '10vh'
   },
   loginModal: {

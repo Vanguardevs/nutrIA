@@ -1,9 +1,7 @@
 import {useState} from 'react';  
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, Image, TouchableOpacity, Modal } from 'react-native';
-import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { View, Text, StyleSheet, SafeAreaView, StatusBar, Image, TouchableOpacity, Modal, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import CustomButton from '../../components/CustomButton';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 
 
@@ -11,15 +9,20 @@ export default function Header(props) {
 
     const navigation = useNavigation();
 
-    return (
-        <SafeAreaView style={styles.container}>
+    const colorSheme = useColorScheme();
 
-            <Text style={styles.title}>{props.options.title || ""}</Text>
+    const backgoundH = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+    const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
+    return (
+        <SafeAreaView style={[styles.container,{backgroundColor: backgoundH}]}>
+
+            <Text style={[styles.title,{color:backgoundIcons}]}>{props.options.title || ""}</Text>
 
             <View style={styles.opcoes}>
 
                 <TouchableOpacity onPress={()=> navigation.navigate('Config')}>
-                    <Image source={require('../../../assets/setting.png')} style={styles.image}/>
+                    <Ionicons name="options" size={30} color={backgoundIcons} style={styles.image}/>
                 </TouchableOpacity>
 
             </View>
@@ -47,8 +50,6 @@ const styles = StyleSheet.create({
         marginLeft: "4%"
     },
     image: {
-        width: 37,
-        height: 37,
         marginLeft: '0.67em',
         marginRight: '1,0em'
     },

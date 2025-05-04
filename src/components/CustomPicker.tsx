@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 interface CustomPickerProps {
@@ -10,9 +10,15 @@ interface CustomPickerProps {
 }
 
 const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPickerProps) => {
+
+  const colorSheme = useColorScheme();
+
+  const background = colorSheme === 'dark'? "#1C1C1E" : "white"
+  const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label,{color:texts}]}>{label}</Text>
       <RNPickerSelect
         onValueChange={onValueChange}
         items={options}

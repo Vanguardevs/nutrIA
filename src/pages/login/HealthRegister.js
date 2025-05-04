@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, Alert } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, Alert, useColorScheme } from "react-native";
 import CustomField from "../../components/CustomField";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -9,6 +9,11 @@ import { auth, app } from "../../database/firebase";
 import {getDatabase, ref, set} from "firebase/database";
 
 export default function HealthRegister() {
+
+    const colorScheme = useColorScheme();
+
+    const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
+    const texts = colorScheme === 'dark'? "#F2F2F2" : "#1C1C1E";
 
     const route = useRoute();
     const {nome, email, password, idade, sexo} = route.params;
@@ -61,7 +66,7 @@ export default function HealthRegister() {
         }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container,{backgroundColor: background}]}>
 
             <View style={styles.formContainer}>
                 <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={(d)=>setAltura(d)} keyboardType='numeric'/>

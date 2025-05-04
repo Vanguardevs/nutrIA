@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { View, TouchableOpacity, StyleSheet, TextInput } from "react-native";
+import { View, TouchableOpacity, StyleSheet, TextInput, useColorScheme } from "react-native";
 
 interface PropsCutomMessageCamp {
     message: string;
@@ -7,17 +7,22 @@ interface PropsCutomMessageCamp {
     onSend?: () => void;
 }
 
-const CustomMessageCamp = ({ message, setMessage, onSend }: PropsCutomMessageCamp) => {
+const CustomMessageCamp = ({ message, setMessage, onSend}: PropsCutomMessageCamp) => {
     
+    const colorSheme = useColorScheme();
+
+    const background = colorSheme === 'dark'? "#1C1C1E" : "white"
+    const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
     return (
-        <View style={[styles.container,{ backgroundColor: 'transparent' }]}>
-            <View style={styles.inputContainer}>
+        <View style={[styles.container,{ backgroundColor: 'transparent'}]}>
+            <View style={[styles.inputContainer,{backgroundColor: background}]}>
                 <TextInput
                     value={message}
                     onChangeText={text => setMessage(text)}
                     placeholder="Digite sua mensagem..."
                     multiline={true}
-                    style={styles.textInput}
+                    style={[styles.textInput,{color: texts}]}
                 />
                 <TouchableOpacity style={styles.sendButton} onPress={onSend}>
                     <Ionicons name="send" size={24} color="white" />
@@ -53,7 +58,6 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         color: '#333',
-        textAlign: 'center',
         
     },
     sendButton: {

@@ -1,4 +1,4 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet, Alert} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomButton from '../../../components/CustomButton';
 import React, { useState } from 'react';
@@ -8,6 +8,11 @@ import { getDatabase, ref, remove, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 
 export default function EditDiary(){
+
+    const colorSheme = useColorScheme();
+
+    const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+    const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
 
     const route = useRoute();
     const navigation = useNavigation();
@@ -80,7 +85,7 @@ export default function EditDiary(){
     }
 
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {backgroundColor: background}]}>
             <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.imgBackgound}>
 
                 <View style={styles.container_items}>

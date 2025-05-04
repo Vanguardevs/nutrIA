@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Text, ImageBackground, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 
 
 export default function Progress(){
+
+    const colorSheme = useColorScheme();
+    
+    const backgoundH = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+    const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container,{backgroundColor:backgoundH}]}>
             <ImageBackground source={require('../../../assets/Frutas_home.png')} style={styles.homeBackground}>
 
             </ImageBackground>

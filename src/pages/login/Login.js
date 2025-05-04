@@ -13,6 +13,7 @@ export default function LoginPag() {
     const colorSheme = useColorScheme();
   
     const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2";
+    const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E";
 
   const navegacao = useNavigation();
   
@@ -64,7 +65,8 @@ export default function LoginPag() {
           placeholder="Insira seu email" 
           keyboardType='email-address' 
           value={email} 
-          setValue={setEmail}/>
+          setValue={setEmail}
+          />
           
 
           <CustomField 
@@ -72,7 +74,8 @@ export default function LoginPag() {
           placeholder="Insira sua senha" 
           keyboardType="text"
           secureTextEntry value={password} 
-          setValue={setPassword} />
+          setValue={setPassword} 
+          />
         </View>
 
         <View style={styles.loginBottom}>
@@ -84,12 +87,13 @@ export default function LoginPag() {
           onPress={() => navegacao.push('Registro')}
           style={{margin: 10}}
           >
-            <Text>Não possui conta? Crie agora</Text>
+            <Text style={{color: texts}}>Não possui conta? Crie agora</Text>
           </TouchableOpacity>
 
         </View>
         
       </ImageBackground>
+
     </SafeAreaView>
 
   )

@@ -1,11 +1,16 @@
 import React,{useState, useEffect} from 'react';
-import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
+import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme } from 'react-native';
 import CardCustomCalendar from '../../../components/CustomCardCalendar';
 import { useNavigation } from '@react-navigation/native';
 import {ref, onValue, getDatabase} from "firebase/database"
 import {auth} from "../../../database/firebase"
 
 export default function Diary() {
+
+  const colorSheme = useColorScheme();
+
+  const backgoundH = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+  const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
 
   const navigate = useNavigation();
   const [agendas, setAgendas] = useState([])
@@ -52,7 +57,7 @@ export default function Diary() {
   },[])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container,{backgroundColor: backgoundH}]}>
       
       <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.homeBackground}>
 
@@ -65,9 +70,8 @@ export default function Diary() {
           />
         ))}
 
-        {/*Botão de adicionar agenda*/}
         <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
-          <Text style={{fontSize: 43, textAlign: 'center', paddingBottom: 11.5,}}>{"+"}</Text>
+          <Text style={{fontSize: 43, textAlign: 'center', paddingBottom: 11.5,color:'white'}}>{"+"}</Text>
         </TouchableOpacity>
 
       </ImageBackground>
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute', 
-    bottom: 30, 
+    bottom: 110,
     right: 30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

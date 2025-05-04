@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import { useColorScheme, ImageBackground, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Image } from "react-native";
-import * as Animatable from 'react-native-animatable';
 import styles from "../../theme/styles";
 import CustomButton from "../../components/CustomButton";
 
@@ -16,11 +15,11 @@ export default function Welcome() {
 
     return (
 
-        <SafeAreaView style={styles.welcomeContainer}>
+        <SafeAreaView style={[styles.welcomeContainer, {backgroundColor: background}]}>
 
             <ImageBackground
-                source={require('../../../assets/fundoWelcome.png')}
-                style={[styles.welcomeBackground, {backgroundColor: background}]}
+                source={require('../../../assets/Frutas_home.png')}
+                style={styles.welcomeBackground}
             >
 
 
@@ -35,6 +34,7 @@ export default function Welcome() {
                 <CustomButton title="Começar" onPress={() => navigation.navigate("Login")} modeButton={true} />
 
             </ImageBackground>
+
         </SafeAreaView>
 
     );

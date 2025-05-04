@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, useColorScheme} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface CustomCard {
@@ -8,10 +8,16 @@ interface CustomCard {
 }
 
 const CardCustomCalendar = ({horario, alimentacao, onPressEdit}: CustomCard) => {
+
+    const colorSheme = useColorScheme();
+
+    const backgoundH = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+    const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container,{backgroundColor: backgoundH}]}>
             <View style={styles.header}>
-                <Text style={styles.alimentacaoText}>{alimentacao}</Text>
+                <Text style={[styles.alimentacaoText,{color: backgoundIcons}]}>{alimentacao}</Text>
                 <TouchableOpacity onPress={onPressEdit}>
                     <Ionicons name="create-outline" size={28} color="#4CAF50" />
                 </TouchableOpacity>

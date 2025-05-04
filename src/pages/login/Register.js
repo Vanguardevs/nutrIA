@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert } from "react-native";
+import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import CustomField from "../../components/CustomField";
@@ -6,6 +6,11 @@ import CustomButton from "../../components/CustomButton";
 import CustomPicker from "../../components/CustomPicker";
 
 export default function CreateUser() {
+
+  const colorScheme = useColorScheme();
+
+  const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
+  const texts = colorScheme === 'dark'? "#F2F2F2" : "#1C1C1E";
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
@@ -40,7 +45,7 @@ export default function CreateUser() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: background}]}>
 
       <View style={styles.centerContainer}>
         <CustomField title="Nome" value={nome} setValue={setNome} keyboardType="text" placeholder="Insira seu nome:" />

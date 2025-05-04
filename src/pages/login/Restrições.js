@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, useColorScheme } from "react-native";
 import CustomField from "../../components/CustomField";
 import React, {useEffect, useState} from "react";
 import CustomPicker from "../../components/CustomPicker";
@@ -7,13 +7,18 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function Restricoes() {
 
+    const colorScheme = useColorScheme();
+
+    const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
+    const texts = colorScheme === 'dark'? "#F2F2F2" : "#1C1C1E";
+
     const navigate = useNavigation();
     const [Alergias, setAlergias] = useState();
     const [intolerâncias, setIntolerâncias] = useState();
     const [Condicoes, setCondicoes] = useState();
 
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container,{backgroundColor: background}]}>
             
             <View style={{alignItems: 'center'}}>
 

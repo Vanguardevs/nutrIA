@@ -1,5 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {useColorScheme} from "react-native";
+
+//Páginas de navegação do aplicativo já logado
 import Progress from "../pages/main/Progress.js";
 import CreateDiary from '../pages/main/Diary/CreateDiary.js';
 import EditDiary from '../pages/main/Diary/EditDiary.js';
@@ -12,15 +15,36 @@ import DataUser from '../pages/main/Config/DataUser.js';
 import SecurityAccount from '../pages/main/Config/SecurityAccount.js';
 import Settings from '../pages/main/Config/Config.js';
 
+
+
+
 const TabArr = [
     {"route":'Nutria', "label": Home, "icon_active": 'leaf-outline', "icon": 'leaf', 'color_basic': 'gray', "color_hover": "green"},
     {"route":'Agendas', "label": Diary, "icon_active": 'calendar-outline', "icon": 'calendar', 'color_basic': 'gray', "color_hover": "green"},
     {"route":'Progresso', "label": Progress, "icon_active": 'analytics-outline', "icon": 'analytics', 'color_basic': 'gray', "color_hover": "green"},
 ];
 
+const StackItems =[
+    {"route":"Config", "label": Settings, "headerTitle": "Configurações"},
+    {"route":"Create-Diary", "label": CreateDiary, "headerTitle": "Criar Agenda"},
+    {"route":"Edit-Diary", "label": EditDiary, "headerTitle": "Editar Agenda"},
+    {"route":"SecurityAccount", "label": SecurityAccount, "headerTitle": "Seguraça"},
+    {"route":"AccountUser", "label": AccountUser, "headerTitle": "Conta"},
+    {"route":"DataUser", "label": DataUser, "headerTitle": "Dados Pessoais"},
+]
 
 
 export default function AppTabs() {
+
+    const colorScheme = useColorScheme();
+
+    const tabBarBackgroundColor = colorScheme === 'dark'
+        ? '#1C1C1E'
+        : '#F2F2F2';
+
+    const textColor = colorScheme === 'dark'
+        ? '#F2F2F2'
+        : '#1C1C1E';
     
     const Tab = createBottomTabNavigator();
     const Stack = createNativeStackNavigator();
@@ -28,16 +52,19 @@ export default function AppTabs() {
     function TabNavigator() {
         return (
             <Tab.Navigator
+                tabBarPosotion="bottom"
+                initialRouteName="Nutria"
                 screenOptions={{
                     tabBarStyle: {
-                        position: 'relative',
-                        top: '0.3%',
+                        swipeEnabled: false,
+                        display: 'flex',
+                        position: 'absolute',
+                        bottom: '2%',
                         right: '0.5%',
                         left: '0.5%',
                         height:'8%',
-                        marginBottom: '2%',
                         elevation: 3,
-                        backgroundColor: '#f5f5f5',
+                        backgroundColor: tabBarBackgroundColor,
                         borderRadius: 15,
                         shadowColor: '#000',
                         shadowOffset: {
@@ -46,6 +73,7 @@ export default function AppTabs() {
                         },
                         shadowOpacity: 0.25,
                         shadowRadius: 3.5,
+                        borderTopWidth: 0,
                     },
                 }}
             >
@@ -56,12 +84,13 @@ export default function AppTabs() {
                         component={item.label}
                         options={{
                             header: (props) => <Header {...props} />,
+                            keyboardHidesTabBar: item.route === 'Nutria',
                             title: item.route,
                             tabBarIcon: ({ color, focused }) => (
                                 <Ionicons
                                     name={focused ? item.icon_active : item.icon}
                                     size={22}
-                                    color={focused ? item.color_hover : item.color_basic}
+                                    color={focused ? item.color_hover : item.color_basic} 
                                 />
                             ),
                             tabBarActiveTintColor: 'green'
@@ -74,6 +103,7 @@ export default function AppTabs() {
 
     return (
         <Stack.Navigator>
+            
 
             <Stack.Screen
                 name="MainTabs"
@@ -81,41 +111,19 @@ export default function AppTabs() {
                 options={{ headerShown: false }}
             />
 
-            <Stack.Screen 
-                name="Config" 
-                component={Settings} 
-                options={{headerTitle: 'Configurações', headerTitleStyle:{fontWeight: 'bold', fontSize: 24}}}
-            />
-
-            <Stack.Screen 
-                name="Create-Diary" 
-                component={CreateDiary} 
-                options={{headerTitle: 'Criar agenda', headerTitleStyle:{fontWeight: 'bold',fontSize: 24}}
-            }/>
-
-            <Stack.Screen 
-                name="Edit-Diary" 
-                component={EditDiary} 
-                options={{headerTitle: 'Editar Agenda', headerTitleStyle:{fontWeight: 'bold', fontSize: 24}}}
-            />
-
-            <Stack.Screen
-                name="SecurityAccount"
-                component={SecurityAccount}
-                options={{headerTitle: 'Segurança da sua conta', headerTitleStyle:{fontWeight: 'bold', fontSize: 24}}}
-            />
-            
-            <Stack.Screen
-                name="AccountUser"
-                component={AccountUser}
-                options={{headerTitle: 'Dados de sua Conta', headerTitleStyle:{fontWeight: 'bold', fontSize: 24}}}
-            />
-
-            <Stack.Screen
-                name="DataUser"
-                component={DataUser}
-                options={{headerTitle: 'Dados Pessoais', headerTitleStyle:{fontWeight: 'bold', fontSize: 24}}}
-            />
+            {StackItems.map((item,index)=>(
+                <Stack.Screen
+                    key={index}
+                    name={item.route}
+                    component={item.label}
+                    options={{
+                            headerTitle: item.headerTitle, 
+                            headerStyle:{backgroundColor: tabBarBackgroundColor}, 
+                            headerTintColor: textColor, 
+                            headerTitleStyle:{fontWeight: 'bold', fontSize: 24}
+                        }}
+                />
+            ))}
 
         </Stack.Navigator>
     );

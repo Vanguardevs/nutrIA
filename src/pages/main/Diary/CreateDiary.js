@@ -1,4 +1,4 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet, Alert} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomButton from '../../../components/CustomButton';
 import React,{ useEffect, useState } from 'react';
@@ -10,6 +10,12 @@ import * as Notifications from "expo-notifications";
 
 export default function CreateDiary(){
 
+
+    const colorSheme = useColorScheme();
+    
+    const backgoundH = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+    const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
     const [refeicao, setRefeicao] = useState('');
     const [hora, setHora] = useState('');
 
@@ -17,7 +23,6 @@ export default function CreateDiary(){
 
     function handleHora(input){
 
-        //Confesso q aqui tive que pedir ajuda pra IA, pq não consegui fazer o negócio dos : sozinho
         const apenasNumero = input.replace(/[^0-9]/g, '');
 
         let horaFormatada = apenasNumero;
@@ -69,7 +74,7 @@ export default function CreateDiary(){
     
 
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container,{backgroundColor:backgoundH}]}>
 
             <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.imgBackgound}>
                 
