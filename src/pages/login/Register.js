@@ -87,12 +87,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     gap: 20,
+    alignItems: 'center',
+    width: '100%',
   },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 5,
   },
   bottomContainer: {
     justifyContent: 'flex-end',

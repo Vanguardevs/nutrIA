@@ -72,23 +72,23 @@ export default function HealthRegister() {
                 <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={(d)=>setAltura(d)} keyboardType='numeric'/>
                 <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={(d)=>setPeso(d)} keyboardType='numeric'/>
 
-                <CustomPicker
-                    label="Meta"
-                    selectedValue={objetivo}
-                    onValueChange={(value)=> setObjetivo(value)}
-                    options={[
-                    { label: "Emagrecimento", value: "Emagrecimento" },
-                    { label: "Saúde", value: "Saúde" },
-                    { label: "Musculo", value: "Musculo" }
-                    ]}
-                    style={{ width: '75%', overflow: 'hidden' }}
-                />
+                    <CustomPicker
+                        label="Meta"
+                        selectedValue={objetivo}
+                        onValueChange={(value)=> setObjetivo(value)}
+                        options={[
+                        { label: "Emagrecimento", value: "Emagrecimento" },
+                        { label: "Saúde", value: "Saúde" },
+                        { label: "Musculo", value: "Musculo" }
+                        ]}
+                    />
 
                 <TouchableOpacity onPress={() => navigation.navigate("Restricoes")} style={styles.link}>
                     <Text style={styles.linkText}>Restrições Alimentares</Text>
                 </TouchableOpacity>
 
                 <CustomButton title="Cadastrar" modeButton={true} onPress={cadastro}/>
+
             </View>
         </SafeAreaView>
     );
@@ -98,23 +98,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
-        paddingHorizontal: 20,
-
-    },
-    header: {
-        marginTop: 20,
-        marginBottom: 30,
-        alignItems: 'center',
-    },
-    headerText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#2E8331',
+        width: '100%',
     },
     formContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%',
         gap: 20,
     },
     link: {
@@ -125,10 +115,4 @@ const styles = StyleSheet.create({
         color: '#2E8331',
         textDecorationLine: 'underline',
     },
-    picker:{
-        width: '75%', 
-        overflow: 'hidden',
-        alignItems: 'center',
-        marginLeft: 'auto'
-    }
 });

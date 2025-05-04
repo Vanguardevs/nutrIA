@@ -36,15 +36,16 @@ const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPi
 
 const styles = StyleSheet.create({
   container: {
-    width: '40%',
+    width: '73%',
     marginBottom: 15,
-    marginRight: 'auto'
+    textAlign: 'center'
   },
   label: {
     fontSize: 16,
     marginBottom: 5,
     fontWeight: 'bold',
     color: '#333',
+    textAlign: 'center'
   },
   picker: {
     height: 60,

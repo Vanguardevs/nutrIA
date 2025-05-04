@@ -22,7 +22,7 @@ export default function Header(props) {
             <View style={styles.opcoes}>
 
                 <TouchableOpacity onPress={()=> navigation.navigate('Config')}>
-                    <Ionicons name="options" size={30} color={backgoundIcons} style={styles.image}/>
+                    <Ionicons name="options" size={35} color={backgoundIcons} style={styles.image}/>
                 </TouchableOpacity>
 
             </View>

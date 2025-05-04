@@ -2,20 +2,25 @@ import React, { useEffect, useState } from 'react';
 import CustomButton from '../../../components/CustomButton';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
-import { View, SafeAreaView, Text, Alert } from 'react-native';
+import { View, SafeAreaView, Text, Alert, useColorScheme} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {ref, onValue, getDatabase, update} from 'firebase/database';
 import {auth} from '../../../database/firebase';
 
 export default function DataUser() {
 
-        const navigation = useNavigation();
+    const colorScheme = useColorScheme();
 
-        const [nome, setNome] = useState('');
-        const [altura, setAltura] = useState('');
-        const [peso, setPeso] = useState('');
-        const [idade, setIdade] = useState('');
-        const [objetivo, setObjetivo] = useState('');
+    const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
+    const texts = colorScheme === 'dark'? "#F2F2F2" : "#1C1C1E";
+
+    const navigation = useNavigation();
+
+    const [nome, setNome] = useState('');
+    const [altura, setAltura] = useState('');
+    const [peso, setPeso] = useState('');
+    const [idade, setIdade] = useState('');
+    const [objetivo, setObjetivo] = useState('');
 
     useEffect(()=>{
         const db = getDatabase();
@@ -64,8 +69,8 @@ export default function DataUser() {
 
 
     return(
-        <SafeAreaView>
-            <View style={{display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <SafeAreaView style={{backgroundColor: background, flex: 1}}>
+            <View style={{display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', flexDirection: 'column'}}>
                 <CustomField title='Nome atual' placeholder="Seu nome atual" value={nome} setValue={setNome}/>
                 <CustomField title='Idade atual' placeholder="Sua Idade atual" value={idade} setValue={setIdade}/>
                 <CustomPicker

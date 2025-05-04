@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   welcomeButton: {
-    height: 60,
+    height: 70,
     width: 160,
     alignSelf: 'center',
+    textAlign: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
     marginTop: 190,
     borderWidth: 2,
     borderColor: "white",
