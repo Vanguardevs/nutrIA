@@ -6,7 +6,7 @@ import {TextInput} from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import CustomMessageCamp from "../../components/CustomMessageCamp";
 import { auth } from "../../database/firebase";
-// import { GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat } from "react-native-gifted-chat";
 
 
 export default function Home() {
@@ -18,54 +18,52 @@ export default function Home() {
     const navigation = useNavigation();
     
     const [messages, setMessages] = useState([]);
-    // Calcula a altura aproximada da área da Tab Bar (altura + margem + buffer)
-    // 8% (altura) + 2% (margem) + 2% (buffer) = 12%
-    // Ou use um valor fixo em pixels se preferir, ex: 90
-    const tabBarAreaHeight = 90; // Ajuste este valor conforme necessário
+
+    const tabBarAreaHeight = 90;
     const [InputMessage, setInputMessage] = useState("")            
     const [outputMessage, setOutputMessage] = useState("Resultados aqui")  
     
-    // const enviarMensagem = async() => {
+    const enviarMensagem = async() => {
         
-    //     const message = {                                          
-    //         _id:Math.random().toString(36).substring(7),            
-    //         text:InputMessage,                                    
-    //         createdAt:new Date(),                                 
-    //         user: {_id:1}                                           
-    //     }
+        const message = {                                          
+            _id:Math.random().toString(36).substring(7),            
+            text:InputMessage,                                    
+            createdAt:new Date(),                                 
+            user: {_id:1}                                           
+        }
         
         
-    //     setMessages((previousMessages)=>                          
-    //         GiftedChat.append(previousMessages,[message])
-    // )
+        setMessages((previousMessages)=>                          
+            GiftedChat.append(previousMessages,[message])
+    )
 
-    // setInputMessage("");
+    setInputMessage("");
 
-    // const userID = auth.currentUser?.uid
+    const userID = auth.currentUser?.uid
 
-    // const response = await axios.post("https://nutria-6uny.onrender.com/question", {"pergunta":InputMessage, "id_user": userID}); 
-    // console.log(response.data.message);   /* ENVIANDO MENSAGEM PARA O BACKEND NUTRIA */
-    // setOutputMessage(response.data.message.resposta);
+    const response = await axios.post("https://nutria-6uny.onrender.com/question", {"pergunta":InputMessage, "id_user": userID}); 
+    console.log(response.data.message);   /* ENVIANDO MENSAGEM PARA O BACKEND NUTRIA */
+    setOutputMessage(response.data.message.resposta);
     
-    // // const gemini = new GoogleGenerativeAI("AIzaSyC-9oOoUxE0v13DNuE37qBzClAfhJrxRJs");
-    // // const model = await gemini.getGenerativeModel({model:"gemini-1.5-flash"});
-    // // const result = await model.generateContent(InputMessage);                          
-    // // console.log(result.response.text());
-    // // setOutputMessage(result.response.text);
+    // const gemini = new GoogleGenerativeAI("AIzaSyC-9oOoUxE0v13DNuE37qBzClAfhJrxRJs");
+    // const model = await gemini.getGenerativeModel({model:"gemini-1.5-flash"});
+    // const result = await model.generateContent(InputMessage);                          
+    // console.log(result.response.text());
+    // setOutputMessage(result.response.text);
     
-    // //Criando uma requisição post no back end nutria
+    //Criando uma requisição post no back end nutria
 
-    //     const messageR = {                                                       
-    //         _id:Math.random().toString(36).substring(7),                         
-    //         text: response.data.message.resposta,                                         
-    //         createdAt:new Date(),                                                 
-    //         user: {_id:2, name: "Nutria"}                                      
-    //     }
+        const messageR = {                                                       
+            _id:Math.random().toString(36).substring(7),                         
+            text: response.data.message.resposta,                                         
+            createdAt:new Date(),                                                 
+            user: {_id:2, name: "Nutria"}                                      
+        }
     
-    //     setMessages((previousMessages)=>                           
-    //         GiftedChat.append(previousMessages,[messageR])
-    // )
-    // }
+        setMessages((previousMessages)=>                           
+            GiftedChat.append(previousMessages,[messageR])
+    )
+    }
     
 
 
@@ -86,7 +84,7 @@ export default function Home() {
                     >
                         <View style={styles.homeMid}>
                             
-                            {/* <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat> */}
+                            <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat>
 
                         </View>
 

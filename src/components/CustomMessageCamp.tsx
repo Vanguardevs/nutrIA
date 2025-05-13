@@ -22,7 +22,7 @@ const CustomMessageCamp = ({ message, setMessage, onSend}: PropsCutomMessageCamp
                     onChangeText={text => setMessage(text)}
                     placeholder="Digite sua mensagem..."
                     multiline={true}
-                    style={[styles.textInput,{color: texts}]}
+                    style={[styles.textInput,{color: texts, textDecorationColor: texts}]}
                 />
                 <TouchableOpacity style={styles.sendButton} onPress={onSend}>
                     <Ionicons name="send" size={24} color="white" />
