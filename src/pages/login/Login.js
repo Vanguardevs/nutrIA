@@ -1,7 +1,7 @@
 import { useColorScheme ,View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import { useState } from "react";
 import {auth} from "../../database/firebase.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton";
 import CustomField from "../../components/CustomField";
@@ -27,8 +27,13 @@ export default function LoginPag() {
         console.log("Alguns dos campos de login estão vazios")
         return;
       }
-
       await signInWithEmailAndPassword(auth, email, password).then(()=>{
+        if(auth.currentUser.emailVerified == false){
+          Alert.alert("Verifique seu e-mail", "Você não verificou seu e-mail ainda")
+          console.log("Você não verificou seu e-mail ainda")
+          signOut(auth)
+          return;
+        }
 
       console.log("Sucesso ao fazer o login!");
       })

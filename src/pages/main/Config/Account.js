@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CustomField from '../../../components/CustomField';
-import { View, SafeAreaView, Text, useColorScheme } from 'react-native';
+import { View, SafeAreaView, Text, useColorScheme, Button } from 'react-native';
 import CustomButton from '../../../components/CustomButton';
 import { getDatabase, onValue, ref } from 'firebase/database';
 import { auth } from '../../../database/firebase';
@@ -36,6 +36,7 @@ export default function AccountUser() {
         <SafeAreaView style={{backgroundColor: background, flex:1}}>
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <CustomField title='Email atual' placeholder="Seu email" value={email} onValue={setEmail}/>
+                <Button title='Redefinir senha' onPress={() => {}}/>
                 <CustomButton title='Salvar dado' modeButton={true}/>
             </View>
         </SafeAreaView>

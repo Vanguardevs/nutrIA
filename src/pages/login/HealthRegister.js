@@ -4,7 +4,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import CustomPicker from "../../components/CustomPicker";
 import CustomButton from "../../components/CustomButton";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
 import { auth, app } from "../../database/firebase";
 import {getDatabase, ref, set} from "firebase/database";
 
@@ -32,7 +32,13 @@ export default function HealthRegister() {
                 }
                 
                 createUserWithEmailAndPassword(auth, email, password)
+                
                 .then((userCredential) => {
+
+                    sendEmailVerification(auth.currentUser)
+                    Alert.alert("Verifique seu e-mail");
+                    console.log("Verifique seu e-mail");
+
                     console.log("Usuário cadastrado com sucesso!");
 
                     const db = getDatabase(app);
@@ -52,8 +58,11 @@ export default function HealthRegister() {
                     .then(() => {
                         console.log("Dados do usuário salvos com sucesso!");
                     })
+                    signOut(auth)
+                    navigation.navigate("Login")
 
-                }).catch((error)=>{
+                })
+                .catch((error)=>{
                     Alert.alert("Erro ao salvar dados do usuário", "Tente novamente mais tarde")
                     console.log("Erro ao salvar dados do usuário:", error)
 

@@ -30,7 +30,8 @@ export default function App() {
 
   async function verificarNotificação(){
 
-    const {status} = await Notifications.getPermissionsAsync()
+    const {status} = await Notifications.getPermissionsAsync();
+    
     if (status !== 'granted'){
       Alert.alert("Permissão de notificação", "Para receber notificações, ative as permissões de notificação nas configurações do aplicativo.")
       return;
