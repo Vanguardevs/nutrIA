@@ -2,13 +2,15 @@ import { StyleSheet } from 'react-native';
 import Theme from './theme.js'
 
 const styles = StyleSheet.create({
+
+     // WELCOME === INDEX.JS
   welcomeContainer: {
     flex: 1,
     backgroundColor: Theme.colors.secondary,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  curtain: {
+  welcomeCurtain: {
     backgroundColor: 'white',
     justifyContent: 'space-evenly',
     height: 250,
@@ -19,25 +21,31 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   welcomeButton: {
-    backgroundColor: Theme.colors.primary,
-    borderRadius: Theme.borderRadius,
-    height: 80,
+    height: 70,
     width: 160,
+    alignSelf: 'center',
+    textAlign: 'center',
     justifyContent: 'center',
     marginTop: 190,
+    borderWidth: 2,
+    borderColor: "white",
+    borderRadius: 12,
   },
   welcomeButtonText: {
     fontSize: 27,
     textAlign: 'center',
-    color: 'white'
+    color: 'white',
+    fontFamily: 'K2D-Regular',
   },
   welcomeText: {
-    fontSize: 35,
+    fontSize: 30,
     textAlign: 'center',
     color: '#016E3A',
-    fontFamily: 'K2D-BoldItalic',
-    width: 230,
-    marginTop: 20,
+    fontFamily: 'K2D-Regular',
+    width: '90%', 
+    flexWrap: 'wrap',
+    marginHorizontal: '5%',
+    lineHeight: 35, 
   },
   welcomeTitle: {
     fontSize: 30,
@@ -51,11 +59,64 @@ const styles = StyleSheet.create({
   },
   welcomeBackground: {
     flex: 1,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
     width: '100%',
-  }
+  },
+  gradientContainer: {
+    height: 60,
+    width: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+  },
+
+
+   // LOGIN === LOGIN.JS
+
+  loginContainer: {
+    flex: 1,
+    backgroundColor: '#EEEDE7',
+  },
+  loginCenter: {
+    flex: 1,
+    width: '50vg',
+    justifyContent: 'center',
+    marginTop: '50%',
+  },
+  loginInput: {
+    backgroundColor: 'gray',
+    width: '80%',
+    marginVertical: 10,
+    padding: 10,
+    borderRadius: 10,
+  },
+  loginBottom: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: '10vh'
+  },
+  loginModal: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'black', 
+    borderRadius: 10, 
+    opacity: 1
+},
+  loginModalMessage: {
+   flex: 1,
+   justifyContent: 'center', 
+   alignItems: 'center',
+   backgroundColor: 'white',
+},
+  loginBackground: {
+   height: '100%',
+   width: '100%',
+   },
 });
 
 export default styles;

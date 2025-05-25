@@ -22,10 +22,11 @@ const CustomCardO = ({title, onPress, nameImg}: CustomCard)=>{
 
 const styles = StyleSheet.create({
     cardClicker:{
-        backgroundColor: '#c8c8c8',
+        backgroundColor: '#fff',
         margin: 10,
         borderRadius: Theme.borderRadius,
         width: '80%',
+        borderColor: '#2E8331',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,
@@ -42,7 +43,8 @@ const styles = StyleSheet.create({
     title:{
         fontSize: 20,
         fontFamily: 'K2D-BoldItalic',
-        textAlign: 'center'
+        textAlign: 'center',
+        overflow: 'visible'
     },
     imageCard:{
         margin: 7

@@ -14,18 +14,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-let auth;
 
-if (typeof window !== "undefined") {
-  // Ambiente Web
-  auth = initializeAuth(app, {
+//Modo Site
+ const auth = initializeAuth(app, {
     persistence: browserLocalPersistence,
   });
-} else {
-  // Ambiente React Native
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-}
+
+// Modo Mobile
+// const auth = initializeAuth(app, {
+//   persistence: getReactNativePersistence(AsyncStorage),
+// });
 
 export { app, auth };

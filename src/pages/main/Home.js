@@ -1,23 +1,30 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground} from "react-native";
-import {useState} from 'react';
+import { useColorScheme, Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground, KeyboardAvoidingView, Platform} from "react-native"; // Adicionado KeyboardAvoidingView, Platform
+import { useState } from 'react';
 import axios from "axios";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import {TextInput} from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import CustomMessageCamp from "../../components/CustomMessageCamp";
+import { auth } from "../../database/firebase";
 // import { GiftedChat } from "react-native-gifted-chat";
 
 
 export default function Home() {
+
+    const colorScheme = useColorScheme();
+    
+    const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
     
     const navigation = useNavigation();
     
     const [messages, setMessages] = useState([]);
+
+    const tabBarAreaHeight = 90;
     const [InputMessage, setInputMessage] = useState("")            
     const [outputMessage, setOutputMessage] = useState("Resultados aqui")  
     
     // const enviarMensagem = async() => {
-
+        
     //     const message = {                                          
     //         _id:Math.random().toString(36).substring(7),            
     //         text:InputMessage,                                    
@@ -25,12 +32,17 @@ export default function Home() {
     //         user: {_id:1}                                           
     //     }
         
+        
     //     setMessages((previousMessages)=>                          
-    //     GiftedChat.append(previousMessages,[message])
+    //         GiftedChat.append(previousMessages,[message])
     // )
 
-    // const response = await axios.post("https://nutria-6uny.onrender.com/question", {"pergunta":InputMessage}); 
-    // console.log(response.data.message.resposta);   /* ENVIANDO MENSAGEM PARA O BACKEND NUTRIA */
+    // setInputMessage("");
+
+    // const userID = auth.currentUser?.uid
+
+    // const response = await axios.post("https://nutria-6uny.onrender.com/question", {"pergunta":InputMessage, "id_user": userID}); 
+    // console.log(response.data.message);   /* ENVIANDO MENSAGEM PARA O BACKEND NUTRIA */
     // setOutputMessage(response.data.message.resposta);
     
     // // const gemini = new GoogleGenerativeAI("AIzaSyC-9oOoUxE0v13DNuE37qBzClAfhJrxRJs");
@@ -51,7 +63,6 @@ export default function Home() {
     //     setMessages((previousMessages)=>                           
     //         GiftedChat.append(previousMessages,[messageR])
     // )
-    // setInputMessage("");
     // }
     
 
@@ -60,29 +71,25 @@ export default function Home() {
 
     //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
     return(
-        <SafeAreaView style={styles.homeContainer}>
+        <SafeAreaView style={[styles.homeContainer,{backgroundColor: background}]}>
             <ImageBackground
+                resizeMode="cover" // Garante que a imagem cubra a área
                 source={require('../../../assets/Frutas_home.png')}
                 style={styles.homeBackground}>
 
-                <View style={styles.homeMid}>
                     
-                    {/* <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat> */}
+                    <KeyboardAvoidingView 
+                        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+                        style={[styles.keyboardAvoidingContainer, { paddingBottom: tabBarAreaHeight }]}
+                    >
+                        <View style={styles.homeMid}>
+                            
+                            {/* <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat> */}
 
-                </View>
+                        </View>
 
-        <View style={styles.homeFooter}>   
-
-            <View style={styles.homeText}>
-
-                <TextInput placeholder="Mande sua pergunta" value={InputMessage} onChangeText={setInputMessage}/>
-
-            </View>
-                <TouchableOpacity  style={{backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius:29, marginLeft: 12, marginRight:9, paddingLeft: 12}}  onPress={async() => await enviarMensagem()}>
-                        <Ionicons name="send" size={29} color="black" style={styles.homeImage}/>
-                </TouchableOpacity>
-        </View>
-
+                        <CustomMessageCamp placeholder="Mande sua pergunta" message={InputMessage} setMessage={setInputMessage} onSend={async() => await enviarMensagem()}/>            
+                    </KeyboardAvoidingView>
 
             </ImageBackground>
         </SafeAreaView>
@@ -92,18 +99,19 @@ export default function Home() {
 const styles = StyleSheet.create({
     homeContainer:{
         flex: 1,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-        width: '100%'
     },
     homeBackground: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         height: '100%',
         width: '100%',
+    },
+    keyboardAvoidingContainer: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'flex-end',
+    },
+    contentWrapper: {
+        flex: 1,
     },
     homeImage: {
         height: 30,
@@ -114,9 +122,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: '100%',
     },
-    homeHeader: {
-        flex: 1,
-    },
     homeText: {
         flex: 1,
         marginLeft: 0,
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
     homeMid: {
         flex: 1,
         height: '100%',
-        width: '100%',
+        width: '100%', // Ocupa a largura
         justifyContent: "center",
     },
 })

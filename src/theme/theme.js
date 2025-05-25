@@ -11,7 +11,7 @@ const Theme = {
     large: 24,
   },
   font: {
-    fontFamily: '',
+    fontFamily: 'K2D-Regular',
     fontSize: 25,
   },
   borderRadius: 50,

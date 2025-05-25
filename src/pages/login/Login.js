@@ -1,16 +1,19 @@
-import { View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert } from "react-native";
+import { useColorScheme ,View, Text, Button, TextInput, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import { useState } from "react";
 import {auth} from "../../database/firebase.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton";
 import CustomField from "../../components/CustomField";
+import styles from "../../theme/styles";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginPag() {
 
-  const AlertaError = ()=> Alert.alert('Error', "Erro ao fazer o login. Tente novamente",[{text: "OK", onPress:()=>console.log("")}],{});
-
-
+    const colorSheme = useColorScheme();
+  
+    const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2";
+    const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E";
 
   const navegacao = useNavigation();
   
@@ -18,73 +21,91 @@ export default function LoginPag() {
   const [password, setPassword] = useState('');
 
   async function logar() {
+
+      if(email.length === 0 || password.length === 0){
+        Alert.alert("Erro", "Alguns dos campos de login estão vazios")
+        console.log("Alguns dos campos de login estão vazios")
+        return;
+      }
       await signInWithEmailAndPassword(auth, email, password).then(()=>{
+        if(auth.currentUser.emailVerified == false){
+          Alert.alert("Verifique seu e-mail", "Você não verificou seu e-mail ainda")
+          console.log("Você não verificou seu e-mail ainda")
+          signOut(auth)
+          return;
+        }
 
-        console.log("Sucesso ao fazer o login!");
-        navegacao.replace("appTab");
+      console.log("Sucesso ao fazer o login!");
+      })
+      .catch((error) => {
+        
+        if(error.code == 'auth/invalid-credential'){
+          console.log("Senha inválida")
+          Alert.alert("Inválida", "Senha Inválida!")
+          return;
+        } 
 
-      }).catch((error) => {  
-        console.log(error);
-        AlertaError();
+        if(error.code == 'auth/invalid-email'){
+          console.log("Esse tipo de text não é email. Isso é inválido")
+          Alert.alert("Inválido", "Esse email não é válido")
+          return;
+        }
+
+        Alert.alert("Erro ao fazer login", "Verifique seu email e senha e tente novamente")
+        console.log("Erro ao fazer login:", error);
       })
   }
 
   return (
-    <SafeAreaView style={stylesLocal.container}>
+    <SafeAreaView style={[styles.loginContainer,{backgroundColor: background}]}>
 
-      <View style={stylesLocal.centerContainer}>
-        <CustomField title='Email' placeholder="Insira seu email" keyboardType='email-address' value={email} setValue={setEmail} />
-        <CustomField title='Senha' placeholder="Insira sua senha" keyboardType="text"
-          secureTextEntry value={password} setValue={setPassword} />
-      </View>
+      <ImageBackground
+      source={require('../../../assets/Frutas_home.png')}
+      style={styles.loginBackground}>
 
-      <View style={stylesLocal.bottomContainer}>
 
-        <CustomButton title="Login" onPress={logar}/>
+        <View style={styles.loginCenter}>
+          <CustomField 
+          title='Email' 
+          placeholder="Insira seu email" 
+          keyboardType='email-address' 
+          value={email} 
+          setValue={setEmail}
+          />
+          
 
-        <TouchableOpacity onPress={() => navegacao.push('Registro')}>
-          <Text>Não é cadastrado?</Text>
-        </TouchableOpacity>
+          <CustomField 
+          title='Senha' 
+          placeholder="Insira sua senha" 
+          keyboardType="text"
+          secureTextEntry value={password} 
+          setValue={setPassword} 
+          />
+        </View>
 
-      </View>
+        <View style={styles.loginBottom}>
+      
+          <CustomButton title="Login" onPress={logar} style={{width: '100%'}} modeButton={true}/>
+
+
+          <TouchableOpacity 
+          onPress={() => navegacao.push('Registro')}
+          style={{margin: 10}}
+          >
+            <Text style={{color: texts}}>Não possui conta? Crie agora</Text>
+          </TouchableOpacity>
+
+        </View>
+        
+      </ImageBackground>
 
     </SafeAreaView>
+
   )
 }
 
 const stylesLocal = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center', // Center vertically
-  },
-  input: {
-    backgroundColor: 'gray',
-    width: '80%', // Adjust the width as needed
-    marginVertical: 10, // Add some vertical margin for spacing
-    padding: 10,
-    borderRadius: 10, // Add padding for better text input appearance
-  },
-  bottomContainer: {
-    justifyContent: 'flex-end', // Align to the bottom
-    alignItems: 'center', // Center horizontally
-    padding: 16, // Add padding for better spacing
-  },
-  containterModal: {
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: 'black', 
-    borderRadius: 10, 
-    opacity: 1
-},
-  modalMessage: {
-    flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
+  
+
+
 });

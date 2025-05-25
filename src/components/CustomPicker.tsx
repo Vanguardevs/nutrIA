@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import Theme from "../theme/theme";
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 
 interface CustomPickerProps {
   label: string;
@@ -11,45 +10,58 @@ interface CustomPickerProps {
 }
 
 const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPickerProps) => {
+
+  const colorSheme = useColorScheme();
+
+  const background = colorSheme === 'dark'? "#1C1C1E" : "white"
+  const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={selectedValue}
-          onValueChange={onValueChange}
-          style={styles.picker}
-        >
-          {options.map((opt, index) => (
-            <Picker.Item key={index} label={opt.label} value={opt.value} />
-          ))}
-        </Picker>
-      </View>
+      <Text style={[styles.label,{color:texts}]}>{label}</Text>
+      <RNPickerSelect
+        onValueChange={onValueChange}
+        items={options}
+        value={selectedValue}
+        style={{
+          inputAndroid: styles.picker,
+          inputIOS: styles.picker,
+          placeholder: styles.placeholder,
+        }}
+        placeholder={{ label: "Selecione uma opção...", value: null }}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: '45%',
-    marginLeft: '5%',
+    width: '73%',
     marginBottom: 15,
+    textAlign: 'center'
   },
   label: {
-    fontSize: 19,
+    fontSize: 16,
     marginBottom: 5,
-    textAlign: 'center',
-    fontWeight: "bold",
-  },
-  pickerWrapper: {
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 16,
-    overflow: 'hidden',
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center'
   },
   picker: {
-    height: 40,
-    width: '100%',
+    height: 60,
+    width: '80%',
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    color: '#333',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  placeholder: {
+    color: '#999',
   },
 });
 
