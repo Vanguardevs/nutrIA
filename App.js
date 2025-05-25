@@ -7,7 +7,6 @@ import RoutePag from './src/routes/authRoute.js';
 import { auth } from './src/database/firebase.js';
 import * as Notifications from 'expo-notifications';
 
-// IMPORTS para fontes
 import { useFonts, K2D_400Regular } from '@expo-google-fonts/k2d';
 
 export default function App() {
