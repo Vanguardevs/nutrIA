@@ -92,7 +92,12 @@ export default function LoginPag() {
           onPress={() => navegacao.push('Registro')}
           style={{margin: 10}}
           >
-            <Text style={{color: texts}}>Não possui conta? Crie agora</Text>
+          <Text style={{fontSize: 15, color: texts}}>
+
+            Não possui conta?{' '}
+            <Text style={{ color: 'green', fontWeight: 'bold' ,fontSize: 17 }}>Crie agora</Text>
+            
+            </Text>
           </TouchableOpacity>
 
         </View>

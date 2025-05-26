@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import CustomPicker from "../../components/CustomPicker";
 import CustomButton from "../../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
+import styles from "../../theme/styles";
 
 export default function Restricoes() {
 
@@ -18,9 +19,9 @@ export default function Restricoes() {
     const [Condicoes, setCondicoes] = useState();
 
     return(
-        <SafeAreaView style={[styles.container,{backgroundColor: background}]}>
+        <SafeAreaView style={[styles.rtContainer,{backgroundColor: background}]}>
             
-            <View style={{alignItems: 'center'}}>
+            <View style={styles.rtCenter}>
 
                 <CustomField title="Alergias" placeholder="Insira sua Alergias" value={Alergias} setValue={setAlergias}/>
                 <CustomPicker label="Intolerâncias" setValue={intolerâncias} onValueChange={setIntolerâncias} options={[
@@ -58,7 +59,9 @@ export default function Restricoes() {
                     {label: "Doenças Dermatológicas"},
                 ]}/>
 
+                <View style={styles.rtButton}>
                 <CustomButton title="Salvar" modeButton={true} onPress={()=>navigate.goBack()}/>
+                </View>
 
             </View>
 
@@ -66,10 +69,3 @@ export default function Restricoes() {
     );
 }
 
-const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        backgroundColor:'#fff',
-        width: '100%'
-    }
-})
