@@ -100,7 +100,7 @@ export default function SecurityAccount() {
                     keyboardType='numeric'
                 />
                 <CustomButton title="Verificar Código" modeButton={true} onPress={verificarCodigo}/>
-                <View id="recaptcha-container"></View>
+                <div id="recaptcha-container"></div>
             </View>
         </SafeAreaView>
     );

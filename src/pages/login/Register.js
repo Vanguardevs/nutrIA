@@ -1,9 +1,11 @@
-import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme } from "react-native";
+import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import CustomField from "../../components/CustomField";
 import CustomButton from "../../components/CustomButton";
 import CustomPicker from "../../components/CustomPicker";
+import styles from "../../theme/styles";
+import RNPickerSelect from 'react-native-picker-select';
 
 export default function CreateUser() {
 
@@ -32,6 +34,11 @@ export default function CreateUser() {
         return;
       }
 
+      if(idade < 12){
+        Alert.alert("Idade Inválida", "O Aplicativo não aceita menores de 12 anos")
+        return;
+      }
+
       navigation.navigate("HealthRegister", {
         nome: nome,
         email: email,
@@ -45,15 +52,19 @@ export default function CreateUser() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: background}]}>
+    <SafeAreaView style={[styles.registerContainer, {backgroundColor: background}]}>
 
-      <View style={styles.centerContainer}>
+           <ImageBackground
+            source={require('../../../assets/Frutas_home.png')}
+            style={styles.registerBackground}>
+
+      <View style={styles.registerCenter}>
         <CustomField title="Nome" value={nome} setValue={setNome} keyboardType="text" placeholder="Insira seu nome:" />
         <CustomField title="Email" value={email} setValue={setEmail} keyboardType="email-address" placeholder="Insira seu email:" />
         <CustomField title="Senha" value={password} setValue={setPassword} keyboardType="text" placeholder="Insira sua senha:" secureTextEntry />
 
-        <View style={styles.rowContainer}>
-          <CustomField title="Idade" value={idade} setValue={setIdade} placeholder="0" keyboardType="numeric" style={styles.ageField} />
+         <View style={styles.registerRow}> 
+          <CustomField title="Idade" value={idade} setValue={setIdade} placeholder="0" keyboardType="numeric" style={styles.registerIdade} />
 
           <CustomPicker
             label="Sexo"
@@ -64,59 +75,42 @@ export default function CreateUser() {
               { label: "Feminino", value: "feminino" },
               { label: "Outro", value: "outro" }
             ]}
-            style={{ width: '75%', overflow: 'hidden' }}
           />
+          
         </View>
       </View>
 
-      <View style={styles.bottomContainer}>
+      <View style={styles.registerBottom}>
         <CustomButton title="Próximo" onPress={nextPage} modeButton={true} />
       </View>
+      </ImageBackground>
     </SafeAreaView>
+    
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 20,
-    overflow: 'hidden',
+
+
+
+const customPickerStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: 'green',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
   },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: 20,
-    alignItems: 'center',
-    width: '100%',
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 5,
-  },
-  bottomContainer: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: 16,
-  },
-  ageField: {
-      height: 45,
-      width: '100%',
-      borderColor: "#2E8331",
-      borderWidth: 2, 
-      borderRadius: 10, 
-      paddingHorizontal: 10,
-      marginRight: 'auto',
-      marginLeft: 'auto',
-      fontSize: 16,
-      backgroundColor: "#fff",
-      color: "#333",
-      shadowColor: "#000", 
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 2,
+  inputAndroid: {
+    fontSize: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'blue',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
   },
 });

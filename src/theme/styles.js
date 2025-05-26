@@ -117,6 +117,103 @@ const styles = StyleSheet.create({
    height: '100%',
    width: '100%',
    },
+
+
+
+   // REGISTER === Register.js
+
+  registerBottom: {
+   justifyContent: 'flex-end',
+   alignItems: 'center',
+   padding: 16,
+  },
+  registerCenter: {
+   flex: 1,
+   justifyContent: 'center',
+   gap: 20,
+   width: '100%',
+  },
+  registerContainer: {
+   flex: 1,
+   backgroundColor: '#f5f5f5',
+   paddingHorizontal: 20,
+   overflow: 'hidden',
+  },
+  registerRow: {
+   justifyContent: 'space-between',
+   marginTop: 15,
+  },
+  registerIdade: {
+    backgroundColor: "#fff",
+    height: 40,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    width: '20%',
+    marginLeft: '1%',
+    borderColor: "#2E8331",
+    borderWidth: 2,
+    color:"#333",
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  registerBackground: {
+   height: '100%',
+   width: '100%',
+   },
+
+   // HEALTH - REGISTER === HealthRegister.js
+
+  hrContainer: {
+   flex: 1,
+   backgroundColor: '#f5f5f5',
+   paddingHorizontal: 20,
+   overflow: 'hidden',
+  },
+  hrForm: {
+   flex: 1,
+   justifyContent: 'center',
+   gap: 20,
+   width: '100%',
+  },
+  hrLink: {
+   alignItems: 'center',
+   marginTop: -20,
+  },
+  hrLinkText: {
+   fontSize: 16,
+   color: '#2E8331',
+   textDecorationLine: 'underline',
+  },
+  hrBottom: {
+   justifyContent: 'flex-end',
+   alignItems: 'center',
+   marginTop: 150,
+  },
+
+// RESTRIÇÕES === Restrições.js
+
+  rtContainer:{
+   flex: 1,
+   alignContent: 'center',
+   backgroundColor: '#f5f5f5',
+   paddingHorizontal: 20,
+   overflow: 'hidden',
+  },
+  rtCenter:{
+
+   justifyContent: 'center',
+   gap: 20,
+   width: '100%',
+  },
+  rtButton: {
+   justifyContent: 'flex-end',
+   alignItems: 'center',
+   marginTop: 150,
+  },
+
 });
 
 export default styles;

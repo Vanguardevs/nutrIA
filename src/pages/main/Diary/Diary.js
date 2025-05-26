@@ -1,9 +1,9 @@
 import React,{useState, useEffect} from 'react';
-import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme, ScrollView } from 'react-native';
+import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme } from 'react-native';
 import CardCustomCalendar from '../../../components/CustomCardCalendar';
 import { useNavigation } from '@react-navigation/native';
 import {ref, onValue, getDatabase} from "firebase/database"
-import {auth} from "../../../database/firebase";
+import {auth} from "../../../database/firebase"
 
 export default function Diary() {
 
@@ -57,7 +57,7 @@ export default function Diary() {
   },[])
 
   return (
-    <ScrollView style={[styles.container,{backgroundColor: backgoundH}]} contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
+    <SafeAreaView style={[styles.container,{backgroundColor: backgoundH}]}>
       
       <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.homeBackground}>
 
@@ -70,17 +70,13 @@ export default function Diary() {
           />
         ))}
 
-        <View style={{alignItems: 'center', marginTop:20}}>
-
-          <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
-            <Text style={{fontSize: 43, textAlign: 'center', paddingBottom: 11.5,color:'white'}}>{"+"}</Text>
-          </TouchableOpacity>
-
-        </View>
+        <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
+          <Text style={{fontSize: 43, textAlign: 'center', paddingBottom: 11.5,color:'white'}}>{"+"}</Text>
+        </TouchableOpacity>
 
       </ImageBackground>
-      <View style={{height:'20%'}}/>
-    </ScrollView>
+
+    </SafeAreaView>
 
   );
 }
@@ -93,9 +89,9 @@ const styles = StyleSheet.create({
   },
   homeBackground: {
     flex: 1,
-    justifyContent: 'align-center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: '120%',
+    height: '100%',
     width: '100%',
   },
   button: {
@@ -106,7 +102,7 @@ const styles = StyleSheet.create({
     width: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'static',  
+    position: 'absolute', 
     bottom: 110,
     right: 30,
     shadowColor: '#000',

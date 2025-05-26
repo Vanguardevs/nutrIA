@@ -7,6 +7,7 @@ import CustomButton from "../../components/CustomButton";
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
 import { auth, app } from "../../database/firebase";
 import {getDatabase, ref, set} from "firebase/database";
+import styles from "../../theme/styles";
 
 export default function HealthRegister() {
 
@@ -19,8 +20,8 @@ export default function HealthRegister() {
     const {nome, email, password, idade, sexo} = route.params;
     const navigation = useNavigation();
 
-    const [altura, setAltura] = useState(0);
-    const [peso, setPeso] = useState(0);
+    const [altura, setAltura] = useState();
+    const [peso, setPeso] = useState();
     const [objetivo, setObjetivo] = useState('');
 
         function cadastro(){
@@ -74,11 +75,24 @@ export default function HealthRegister() {
             }
         }
 
-    return (
-        <SafeAreaView style={[styles.container,{backgroundColor: background}]}>
+        function handleAltura(input){
 
-            <View style={styles.formContainer}>
-                <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={(d)=>setAltura(d)} keyboardType='numeric'/>
+            alturaFormatada = input.replace(/[^0-9]/g, '')
+
+            let alturaFormatada2 = alturaFormatada
+            if(input.length > 1){
+                alturaFormatada2 = `${alturaFormatada.slice(0,1)}.${alturaFormatada.slice(1,3)}`
+            }
+            setAltura(alturaFormatada2) 
+        }
+
+
+
+    return (
+        <SafeAreaView style={[styles.hrContainer,{backgroundColor: background}]}>
+
+            <View style={styles.hrForm}>
+                <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={handleAltura} keyboardType='numeric'/>
                 <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={(d)=>setPeso(d)} keyboardType='numeric'/>
 
                     <CustomPicker
@@ -91,37 +105,17 @@ export default function HealthRegister() {
                         { label: "Musculo", value: "Musculo" }
                         ]}
                     />
-
-                <TouchableOpacity onPress={() => navigation.navigate("Restricoes")} style={styles.link}>
-                    <Text style={styles.linkText}>Restrições Alimentares</Text>
+                
+                <TouchableOpacity onPress={() => navigation.navigate("Restricoes")} style={styles.hrLink}>
+                    <Text style={styles.hrLinkText}>Restrições Alimentares</Text>
                 </TouchableOpacity>
 
+                
+                <View style={styles.hrBottom}>
                 <CustomButton title="Cadastrar" modeButton={true} onPress={cadastro}/>
-
+                </View>
             </View>
         </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f5f5f5',
-        width: '100%',
-    },
-    formContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        gap: 20,
-    },
-    link: {
-        marginTop: 10,
-    },
-    linkText: {
-        fontSize: 16,
-        color: '#2E8331',
-        textDecorationLine: 'underline',
-    },
-});
