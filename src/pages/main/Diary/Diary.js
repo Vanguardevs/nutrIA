@@ -1,11 +1,21 @@
 import React,{useState, useEffect} from 'react';
-import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme } from 'react-native';
+import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme, ScrollView } from 'react-native';
 import CardCustomCalendar from '../../../components/CustomCardCalendar';
 import { useNavigation } from '@react-navigation/native';
 import {ref, onValue, getDatabase} from "firebase/database"
-import {auth} from "../../../database/firebase"
+import {auth} from "../../../database/firebase";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as Notifications from 'expo-notifications';
 
 export default function Diary() {
+
+  Notifications.setNotificationHandler({
+    handleNotification: async()=>({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false
+    })
+  })
 
   const colorSheme = useColorScheme();
 
@@ -26,10 +36,7 @@ export default function Diary() {
 
       const db = getDatabase();
 
-      const agenaRef = ref(db, `users/${userID}/diaries`) 
-
-      // console.log(typeof userID + ": " + userID)
-
+      const agenaRef = ref(db, `users/${userID}/diaries`);
 
       await onValue(agenaRef, (res)=>{
         const data = res.val();
@@ -52,12 +59,74 @@ export default function Diary() {
 
   }
 
+  async function verificarNotificacao() {
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert(
+        "Permissão de notificação",
+        "Para receber notificações, ative as permissões de notificação nas configurações do aplicativo."
+      );
+      const { status: newStatus } = await Notifications.requestPermissionsAsync();
+      if (newStatus !== 'granted') {
+        console.log("Permissões de notificação não concedidas.");
+        return;
+      }
+    }
+  }
+
+  function horaFormatada(hora) {
+    const [horas, minutos] = hora.split(':').map((item) => parseInt(item, 10));
+    if (isNaN(horas) || isNaN(minutos)) {
+      console.error("Formato de hora inválido:", hora);
+      return null;
+    }
+    return { horas, minutos };
+  }
+
+  async function createNotification() {
+    const now = new Date();
+
+    for (const agenda of agendas) {
+      const hora = horaFormatada(agenda.hora);
+
+      // Verificar se o horário está no futuro
+      const triggerDate = new Date();
+      triggerDate.setHours(hora.horas);
+      triggerDate.setMinutes(hora.minutos);
+      triggerDate.setSeconds(0);
+
+      if (triggerDate <= now) {
+        triggerDate.setDate(triggerDate.getDate() + 1);
+      }
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Hora de se alimentar! (${agenda.refeicao})`,
+          body: "Este é o horário de se alimentar de " + agenda.refeicao,
+          data: { data: 'goes here' },
+        },
+        trigger: {
+          date: triggerDate, 
+        },
+      });
+    }
+  }
+
+
+
   useEffect(()=>{
     verificarTodasAgendas()
+    verificarNotificacao()
   },[])
 
+  useEffect(() => {
+    if (agendas.length > 0) {
+      createNotification();
+    }
+  }, [agendas]);
+
   return (
-    <SafeAreaView style={[styles.container,{backgroundColor: backgoundH}]}>
+    <ScrollView style={[styles.container,{backgroundColor: backgoundH}]} contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
       
       <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.homeBackground}>
 
@@ -70,13 +139,17 @@ export default function Diary() {
           />
         ))}
 
-        <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
-          <Text style={{fontSize: 43, textAlign: 'center', paddingBottom: 11.5,color:'white'}}>{"+"}</Text>
-        </TouchableOpacity>
+        <View style={{alignItems: 'center', marginTop:20}}>
+
+          <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
+            <Ionicons name="add-outline" size={20} color={backgoundIcons}/>
+          </TouchableOpacity>
+
+        </View>
 
       </ImageBackground>
-
-    </SafeAreaView>
+      <View style={{height:'20%'}}/>
+    </ScrollView>
 
   );
 }
@@ -89,9 +162,9 @@ const styles = StyleSheet.create({
   },
   homeBackground: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'align-center',
     alignItems: 'center',
-    height: '100%',
+    height: '120%',
     width: '100%',
   },
   button: {
@@ -102,7 +175,7 @@ const styles = StyleSheet.create({
     width: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'absolute', 
+    position: 'static',  
     bottom: 110,
     right: 30,
     shadowColor: '#000',

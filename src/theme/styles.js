@@ -136,9 +136,10 @@ const styles = StyleSheet.create({
   registerContainer: {
    flex: 1,
    backgroundColor: '#f5f5f5',
-   paddingHorizontal: 20,
    overflow: 'hidden',
-  },
+   width: '100%',
+  height: '100%',
+},
   registerRow: {
    justifyContent: 'space-between',
    marginTop: 15,
