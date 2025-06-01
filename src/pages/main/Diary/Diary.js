@@ -148,8 +148,8 @@ export default function Diary() {
 
         </View>
 
+        <View/>
       </ImageBackground>
-      <View style={{height:'20%'}}/>
     </ScrollView>
 
   );

@@ -81,6 +81,11 @@ export default function LoginPag() {
           secureTextEntry value={password} 
           setValue={setPassword} 
           />
+
+          <TouchableOpacity onPress={() => navegacao.push('ForgetPassword')}>
+            <Text style={{color: texts, fontSize: 15, textAlign: 'right', marginRight: 10, marginTop: -10}}>Esqueci minha senha</Text>
+          </TouchableOpacity>
+
         </View>
 
         <View style={styles.loginBottom}>
@@ -108,9 +113,3 @@ export default function LoginPag() {
 
   )
 }
-
-const stylesLocal = StyleSheet.create({
-  
-
-
-});

@@ -2,11 +2,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
 
 //Páginas do aplicativo para fazer loggin
-import HealthRegister from "../pages/login/HealthRegister.js";
+import HealthRegister from "../pages/login/registers/HealthRegister.js";
 import Wellcome from '../pages/welcome/index.js';
 import LoginPag from '../pages/login/Login.js';
-import Restricoes from "../pages/login/Restrições.js";
-import CreateUser from "../pages/login/Register.js";
+import Restricoes from "../pages/login/registers/Restrições.js";
+import CreateUser from "../pages/login/registers/Register.js";
+import ForgetPassword from "../pages/login/ForgetPassword.js";
 import React from "react";
 import AppTabs from "./appRoute.js";
 
@@ -24,7 +25,8 @@ export default function RoutePag() {
     {"name":"Login", "component": LoginPag, "options": {headerShown: false}},
     {"name":"Registro", "component": CreateUser, "options": {headerTitleAlign: 'center', headerTitle: 'Cadastro', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
     {"name":"HealthRegister", "component": HealthRegister, "options":{headerTitleAlign: 'center', headerTitle: 'Cadastro de Saúde', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
-    {"name":"Restricoes", "component": Restricoes, "options": {headerTitleAlign: 'center', headerTitle: 'Cadastro de Saúde', headerStyle:{backgroundColor: background}, headerTintColor: texts}}
+    {"name":"Restricoes", "component": Restricoes, "options": {headerTitleAlign: 'center', headerTitle: 'Cadastro de Saúde', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
+    {"name": "ForgetPassword", "component": ForgetPassword, "options": {headerTitleAlign: 'center', headerTitle: 'Esqueci minha senha', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
   ]
 
   return (
