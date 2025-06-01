@@ -136,12 +136,12 @@ const styles = StyleSheet.create({
   registerContainer: {
    flex: 1,
    backgroundColor: '#f5f5f5',
+   paddingHorizontal: 20,
    overflow: 'hidden',
-   width: '100%',
-  height: '100%',
-},
+  },
   registerRow: {
    justifyContent: 'space-between',
+   alignItems: 'center',
    marginTop: 15,
   },
   registerIdade: {
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 15,
-    width: '20%',
+    width: '27%',
     marginLeft: '1%',
     borderColor: "#2E8331",
     borderWidth: 2,
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
   },
   hrForm: {
    flex: 1,
+   alignItems: 'center',
    justifyContent: 'center',
    gap: 20,
    width: '100%',
@@ -204,10 +205,10 @@ const styles = StyleSheet.create({
    overflow: 'hidden',
   },
   rtCenter:{
-
    justifyContent: 'center',
+   alignItems: 'center',
+   marginTop: 50,
    gap: 20,
-   width: '100%',
   },
   rtButton: {
    justifyContent: 'flex-end',

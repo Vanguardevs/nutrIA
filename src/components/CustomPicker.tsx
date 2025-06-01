@@ -18,7 +18,9 @@ const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPi
   const background = colorScheme === 'dark' ? "#1C1C1E" : "white";
   const texts = colorScheme === 'dark' ? "#F2F2F2" : "#1C1C1E";
 
-  return (      
+  return (
+    <View style={styles.container1}>
+      
       <View style={styles.container2}>
 
         <Text style={[styles.label, { color: texts }]}>{label}</Text>
@@ -31,12 +33,14 @@ const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPi
           placeholder={{ label: "Selecione uma opção...", value: null }}
           style={{...pickerSelectStyles, iconContainer: {top:10, right:5}}}
           Icon={()=>{
-            return(<Ionicons name="caret-down-outline" size={22} color="black" />)
+            return(<Ionicons name="arrow-down" size={24} color="black" />)
           }}
         />
 
       </View>
 
+      
+    </View>
   );
 };
 
@@ -45,6 +49,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
+  },
+  container1:{
+    flexDirection: 'row'
   },
   label: {
     fontSize: 16,

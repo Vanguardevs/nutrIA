@@ -50,8 +50,6 @@ export default function Home() {
     // const result = await model.generateContent(InputMessage);                          
     // console.log(result.response.text());
     // setOutputMessage(result.response.text);
-    
-    //Criando uma requisição post no back end nutria
 
         const messageR = {                                                       
             _id:Math.random().toString(36).substring(7),                         

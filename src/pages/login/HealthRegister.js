@@ -20,8 +20,8 @@ export default function HealthRegister() {
     const {nome, email, password, idade, sexo} = route.params;
     const navigation = useNavigation();
 
-    const [altura, setAltura] = useState(0);
-    const [peso, setPeso] = useState(0);
+    const [altura, setAltura] = useState();
+    const [peso, setPeso] = useState();
     const [objetivo, setObjetivo] = useState('');
 
         function cadastro(){
@@ -75,11 +75,24 @@ export default function HealthRegister() {
             }
         }
 
+        function handleAltura(input){
+
+            alturaFormatada = input.replace(/[^0-9]/g, '')
+
+            let alturaFormatada2 = alturaFormatada
+            if(input.length > 1){
+                alturaFormatada2 = `${alturaFormatada.slice(0,1)}.${alturaFormatada.slice(1,3)}`
+            }
+            setAltura(alturaFormatada2) 
+        }
+
+
+
     return (
         <SafeAreaView style={[styles.hrContainer,{backgroundColor: background}]}>
 
             <View style={styles.hrForm}>
-                <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={(d)=>setAltura(d)} keyboardType='numeric'/>
+                <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={handleAltura} keyboardType='numeric'/>
                 <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={(d)=>setPeso(d)} keyboardType='numeric'/>
 
                     <CustomPicker
