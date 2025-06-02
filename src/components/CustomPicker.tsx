@@ -32,9 +32,6 @@ const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPi
           value={selectedValue}
           placeholder={{ label: "Selecione uma opção...", value: null }}
           style={{...pickerSelectStyles, iconContainer: {top:10, right:5}}}
-          Icon={()=>{
-            return(<Ionicons name="arrow-down" size={24} color="black" />)
-          }}
         />
 
       </View>

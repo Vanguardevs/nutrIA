@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ImageBackground, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
-
+import Svg, { Rect } from 'react-native-svg';
 
 export default function Progress(){
 
@@ -12,7 +12,8 @@ export default function Progress(){
     return(
         <SafeAreaView style={[styles.container,{backgroundColor:backgoundH}]}>
             <ImageBackground source={require('../../../assets/Frutas_home.png')} style={styles.homeBackground}>
-
+                <Svg height="35%" width="80%" style={{ alignSelf: 'center' }}>
+                </Svg>
             </ImageBackground>
         </SafeAreaView>
     )
