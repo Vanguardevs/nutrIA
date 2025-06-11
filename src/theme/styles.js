@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
    flex: 1,
    justifyContent: 'center',
    gap: 20,
-   width: '100%',
+   width: '72%',
   },
   registerContainer: {
    flex: 1,

@@ -69,20 +69,22 @@ export default function DataUser() {
 
 
     return(
-        <SafeAreaView style={{backgroundColor: background, flex: 1}}>
-            <View style={{display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', flexDirection: 'column'}}>
+        <SafeAreaView style={{alignItems:'center', justifyContent: 'center', backgroundColor: background, flex: 1}}>
+            <View style={{display: 'flex', flex: 1, justifyContent:'center', width: '72%', flexDirection: 'column'}}>
                 <CustomField title='Nome atual' placeholder="Seu nome atual" value={nome} setValue={setNome}/>
                 <CustomField title='Idade atual' placeholder="Sua Idade atual" value={idade} setValue={setIdade}/>
-                <CustomPicker
-                    label="Objetivo"
-                    selectedValue={objetivo}
-                    onValueChange={(value)=> setObjetivo(value)}
-                    options={[
-                        { label: "Emagrecimento", value: "Emagrecimento" },
-                        { label: "Musculo", value: "Musculo" },
-                        { label: "Saúde", value: "Saúde" }
-                    ]}
-                />
+                <View style={{alignItems: 'center', marginBottom: 10, marginTop: 10}}>
+                    <CustomPicker
+                        label="Objetivo"
+                        selectedValue={objetivo}
+                        onValueChange={(value)=> setObjetivo(value)}
+                        options={[
+                            { label: "Emagrecimento", value: "Emagrecimento" },
+                            { label: "Musculo", value: "Musculo" },
+                            { label: "Saúde", value: "Saúde" }
+                        ]}
+                    />
+                </View>
                 <CustomField title='Peso atual' placeholder="Seu peso atual" value={peso} setValue={setPeso}/>
                 <CustomField title='Peso atual' placeholder="Seu peso atual" value={altura} setValue={setAltura}/>
                 <CustomButton title='Salvar dado' modeButton={true} onPress={AtualizarDados}/>

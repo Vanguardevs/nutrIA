@@ -5,7 +5,6 @@ import CustomField from "../../../components/CustomField";
 import CustomButton from "../../../components/CustomButton";
 import CustomPicker from "../../../components/CustomPicker";
 import styles from "../../../theme/styles";
-import RNPickerSelect from 'react-native-picker-select';
 
 export default function CreateUser() {
 
