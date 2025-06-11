@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView, Button } from 'react-native';
+import { View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView } from 'react-native';
 import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 
 export default function Progress() {
-    const navigation = useNavigation();
-
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
     const backgroundH = isDark ? '#1C1C1E' : '#F2F2F2';
@@ -21,7 +18,7 @@ export default function Progress() {
     const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
     useEffect(() => {
-        // Mudar para bagaça de APi
+        //Substituir pela bagaça API
         const dadosExemplo = [
             { alimento: 'Banana', comido: true },
             { alimento: 'Aveia', comido: true },
@@ -30,11 +27,11 @@ export default function Progress() {
             { alimento: 'Iogurte', comido: false },
         ];
 
-        const comidosList = dadosExemplo.filter(item => item.comido).map(item => item.alimento);
-        const naoComidosList = dadosExemplo.filter(item => !item.comido).map(item => item.alimento);
+        const comidos = dadosExemplo.filter(item => item.comido).map(item => item.alimento);
+        const naoComidos = dadosExemplo.filter(item => !item.comido).map(item => item.alimento);
 
-        setComidos(comidosList);
-        setNaoComidos(naoComidosList);
+        setComidos(comidos);
+        setNaoComidos(naoComidos);
     }, []);
 
     return (
@@ -45,17 +42,16 @@ export default function Progress() {
                 resizeMode="cover"
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={[styles.title, { color: textColor }]}>Gráfico Nutricional</Text>
+                    <Text style={[styles.title, { color: textColor }]}>Grafico Nutricional</Text>
 
-                    {/* GRAFICO */}
+                    {/* GRAFICO FODASTICO*/}
                     <View style={styles.chartSection}>
                         <View style={styles.chartRow}>
                             <YAxis
                                 data={data}
                                 contentInset={{ top: 20, bottom: 20 }}
                                 svg={{ fill: textColor, fontSize: 12 }}
-                                numberOfTicks={Math.max(...data)} // quantidade de ticks igual ao maior valor
-                                formatLabel={value => Math.round(value).toString()} // mostra só números inteiros
+                                numberOfTicks={6}
                             />
                             <View style={{ flex: 1, marginLeft: 10 }}>
                                 <LineChart
@@ -63,7 +59,7 @@ export default function Progress() {
                                     data={data}
                                     svg={{ stroke: lineColor, strokeWidth: 2 }}
                                     contentInset={{ top: 20, bottom: 20 }}
-                                    curve={shape.curveLinear}  // linha reta, sem curva
+                                    curve={shape.curveMonotoneX}
                                 >
                                     <Grid />
                                 </LineChart>
@@ -78,20 +74,7 @@ export default function Progress() {
                         </View>
                     </View>
 
-                    {/* Navegação Insana*/}
-                    <View style={{ width: '100%', marginBottom: 30 }}>
-                        <Button
-                            title="Ver Resumo Diário"
-                            onPress={() => navigation.navigate('ResumoDiario', { comidos, naoComidos })}
-                        />
-                        <View style={{ height: 10 }} />
-                        <Button
-                            title="Ver Resumo Semanal"
-                            onPress={() => navigation.navigate('ResumoSemanal')}
-                        />
-                    </View>
-
-                    {/* COMIDOS */}
+                    {/* COMIDO */}
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="check-box" size={24} color="green" />
@@ -102,7 +85,7 @@ export default function Progress() {
                         ))}
                     </View>
 
-                    {/* NÃO COMIDOS */}
+                    {/* NÃO COMIDO */}
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="cancel" size={24} color="red" />
