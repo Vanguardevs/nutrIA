@@ -39,6 +39,8 @@ export default function Progress() {
         setNaoComidos(naoComidos);
     }, []);
 
+    const contentInset = { top: 20, bottom: 20 };
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: backgroundH }]}>
             <ImageBackground
@@ -54,7 +56,7 @@ export default function Progress() {
                         <View style={styles.chartRow}>
                             <YAxis
                                 data={data}
-                                contentInset={{ top: 20, bottom: 20 }}
+                                contentInset={contentInset}
                                 svg={{ fill: textColor, fontSize: 12 }}
                                 numberOfTicks={6}
                             />
@@ -63,7 +65,7 @@ export default function Progress() {
                                     style={{ height: 200 }}
                                     data={data}
                                     svg={{ stroke: lineColor, strokeWidth: 2 }}
-                                    contentInset={{ top: 20, bottom: 20 }}
+                                    contentInset={contentInset}
                                     curve={shape.curveMonotoneX}
                                 >
                                     <Grid />
@@ -72,7 +74,7 @@ export default function Progress() {
                                     style={{ marginTop: 10 }}
                                     data={data}
                                     formatLabel={(value, index) => days[index]}
-                                    contentInset={{ left: 10, right: 10 }}
+                                    contentInset={contentInset}
                                     svg={{ fill: textColor, fontSize: 12 }}
                                 />
                             </View>
@@ -129,6 +131,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         alignSelf: 'flex-start',
+        textAlign: 'center'
     },
     chartSection: {
         width: '100%',

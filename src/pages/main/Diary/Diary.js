@@ -24,10 +24,12 @@ export default function Diary() {
   const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
 
   const navigate = useNavigation();
+
   const [agendas, setAgendas] = useState([])
   const [concluido, setConcluido] = useState(false);
   
   async function verificarTodasAgendas(){
+
     try{
       const userID = auth.currentUser?.uid;
       if(!userID){
@@ -88,7 +90,7 @@ export default function Diary() {
     const now = new Date();
 
     for (const agenda of agendas) {
-      const hora = horaFormatada(agenda.hora);
+      const hora = horaFormatada(agenda.horario);
 
       // Verificar se o horário está no futuro
       const triggerDate = new Date();
@@ -133,10 +135,11 @@ export default function Diary() {
 
         {agendas.map((agenda)=>(
           <CardCustomCalendar
-          key={agenda.id}
-          horario={agenda.hora}
-          alimentacao={agenda.refeicao}
-          onPressEdit={()=>{navigate.navigate("Edit-Diary", {id: agenda.id, refeicao: agenda.refeicao, hora: agenda.hora})}}
+            key={agenda.id}
+            horario={agenda.horario}
+            alimentacao={agenda.refeicao}
+            onPressEdit={()=>{navigate.navigate("Edit-Diary", {id: agenda.id, refeicao: agenda.refeicao, hora: agenda.horario})}}
+
           />
         ))}
 

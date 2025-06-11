@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useColorScheme, Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground, KeyboardAvoidingView, Platform} from "react-native"; // Adicionado KeyboardAvoidingView, Platform
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from "axios";
 import {TextInput} from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -63,6 +63,15 @@ export default function Home() {
     )
     }
     
+    useEffect(() => {
+        async function ligarRender(){
+            const resp = await axios.get("https://nutria-6uny.onrender.com/on")
+            return resp.data;
+        }
+
+        ligarRender();
+        
+    }, []);
 
 
 
