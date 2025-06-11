@@ -1,9 +1,8 @@
-
 import React,{useState, useEffect} from 'react';
 import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme, ScrollView } from 'react-native';
 import CardCustomCalendar from '../../../components/CustomCardCalendar';
 import { useNavigation } from '@react-navigation/native';
-import {ref, onValue, getDatabase} from "firebase/database"
+import {ref, onValue, getDatabase, push, update} from "firebase/database"
 import {auth} from "../../../database/firebase";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Notifications from 'expo-notifications';
@@ -87,12 +86,11 @@ export default function Diary() {
   }
 
   async function createNotification() {
-    const now = new Date();
-
+    
     for (const agenda of agendas) {
       const hora = horaFormatada(agenda.horario);
-
-      // Verificar se o horário está no futuro
+      
+      const now = new Date();
       const triggerDate = new Date();
       triggerDate.setHours(hora.horas);
       triggerDate.setMinutes(hora.minutos);
@@ -115,6 +113,17 @@ export default function Diary() {
     }
   }
 
+  async function AgendaConcluida(id){
+    const userID = auth.currentUser?.uid;
+    const db = getDatabase();
+    const data = new Date();
+    const dia = data.getDay()
+
+    const reference = ref(db, `users/${userID}/diaries/${id}/progress/`);
+    update(reference,{
+      [dia]: true
+    })
+  }
 
 
   useEffect(()=>{
@@ -139,7 +148,7 @@ export default function Diary() {
             horario={agenda.horario}
             alimentacao={agenda.refeicao}
             onPressEdit={()=>{navigate.navigate("Edit-Diary", {id: agenda.id, refeicao: agenda.refeicao, hora: agenda.horario})}}
-
+            onPressConcluido={()=>AgendaConcluida(agenda.id)}
           />
         ))}
 

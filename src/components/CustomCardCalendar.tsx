@@ -5,9 +5,10 @@ interface CustomCard {
     horario: string;
     alimentacao: string;
     onPressEdit: () => void;
+    onPressConcluido: () => void;
 }
 
-const CardCustomCalendar = ({horario, alimentacao, onPressEdit}: CustomCard) => {
+const CardCustomCalendar = ({horario, alimentacao, onPressEdit, onPressConcluido}: CustomCard) => {
 
     const colorSheme = useColorScheme();
 
@@ -30,7 +31,7 @@ const CardCustomCalendar = ({horario, alimentacao, onPressEdit}: CustomCard) => 
             </View>
 
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.concluidoButton}>
+                <TouchableOpacity style={styles.concluidoButton} onPress={onPressConcluido}>
                     <Ionicons name="thumbs-up" size={32} color="#FFF" />
                     <Text style={styles.concluidoText}>Concluído</Text>
                 </TouchableOpacity>
