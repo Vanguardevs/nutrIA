@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView } from 'react-native';
+import { View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView, Dimensions } from 'react-native';
 import CustomButton from '../../../components/CustomButton';
-import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
-import * as shape from 'd3-shape';
+import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -39,7 +38,7 @@ export default function Progress() {
         setNaoComidos(naoComidos);
     }, []);
 
-    const contentInset = { top: 20, bottom: 20 };
+    const screenWidth = Dimensions.get('window').width - 40;
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: backgroundH }]}>
@@ -51,34 +50,39 @@ export default function Progress() {
                 <ScrollView contentContainerStyle={styles.scrollContent}>
                     <Text style={[styles.title, { color: textColor }]}>Grafico Nutricional</Text>
 
-                    {/* GRAFICO FODASTICO*/}
+                    {/* GRÁFICO */}
                     <View style={styles.chartSection}>
-                        <View style={styles.chartRow}>
-                            <YAxis
-                                data={data}
-                                contentInset={contentInset}
-                                svg={{ fill: textColor, fontSize: 12 }}
-                                numberOfTicks={6}
-                            />
-                            <View style={{ flex: 1, marginLeft: 10 }}>
-                                <LineChart
-                                    style={{ height: 200 }}
-                                    data={data}
-                                    svg={{ stroke: lineColor, strokeWidth: 2 }}
-                                    contentInset={contentInset}
-                                    curve={shape.curveMonotoneX}
-                                >
-                                    <Grid />
-                                </LineChart>
-                                <XAxis
-                                    style={{ marginTop: 10 }}
-                                    data={data}
-                                    formatLabel={(value, index) => days[index]}
-                                    contentInset={contentInset}
-                                    svg={{ fill: textColor, fontSize: 12 }}
-                                />
-                            </View>
-                        </View>
+                        <LineChart
+                            data={{
+                                labels: days,
+                                datasets: [
+                                    {
+                                        data: data,
+                                        color: () => lineColor,
+                                        strokeWidth: 2,
+                                    },
+                                ],
+                            }}
+                            width={screenWidth}
+                            height={220}
+                            chartConfig={{
+                                backgroundColor: backgroundH,
+                                backgroundGradientFrom: backgroundH,
+                                backgroundGradientTo: backgroundH,
+                                decimalPlaces: 0,
+                                color: () => textColor,
+                                labelColor: () => textColor,
+                                propsForDots: {
+                                    r: "5",
+                                    strokeWidth: "2",
+                                    stroke: lineColor,
+                                },
+                            }}
+                            bezier
+                            style={{
+                                borderRadius: 16,
+                            }}
+                        />
                     </View>
 
                     {/* BOTAO PARA ALIMENTOS COMIDOS */}
@@ -136,10 +140,6 @@ const styles = StyleSheet.create({
     chartSection: {
         width: '100%',
         marginBottom: 30,
-    },
-    chartRow: {
-        flexDirection: 'row',
-        width: '100%',
         alignItems: 'center',
     },
     section: {
