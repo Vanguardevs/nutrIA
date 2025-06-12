@@ -25,7 +25,7 @@ export default function Progress() {
     const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
     useEffect(() => {
-        
+
         const db = getDatabase();
         const userId = auth.currentUser?.uid;
         const diariesRef = ref(db, `users/${userId}/diaries`);
@@ -35,40 +35,38 @@ export default function Progress() {
             const data = snapshot.val();
 
             if (data && typeof data === 'object') {
-                const diaHoje = new Date().getDay(); // Obtém o índice do dia atual (0 = Domingo, 6 = Sábado)
+
+                const diaHoje = new Date().getDay(); 
+
                 const listaAgendas = Object.entries(data).map(([key, value]) => ({
                     id: key,
                     ...value,
                 }));
 
-                console.log('Lista de agendas:', listaAgendas);
+                const comidosTemp = [];
+                const naoComidosTemp = [];
 
-                const comidosTemp = []; // Temporário para alimentos comidos
-                const naoComidosTemp = []; // Temporário para alimentos não comidos
-
-                // Itera sobre todas as agendas
                 listaAgendas.forEach((agenda) => {
                     if (agenda.progress && Array.isArray(agenda.progress)) {
                         if (agenda.progress[diaHoje] === true) {
-                            comidosTemp.push(agenda.refeicao); // Adiciona ao array de comidos
+                            comidosTemp.push(agenda.refeicao);
                         } else {
-                            naoComidosTemp.push(agenda.refeicao); // Adiciona ao array de não comidos
+                            naoComidosTemp.push(agenda.refeicao);
                         }
                     }
                 });
 
-                setComidos(comidosTemp); // Atualiza o estado com os alimentos comidos
-                setNaoComidos(naoComidosTemp); // Atualiza o estado com os alimentos não comidos
+                setComidos(comidosTemp);
+                setNaoComidos(naoComidosTemp);
             } else {
                 console.warn('Nenhum dado encontrado ou formato inválido.');
-                setComidos([]); // Define como vazio se os dados forem inválidos
-                setNaoComidos([]); // Define como vazio se os dados forem inválidos
+                setComidos([]);
+                setNaoComidos([]);
             }
         }, (error) => {
             console.error('Erro ao acessar o banco de dados:', error);
         });
-
-        // Cleanup: Remove o listener quando o componente for desmontado
+        
         return () => unsubscribe();
     }, []);
 
