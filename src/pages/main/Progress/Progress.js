@@ -4,6 +4,8 @@ import CustomButton from '../../../components/CustomButton';
 import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import {auth} from '../../../database/firebase';
+import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function Progress() {
 
@@ -16,26 +18,58 @@ export default function Progress() {
     const naviagte = useNavigation();
 
     const [comidos, setComidos] = useState([]);
+    const [agendamentos, setAgendamentos] = useState([]);
     const [naoComidos, setNaoComidos] = useState([]);
+    const [quantidade, setQuantidade] = useState([0]);
 
-    const data = [1, 3, 2, 4, 1, 2, 5];
     const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
     useEffect(() => {
+        
+        const db = getDatabase();
+        const userId = auth.currentUser?.uid;
+        const diariesRef = ref(db, `users/${userId}/diaries`);
 
-        const dadosExemplo = [
-            { alimento: 'Banana', comido: true },
-            { alimento: 'Aveia', comido: true },
-            { alimento: 'Ovos', comido: true },
-            { alimento: 'Maçã', comido: false },
-            { alimento: 'Iogurte', comido: false },
-        ];
+        // Escuta mudanças em tempo real
+        const unsubscribe = onValue(diariesRef, (snapshot) => {
+            const data = snapshot.val();
 
-        const comidos = dadosExemplo.filter(item => item.comido).map(item => item.alimento);
-        const naoComidos = dadosExemplo.filter(item => !item.comido).map(item => item.alimento);
+            if (data && typeof data === 'object') {
+                const diaHoje = new Date().getDay(); // Obtém o índice do dia atual (0 = Domingo, 6 = Sábado)
+                const listaAgendas = Object.entries(data).map(([key, value]) => ({
+                    id: key,
+                    ...value,
+                }));
 
-        setComidos(comidos);
-        setNaoComidos(naoComidos);
+                console.log('Lista de agendas:', listaAgendas);
+
+                const comidosTemp = []; // Temporário para alimentos comidos
+                const naoComidosTemp = []; // Temporário para alimentos não comidos
+
+                // Itera sobre todas as agendas
+                listaAgendas.forEach((agenda) => {
+                    if (agenda.progress && Array.isArray(agenda.progress)) {
+                        if (agenda.progress[diaHoje] === true) {
+                            comidosTemp.push(agenda.refeicao); // Adiciona ao array de comidos
+                        } else {
+                            naoComidosTemp.push(agenda.refeicao); // Adiciona ao array de não comidos
+                        }
+                    }
+                });
+
+                setComidos(comidosTemp); // Atualiza o estado com os alimentos comidos
+                setNaoComidos(naoComidosTemp); // Atualiza o estado com os alimentos não comidos
+            } else {
+                console.warn('Nenhum dado encontrado ou formato inválido.');
+                setComidos([]); // Define como vazio se os dados forem inválidos
+                setNaoComidos([]); // Define como vazio se os dados forem inválidos
+            }
+        }, (error) => {
+            console.error('Erro ao acessar o banco de dados:', error);
+        });
+
+        // Cleanup: Remove o listener quando o componente for desmontado
+        return () => unsubscribe();
     }, []);
 
     const screenWidth = Dimensions.get('window').width - 40;
@@ -57,7 +91,7 @@ export default function Progress() {
                                 labels: days,
                                 datasets: [
                                     {
-                                        data: data,
+                                        data: [0,1,2,3,4,5,6],
                                         color: () => lineColor,
                                         strokeWidth: 2,
                                     },
@@ -129,6 +163,7 @@ const styles = StyleSheet.create({
     scrollContent: {
         alignItems: 'center',
         padding: 20,
+        height: 'auto',
     },
     title: {
         fontSize: 24,
@@ -150,6 +185,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 8,
+        marginBottom: '20%'
     },
     sectionTitle: {
         fontSize: 18,
