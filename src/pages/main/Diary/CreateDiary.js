@@ -92,7 +92,7 @@ export default function CreateDiary(){
                             {label:'Lanche da Tarde', value:'Lanche da Tarde'}
                         ]}
                     />
-                    <CustomField title="Alimento" placeholder='Alimento' value={refeicao} setValue={(d)=>setRefeicao(d)}/>
+                    <CustomField title="Refeição" placeholder='Refeição' value={refeicao} setValue={(d)=>setRefeicao(d)}/>
                     <CustomField title="Horario" placeholder='Horario' value={hora} setValue={handleHora} keyboardType="numeric"/>
 
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>

@@ -6,7 +6,6 @@ import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, remove, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
-import CustomPicker from '../../../components/CustomPicker';
 
 export default function EditDiary(){
 
@@ -21,7 +20,6 @@ export default function EditDiary(){
 
     const [editRefeicao, setEditRefeicao] = useState(refeicao);
     const [editHora, setEditHora] = useState(hora);
-    const [tipoRefeicao, setTipoRefeicao] = useState('');
 
     function handleHora(input){
 
@@ -92,19 +90,7 @@ export default function EditDiary(){
 
                 <View style={styles.container_items}>
 
-                    <CustomPicker
-                        label="Refeição"
-                        selectedValue={tipoRefeicao}
-                        onValueChange={setTipoRefeicao}
-                        options={[
-                            {label:'Café da Manhã', value:'Café da Manhã'}, 
-                            {label:'Almoço', value:'Almoço'}, 
-                            {label:'Jantar', value:'Jantar'}, 
-                            {label:'Lanche da Tarde', value:'Lanche da Tarde'}
-                        ]}
-                    />
-
-                    <CustomField title="Alimento" placeholder='Alimento' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
+                    <CustomField title="Refeição" placeholder='Refeição' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
                     <CustomField title="Horario" placeholder='Horario' value={editHora} setValue={handleHora} keyboardType="numeric"/>
 
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>

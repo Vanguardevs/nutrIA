@@ -23,7 +23,7 @@ export default function ResumoDiario({ route }) {
                 totalValorEnergetico += detalhe.valorEnergetico;
             }
             return (
-                <View key={index} style={styles.item}>
+                <View key={index} style={styles.itemCard}>
                     <Text style={styles.nome}>{item}</Text>
                     {detalhe && (
                         <Text style={styles.detalhe}>
@@ -37,15 +37,16 @@ export default function ResumoDiario({ route }) {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Agendamentos Concluidos</Text>
-            {renderAlimentos(comidos)}
+            <Text style={styles.title}>🍽️ Alimentos Comidos</Text>
+            {comidos.length ? renderAlimentos(comidos) : <Text style={styles.vazio}>Nenhum alimento comido.</Text>}
 
-            <Text style={styles.title}>Agendamentos não Concluidos</Text>
-            {renderAlimentos(naoComidos)}
+            <Text style={styles.title}>🥄 Alimentos Não Comidos</Text>
+            {naoComidos.length ? renderAlimentos(naoComidos) : <Text style={styles.vazio}>Nenhum alimento ignorado.</Text>}
 
             <View style={styles.totalContainer}>
-                <Text style={styles.totalText}>Total de Calorias: {totalCalorias} kcal</Text>
-                <Text style={styles.totalText}>Total Valor Energético: {totalValorEnergetico} kJ</Text>
+                <Text style={styles.totalTitle}>Resumo Nutricional</Text>
+                <Text style={styles.totalText}>🔥 Calorias Totais: {totalCalorias} kcal</Text>
+                <Text style={styles.totalText}>⚡ Valor Energético Total: {totalValorEnergetico} kJ</Text>
             </View>
         </ScrollView>
     );
@@ -53,32 +54,59 @@ export default function ResumoDiario({ route }) {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        padding: 20,
+        backgroundColor: '#f7f9fc',
     },
     title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginTop: 20,
-        marginBottom: 10,
+        fontSize: 20,
+        fontWeight: '600',
+        marginVertical: 12,
+        color: '#333',
     },
-    item: {
-        marginBottom: 12,
+    itemCard: {
+        backgroundColor: '#ffffff',
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.05,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 2,
     },
     nome: {
         fontSize: 18,
+        fontWeight: '500',
+        color: '#222',
+        marginBottom: 4,
     },
     detalhe: {
         fontSize: 14,
-        color: '#555',
+        color: '#666',
     },
     totalContainer: {
         marginTop: 30,
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        paddingTop: 15,
+        padding: 20,
+        backgroundColor: '#e6f0ff',
+        borderRadius: 12,
+        borderLeftWidth: 5,
+        borderLeftColor: '#4a90e2',
+    },
+    totalTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginBottom: 8,
+        color: '#2b4c7e',
     },
     totalText: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#2b4c7e',
+    },
+    vazio: {
+        fontStyle: 'italic',
+        color: '#999',
+        marginBottom: 10,
+        marginLeft: 4,
     },
 });
