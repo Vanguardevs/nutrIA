@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView, Dimensions } from 'react-native';
+import {View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView, Dimensions,} from 'react-native';
 import CustomButton from '../../../components/CustomButton';
 import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -8,14 +8,14 @@ import {auth} from '../../../database/firebase';
 import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function Progress() {
-
     const colorScheme = useColorScheme();
 
-    const backgroundH = colorScheme === 'dark'? '#1C1C1E' : '#F2F2F2';
+    const backgroundH = colorScheme === 'dark' ? '#1C1C1E' : '#F2F2F2';
     const textColor = colorScheme === 'dark' ? '#fff' : '#000';
+    const cardBackground = colorScheme === 'dark' ? '#2c2c2e' : '#fff';
     const lineColor = colorScheme === 'dark' ? 'rgba(134, 65, 244, 0.8)' : '#6a1b9a';
 
-    const naviagte = useNavigation();
+    const navigate = useNavigation();
 
     const [comidos, setComidos] = useState([]);
     const [agendamentos, setAgendamentos] = useState([]);
@@ -70,7 +70,7 @@ export default function Progress() {
         return () => unsubscribe();
     }, []);
 
-    const screenWidth = Dimensions.get('window').width - 40;
+    const screenWidth = Dimensions.get('window').width;
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: backgroundH }]}>
@@ -80,10 +80,9 @@ export default function Progress() {
                 resizeMode="cover"
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={[styles.title, { color: textColor }]}>Grafico Nutricional</Text>
+                    <Text style={[styles.title, { color: textColor }]}>📊 Gráfico Nutricional</Text>
 
-                    {/* GRÁFICO */}
-                    <View style={styles.chartSection}>
+                    <View style={[styles.chartSection, styles.card, { backgroundColor: cardBackground }]}>
                         <LineChart
                             data={{
                                 labels: days,
@@ -95,7 +94,7 @@ export default function Progress() {
                                     },
                                 ],
                             }}
-                            width={screenWidth}
+                            width={screenWidth - 72}
                             height={220}
                             chartConfig={{
                                 backgroundColor: backgroundH,
@@ -105,8 +104,8 @@ export default function Progress() {
                                 color: () => textColor,
                                 labelColor: () => textColor,
                                 propsForDots: {
-                                    r: "5",
-                                    strokeWidth: "2",
+                                    r: '5',
+                                    strokeWidth: '2',
                                     stroke: lineColor,
                                 },
                             }}
@@ -117,13 +116,15 @@ export default function Progress() {
                         />
                     </View>
 
-                    {/* BOTAO PARA ALIMENTOS COMIDOS */}
-                    <View style={{alignItems: 'center', marginBottom: 10, marginTop: 10}}>
-                        <CustomButton title="Alimentos Comidos" onPress={() => naviagte.navigate('ResumoDiario', { comidos, naoComidos })} modeButton={true} />
+                    <View style={styles.buttonWrapper}>
+                        <CustomButton
+                            title="Ver Resumo Diário"
+                            onPress={() => navigate.navigate('ResumoDiario', { comidos, naoComidos })}
+                            modeButton={true}
+                        />
                     </View>
 
-                    {/* COMIDO */}
-                    <View style={styles.section}>
+                    <View style={[styles.card, { backgroundColor: cardBackground }]}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="check-box" size={24} color="green" />
                             <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Comidos</Text>
@@ -132,9 +133,8 @@ export default function Progress() {
                             <Text key={index} style={[styles.item, { color: textColor }]}>• {alimento}</Text>
                         ))}
                     </View>
-                    
-                    {/* NAO COMIDO */}
-                    <View style={styles.section}>
+
+                    <View style={[styles.card, { backgroundColor: cardBackground }]}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="cancel" size={24} color="red" />
                             <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Não Comidos</Text>
@@ -164,20 +164,33 @@ const styles = StyleSheet.create({
         height: 'auto',
     },
     title: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
-        marginBottom: 20,
         alignSelf: 'flex-start',
-        textAlign: 'center'
+        marginBottom: 20,
     },
     chartSection: {
         width: '100%',
-        marginBottom: 30,
+        alignItems: 'center',
+        padding: 16,
+        borderRadius: 16,
+        marginBottom: 20,
+    },
+    buttonWrapper: {
+        marginVertical: 10,
+        width: '100%',
         alignItems: 'center',
     },
-    section: {
+    card: {
         width: '100%',
+        borderRadius: 16,
+        padding: 16,
         marginBottom: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.05,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 6,
+        elevation: 3,
     },
     sectionHeader: {
         flexDirection: 'row',
@@ -186,13 +199,13 @@ const styles = StyleSheet.create({
         marginBottom: '20%'
     },
     sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 20,
+        fontWeight: '600',
         marginLeft: 8,
     },
     item: {
         fontSize: 16,
-        marginLeft: 16,
-        marginBottom: 4,
+        marginLeft: 8,
+        marginBottom: 6,
     },
 });
