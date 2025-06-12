@@ -37,10 +37,10 @@ export default function ResumoDiario({ route }) {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Alimentos Comidos</Text>
+            <Text style={styles.title}>Agendamentos Concluidos</Text>
             {renderAlimentos(comidos)}
 
-            <Text style={styles.title}>Alimentos Não Comidos</Text>
+            <Text style={styles.title}>Agendamentos não Concluidos</Text>
             {renderAlimentos(naoComidos)}
 
             <View style={styles.totalContainer}>

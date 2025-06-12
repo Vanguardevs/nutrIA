@@ -5,6 +5,8 @@ import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import {auth} from "../../../database/firebase";
+import {getDatabase, ref, onValue} from "firebase/database"
 
 export default function Progress() {
 
@@ -17,6 +19,7 @@ export default function Progress() {
     const naviagte = useNavigation();
 
     const [comidos, setComidos] = useState([]);
+    const [agendas, setAgendas] = useState([]);
     const [naoComidos, setNaoComidos] = useState([]);
 
     const data = [1, 3, 2, 4, 1, 2, 5];
@@ -31,6 +34,21 @@ export default function Progress() {
             { alimento: 'Maçã', comido: false },
             { alimento: 'Iogurte', comido: false },
         ];
+
+        const userID = auth.currentUser?.uid
+        const db = getDatabase();
+
+        const refDiaries = ref(db, `users/${userID}/diaries`)
+
+        onValue(refDiaries,(resp)=>{
+            const dataDiaries = resp.val();
+            Object.apply(dataDiaries, (value, key) => {
+                if (value) {
+                    setAgendas(prev => [...prev, {key: key, ...value}]);
+                }
+            })
+            console.log(dataDiaries); 
+        })
 
         const comidos = dadosExemplo.filter(item => item.comido).map(item => item.alimento);
         const naoComidos = dadosExemplo.filter(item => !item.comido).map(item => item.alimento);
@@ -66,7 +84,7 @@ export default function Progress() {
                                     data={data}
                                     svg={{ stroke: lineColor, strokeWidth: 2 }}
                                     contentInset={contentInset}
-                                    curve={shape.curveMonotoneX}
+                                    curve={shape.curveLine}
                                 >
                                     <Grid />
                                 </LineChart>
@@ -83,14 +101,14 @@ export default function Progress() {
 
                     {/* BOTAO PARA ALIMENTOS COMIDOS */}
                     <View style={{alignItems: 'center', marginBottom: 10, marginTop: 10}}>
-                        <CustomButton title="Alimentos Comidos" onPress={() => naviagte.navigate('ResumoDiario', { comidos, naoComidos })} modeButton={true} />
+                        <CustomButton title="Resumo Diário" onPress={() => naviagte.navigate('ResumoDiario', { comidos, naoComidos })} modeButton={true} />
                     </View>
 
                     {/* COMIDO */}
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="check-box" size={24} color="green" />
-                            <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Comidos</Text>
+                            <Text style={[styles.sectionTitle, { color: textColor }]}>Agendamentos Concluidos</Text>
                         </View>
                         {comidos.map((alimento, index) => (
                             <Text key={index} style={[styles.item, { color: textColor }]}>• {alimento}</Text>
@@ -101,7 +119,7 @@ export default function Progress() {
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="cancel" size={24} color="red" />
-                            <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Não Comidos</Text>
+                            <Text style={[styles.sectionTitle, { color: textColor }]}>Agendamentos Não Concluidos</Text>
                         </View>
                         {naoComidos.map((alimento, index) => (
                             <Text key={index} style={[styles.item, { color: textColor }]}>• {alimento}</Text>
