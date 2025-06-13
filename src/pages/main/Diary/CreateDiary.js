@@ -1,9 +1,10 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, Button} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
 import CustomButton from '../../../components/CustomButton';
 import React,{ useEffect, useState } from 'react';
 import { push, getDatabase, ref, set } from 'firebase/database';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { auth } from '../../../database/firebase';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -11,6 +12,31 @@ import axios from 'axios';
 
 export default function CreateDiary(){
 
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false); 
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+    const handleConfirm = (date) => {
+        console.warn("A date has been picked: ", date);
+        hideDatePicker();
+    };
+
+
+    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+    const showTimePicker = () => {
+        setTimePickerVisibility(true);
+    };
+    const hideTimePicker = () => {
+        setTimePickerVisibility(false);
+    };
+    const handleTimeConfirm = (time) => {
+        console.warn("A Time has been picked: ", time);
+        hideTimePicker();
+    };
+    
 
     const colorSheme = useColorScheme();
     
@@ -93,7 +119,22 @@ export default function CreateDiary(){
                         ]}
                     />
                     <CustomField title="Refeição" placeholder='Refeição' value={refeicao} setValue={(d)=>setRefeicao(d)}/>
-                    <CustomField title="Horario" placeholder='Horario' value={hora} setValue={handleHora} keyboardType="numeric"/>
+
+                    <Button title="Data" onPress={showDatePicker} value/>
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                    />
+
+                    <Button title="Horário" onPress={showTimePicker} />
+                    <DateTimePickerModal
+                        isVisible={isTimePickerVisible}
+                        mode="time"
+                        onConfirm={handleTimeConfirm}
+                        onCancel={hideTimePicker}
+                    />
 
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>
 
