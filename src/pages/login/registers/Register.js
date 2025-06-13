@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import CustomField from "../../../components/CustomField"; 
 import CustomButton from "../../../components/CustomButton";
 import CustomPicker from "../../../components/CustomPicker";
+import styles from "../../../theme/styles";
 
 
 export default function CreateUser() {
@@ -22,6 +23,11 @@ export default function CreateUser() {
     const [sexo, setSexo] = useState('');
 
 
+    function isValidEmail(email) {
+      // Regex simples para validar email
+      return /\S+@\S+\.\S+/.test(email);
+    }
+  
     const handleDateChange = (text) => {
         let formattedText = text.replace(/\D/g, ''); 
 
@@ -76,7 +82,10 @@ export default function CreateUser() {
             Alert.alert("Atenção", "Por favor, preencha todos os campos.");
             return;
         }
-
+          if (!isValidEmail(email)) {
+        Alert.alert("Inválido", "Esse email não é válido");
+        return;
+      }
         if (password.length < 8) {
             Alert.alert("Senha Inválida", "A senha deve ter no mínimo 8 caracteres.");
             return;
@@ -91,6 +100,7 @@ export default function CreateUser() {
 
         navigation.navigate("HealthRegister", { nome, email, password, idade: idadeResultante, sexo });
     }
+
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: background }]}>

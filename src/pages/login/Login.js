@@ -50,13 +50,14 @@ export default function LoginPag() {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: background }]}>
+
+    <SafeAreaView style={[styles.loginSafeArea, { backgroundColor: background }]}>
       <ImageBackground
         source={require("../../../assets/Frutas_home.png")}
-        style={styles.imageBackground}
-        imageStyle={{ opacity: 1 }} 
+        style={styles.loginImageBackground}
+        imageStyle={{ opacity: 1 }}
       >
-        <View style={[styles.card, { backgroundColor: 'rgba(255,255,255,0.85)' }]}> 
+        <View style={[styles.loginCard, { backgroundColor: 'rgba(245, 245, 245, 1.00)' }]}>
           <CustomField
             title="Email"
             placeholder="Insira seu email"
@@ -73,9 +74,8 @@ export default function LoginPag() {
             value={password}
             setValue={setPassword}
           />
-
-          <TouchableOpacity onPress={() => navegacao.push("ForgetPassword")} style={styles.forgotContainer}>
-            <Text style={[styles.forgotText, { color: texts }]}>Esqueci minha senha</Text>
+          <TouchableOpacity onPress={() => navegacao.push("ForgetPassword")} style={styles.loginForgotContainer}>
+            <Text style={[styles.loginForgotText, { color: texts }]}>Esqueci minha senha</Text>
           </TouchableOpacity>
 
           <CustomButton
@@ -84,8 +84,7 @@ export default function LoginPag() {
             modeButton={true}
             style={styles.loginButton}
           />
-
-          <TouchableOpacity onPress={() => navegacao.push("Registro")} style={styles.registerContainer}>
+          <TouchableOpacity onPress={() => navegacao.push("Registro")} style={styles.loginRegisterContainer}>
             <Text style={{ fontSize: 15, color: texts }}>
               Não possui conta?{" "}
               <Text style={{ color: "green", fontWeight: "bold", fontSize: 17 }}>
@@ -99,42 +98,3 @@ export default function LoginPag() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  imageBackground: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  card: {
-    width: "85%",
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 5,
-    alignItems: "center",
-  },
-  forgotContainer: {
-    marginTop: 10,
-    marginBottom: 20,
-    width: "100%",
-    alignItems: "center",
-  },
-  forgotText: {
-    fontSize: 15,
-  },
-  loginButton: {
-    width: "100%",
-    marginBottom: 15,
-  },
-  registerContainer: {
-    marginTop: 10,
-    alignItems: "center",
-  },
-});

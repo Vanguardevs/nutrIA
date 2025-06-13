@@ -1,70 +1,83 @@
-import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, useColorScheme } from "react-native";
+import { SafeAreaView, View, useColorScheme } from "react-native";
 import CustomField from "../../../components/CustomField";
-import React, {useEffect, useState} from "react";
-import CustomPicker from "../../../components/CustomPicker";
+import React, { useState } from "react";
 import CustomButton from "../../../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
+import CustomMultiPicker from "../../../components/CustomMultiPicker";
 import styles from "../../../theme/styles";
+
 
 export default function Restricoes() {
 
     const colorScheme = useColorScheme();
 
     const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
-    const texts = colorScheme === 'dark'? "#F2F2F2" : "#1C1C1E";
 
     const navigate = useNavigation();
-    const [Alergias, setAlergias] = useState();
-    const [intolerâncias, setIntolerâncias] = useState();
-    const [Condicoes, setCondicoes] = useState();
+    const [Alergias, setAlergias] = useState('');
+    const [intolerancias, setIntolerancias] = useState([]);
+    const [Condicoes, setCondicoes] = useState([]);
+
+    const intoleranciasOptions = [
+        { id: 'Açucar', name: 'Açucar' },
+        { id: 'Lactose', name: 'Lactose' },
+        { id: 'Gluten', name: 'Gluten' },
+        { id: 'Sacarose', name: 'Sacarose' },
+        { id: 'Frutose', name: 'Frutose' },
+        { id: 'Histamina', name: 'Histamina' },
+        { id: 'Sulfito', name: 'Sulfito' },
+        { id: 'Sorbitol', name: 'Sorbitol' },
+        { id: 'Aditivos', name: 'Aditivos' },
+        { id: 'Corantes', name: 'Corantes' },
+        { id: 'Conservantes', name: 'Conservantes' },
+        { id: 'Origem Animal', name: 'Origem Animal' },
+    ];
+
+    const condicoesOptions = [
+        { id: "Diabetes", name: "Diabetes" },
+        { id: "Hipertensão", name: "Hipertensão" },
+        { id: "Obesidade", name: "Obesidade" },
+        { id: "Anemia", name: "Anemia" },
+        { id: "Câncer", name: "Câncer" },
+        { id: "Doenças Cardiovasculares", name: "Doenças Cardiovasculares" },
+        { id: "Doenças Renais", name: "Doenças Renais" },
+        { id: "Doenças Hepáticas", name: "Doenças Hepáticas" },
+        { id: "Doenças Gastrointestinais", name: "Doenças Gastrointestinais" },
+        { id: "Doenças Autoimunes", name: "Doenças Autoimunes" },
+        { id: "Doenças Respiratórias", name: "Doenças Respiratórias" },
+        { id: "Doenças Neurológicas", name: "Doenças Neurológicas" },
+        { id: "Doenças Endócrinas", name: "Doenças Endócrinas" },
+        { id: "Doenças Infecciosas", name: "Doenças Infecciosas" },
+        { id: "Doenças Psiquiátricas", name: "Doenças Psiquiátricas" },
+        { id: "Doenças Musculoesqueléticas", name: "Doenças Musculoesqueléticas" },
+        { id: "Doenças Dermatológicas", name: "Doenças Dermatológicas" },
+    ];
 
     return(
         <SafeAreaView style={[styles.rtContainer,{backgroundColor: background}]}>
-            
             <View style={styles.rtCenter}>
-
-                <CustomField title="Alergias" placeholder="Insira sua Alergias" value={Alergias} setValue={setAlergias}/>
-                <CustomPicker label="Intolerâncias" setValue={intolerâncias} onValueChange={setIntolerâncias} options={[
-                    {label:"Açucar"},
-                    {label: "Lactose"},
-                    {label: "Gluten"},
-                    {label: 'Sacarose'},
-                    {label: 'Frutose'},
-                    {label: 'Histamina'},
-                    {label: 'Sulfito'},
-                    {label: 'Sorbitol'},
-                    {label: 'Aditivos'},
-                    {label: 'Corantes'},
-                    {label: 'Conservantes'},
-                    {label: 'Origem Animal'},
-                ]}/>
-
-                <CustomPicker label="Condiçoes Médicas" setValue={Condicoes} onValueChange={setCondicoes} options={[
-                    {label: "Diabetes"},
-                    {label: "Hipertensão"},
-                    {label: "Obesidade"},
-                    {label: "Anemia"},
-                    {label: "Câncer"},
-                    {label: "Doenças Cardiovasculares"},
-                    {label: "Doenças Renais"},
-                    {label: "Doenças Hepáticas"},
-                    {label: "Doenças Gastrointestinais"},
-                    {label: "Doenças Autoimunes"},
-                    {label: "Doenças Respiratórias"},
-                    {label: "Doenças Neurológicas"},
-                    {label: "Doenças Endócrinas"},
-                    {label: "Doenças Infecciosas"},
-                    {label: "Doenças Psiquiátricas"},
-                    {label: "Doenças Musculoesqueléticas"},
-                    {label: "Doenças Dermatológicas"},
-                ]}/>
-
-                <View style={styles.rtButton}>
-                <CustomButton title="Salvar" modeButton={true} onPress={()=>navigate.goBack()}/>
+                <View style={styles.rtField}>
+                <CustomField title="Alergias" placeholder="Insira suas alergias" value={Alergias} setValue={setAlergias}/>
                 </View>
 
-            </View>
+                    <CustomMultiPicker
+                    label="Intolerâncias"
+                    options={intoleranciasOptions}
+                    selectedItems={intolerancias}
+                    onSelectedItemsChange={setIntolerancias}
+                    />
 
+                    <CustomMultiPicker
+                    label="Condições Médicas"
+                    options={condicoesOptions}
+                    selectedItems={Condicoes}
+                    onSelectedItemsChange={setCondicoes}
+                    />
+
+                <View style={styles.rtButton}>
+                    <CustomButton title="Salvar" modeButton={true} onPress={()=>navigate.goBack()}/>
+                </View>
+            </View>
         </SafeAreaView>
     );
 }

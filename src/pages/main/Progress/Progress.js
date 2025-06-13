@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView, Dimensions,} from 'react-native';
+import { View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView, Dimensions } from 'react-native';
 import CustomButton from '../../../components/CustomButton';
 import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -21,7 +21,6 @@ export default function Progress() {
     const [agendamentos, setAgendamentos] = useState([]);
     const [naoComidos, setNaoComidos] = useState([]);
     const [quantidade, setQuantidade] = useState([0]);
-
     const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
     useEffect(() => {
@@ -83,6 +82,7 @@ export default function Progress() {
                     <Text style={[styles.title, { color: textColor }]}>📊 Gráfico Nutricional</Text>
 
                     <View style={[styles.chartSection, styles.card, { backgroundColor: cardBackground }]}>
+
                         <LineChart
                             data={{
                                 labels: days,
@@ -95,6 +95,7 @@ export default function Progress() {
                                 ],
                             }}
                             width={screenWidth - 72}
+
                             height={220}
                             chartConfig={{
                                 backgroundColor: backgroundH,
@@ -106,6 +107,7 @@ export default function Progress() {
                                 propsForDots: {
                                     r: '5',
                                     strokeWidth: '2',
+
                                     stroke: lineColor,
                                 },
                             }}
@@ -196,6 +198,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 8,
+
         marginBottom: '20%'
     },
     sectionTitle: {
@@ -205,6 +208,7 @@ const styles = StyleSheet.create({
     },
     item: {
         fontSize: 16,
+
         marginLeft: 8,
         marginBottom: 6,
     },
