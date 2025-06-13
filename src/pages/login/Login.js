@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton";
 import CustomField from "../../components/CustomField";
+import styles from "../../theme/styles.js";
 
 export default function LoginPag() {
   const colorScheme = useColorScheme();

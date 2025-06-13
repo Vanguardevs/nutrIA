@@ -198,8 +198,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 8,
-
-        marginBottom: '20%'
+        marginBottom: '5%'
     },
     sectionTitle: {
         fontSize: 20,
@@ -208,7 +207,6 @@ const styles = StyleSheet.create({
     },
     item: {
         fontSize: 16,
-
         marginLeft: 8,
         marginBottom: 6,
     },

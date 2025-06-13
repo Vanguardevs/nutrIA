@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, Alert, useColorScheme } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, Alert, useColorScheme, ImageBackground } from "react-native";
 import CustomField from "../../../components/CustomField";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -98,6 +98,11 @@ export default function HealthRegister() {
     return (
         <SafeAreaView style={[styles.hrContainer,{backgroundColor: background}]}>
 
+            <ImageBackground
+                source={require('../../../../assets/Frutas_home.png')} 
+                style={styles.hrBackgroundImage}
+            >
+
             <View style={styles.hrForm}>
                 <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={handleAltura} keyboardType='numeric'/>
                 <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={handlePeso} keyboardType='numeric'/>
@@ -122,7 +127,9 @@ export default function HealthRegister() {
                 <CustomButton title="Cadastrar" modeButton={true} onPress={cadastro}/>
                 </View>
             </View>
+            </ImageBackground>
         </SafeAreaView>
+        
     );
 }
 

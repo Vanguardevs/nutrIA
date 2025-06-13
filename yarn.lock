@@ -2135,9 +2135,9 @@
     merge-options "^3.0.4"
 
 "@react-native-community/datetimepicker@^8.2.0", "@react-native-community/datetimepicker@>=6.7.0":
-  version "8.4.1"
-  resolved "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-8.4.1.tgz"
-  integrity sha512-DrK+CUS5fZnz8dhzBezirkzQTcNDdaXer3oDLh0z4nc2tbdIdnzwvXCvi8IEOIvleoc9L95xS5tKUl0/Xv71Mg==
+  version "8.2.0"
+  resolved "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-8.2.0.tgz"
+  integrity sha512-qrUPhiBvKGuG9Y+vOqsc56RPFcHa1SU2qbAMT0hfGkoFIj3FodE0VuPVrEa8fgy7kcD5NQmkZIKgHOBLV0+hWg==
   dependencies:
     invariant "^2.2.4"
 
@@ -3831,7 +3831,7 @@ expo-status-bar@~2.0.1:
   resolved "https://registry.npmjs.org/expo-status-bar/-/expo-status-bar-2.0.1.tgz"
   integrity sha512-AkIPX7jWHRPp83UBZ1iXtVvyr0g+DgBVvIXTtlmPtmUsm8Vq9Bb5IGj86PW8osuFlgoTVAg7HI/+Ok7yEYwiRg==
 
-expo@*, expo@>=52.0.0, expo@~52.0.46:
+expo@*, expo@>=50.0.0, expo@~52.0.46:
   version "52.0.46"
   resolved "https://registry.npmjs.org/expo/-/expo-52.0.46.tgz"
   integrity sha512-JG89IVZLp7DWzgeiQb+0N43kWOF1DUm3esBvAS9cPFWZsM9x8nDXgbvtREcycDPA6E+yJsSC+086CigeUY6sVA==
@@ -6117,6 +6117,7 @@ react-native-safe-area-context@*, "react-native-safe-area-context@>= 4.0.0", rea
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
 react-native-sectioned-multi-select@^0.10.0:
   version "0.10.0"
   resolved "https://registry.npmjs.org/react-native-sectioned-multi-select/-/react-native-sectioned-multi-select-0.10.0.tgz"
@@ -6125,10 +6126,10 @@ react-native-sectioned-multi-select@^0.10.0:
     lodash.isequal "^4.5.0"
     memoize-one "^6.0.0"
 
-react-native-svg@^15.12.0, "react-native-svg@> 6.4.1":
-  version "15.12.0"
-  resolved "https://registry.npmjs.org/react-native-svg/-/react-native-svg-15.12.0.tgz"
-  integrity sha512-iE25PxIJ6V0C6krReLquVw6R0QTsRTmEQc4K2Co3P6zsimU/jltcDBKYDy1h/5j9S/fqmMeXnpM+9LEWKJKI6A==
+react-native-svg@^15.8.0, "react-native-svg@> 6.4.1":
+  version "15.8.0"
+  resolved "https://registry.npmjs.org/react-native-svg/-/react-native-svg-15.8.0.tgz"
+  integrity sha512-KHJzKpgOjwj1qeZzsBjxNdoIgv2zNCO9fVcoq2TEhTRsVV5DGTZ9JzUZwybd7q4giT/H3RdtqC3u44dWdO0Ffw==
   dependencies:
     css-select "^5.1.0"
     css-tree "^1.1.3"

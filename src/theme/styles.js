@@ -170,6 +170,9 @@ const styles = StyleSheet.create({
    paddingHorizontal: 20,
    overflow: 'hidden',
   },
+  hrBackgroundImage: {
+   flex: 1,
+  },
   hrForm: {
    flex: 1,
    alignItems: 'center',
