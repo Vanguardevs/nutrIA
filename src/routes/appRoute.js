@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {useColorScheme} from "react-native";
 
 //Páginas de navegação do aplicativo já logado
-import Progress from "../pages/main/Progress.js";
+import Progress from "../pages/main//Progress/Progress.js";
 import CreateDiary from '../pages/main/Diary/CreateDiary.js';
 import EditDiary from '../pages/main/Diary/EditDiary.js';
 import Diary from "../pages/main/Diary/Diary.js";
@@ -14,6 +14,7 @@ import AccountUser from '../pages/main/Config/Account.js';
 import DataUser from '../pages/main/Config/DataUser.js';
 import SecurityAccount from '../pages/main/Config/SecurityAccount.js';
 import Settings from '../pages/main/Config/Config.js';
+import ResumoDiario from '../pages/main/Progress/ResumoDiario.js';
 
 
 
@@ -31,6 +32,7 @@ const StackItems =[
     {"route":"SecurityAccount", "label": SecurityAccount, "headerTitle": "Seguraça"},
     {"route":"AccountUser", "label": AccountUser, "headerTitle": "Conta"},
     {"route":"DataUser", "label": DataUser, "headerTitle": "Dados Pessoais"},
+    {"route":"ResumoDiario", "label": ResumoDiario, "headerTitle": "Resumo Diário"},
 ]
 
 

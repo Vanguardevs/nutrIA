@@ -1,11 +1,12 @@
 import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme} from 'react-native';
 import CustomField from '../../../components/CustomField';
+import CustomPicker from '../../../components/CustomPicker';
 import CustomButton from '../../../components/CustomButton';
 import React,{ useEffect, useState } from 'react';
-import { push, getDatabase, ref } from 'firebase/database';
+import { push, getDatabase, ref, set } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import { useNavigation } from '@react-navigation/native';
-import * as Notifications from "expo-notifications";
+import axios from 'axios';
 
 
 export default function CreateDiary(){
@@ -18,6 +19,8 @@ export default function CreateDiary(){
 
     const [refeicao, setRefeicao] = useState('');
     const [hora, setHora] = useState('');
+    const [tipoRefeicao, setTipoRefeicao] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const navigation = useNavigation();
 
@@ -33,42 +36,39 @@ export default function CreateDiary(){
 }
 
     async function salvarAgenda(){
-        if(refeicao == '' || hora == ''){
+        if(refeicao == '' || hora == '' || tipoRefeicao == ''){
             Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios");
             console.log("Alguns dos campos de cadastro estão vazios")
             return;
         }
 
-        //Criando um cadastro no banco da agenda
+        setLoading(true);
+
         try{
-
-            const userID = auth.currentUser?.uid
-            if(!userID){
-                Alert.alert("Não foi possível te encontrar no banco")
-                return;
+            
+            const data = {
+                "tipo_refeicao": tipoRefeicao,
+                "refeicao": refeicao,
+                "horario": hora,
+                "id_user": auth.currentUser.uid
             }
 
-            const db = getDatabase();
-            const diaryRef = ref(db, `users/${userID}/diaries`);
-
-            const novaRefei = {
-                refeicao,
-                hora
-            }
-
-            await push(diaryRef, novaRefei)
-            .then(()=>{
-                setRefeicao('');
-                setHora('');
-                console.log("Cadastrado sua agenda com sucesso!")
+            axios.post("https://nutria-6uny.onrender.com/calories", data)
+            .then((resp)=>{
+                console.log("RESPONSE " + resp.data)
+                Alert.alert("Cadastrado sua agenda com sucesso!");
+                navigation.goBack();
             })
-
-            Alert.alert("Cadastrado sua agenda com sucesso!");
-            navigation.goBack();
+            .catch((e)=>{
+                console.log("ERROR " + e)
+            })
         }
         catch(error){
             console.log("ERROR " + error)
             Alert.alert("ERROR", "Erro ao cadastrar a agenda no banco de dados")
+        }
+        finally{
+            setLoading(false);
         }
     }
     
@@ -80,6 +80,18 @@ export default function CreateDiary(){
                 
                 <View style={styles.container_items}>
 
+
+                    <CustomPicker
+                        label="Refeição"
+                        selectedValue={tipoRefeicao}
+                        onValueChange={setTipoRefeicao}
+                        options={[
+                            {label:'Café da Manhã', value:'Café da Manhã'}, 
+                            {label:'Almoço', value:'Almoço'}, 
+                            {label:'Jantar', value:'Jantar'}, 
+                            {label:'Lanche da Tarde', value:'Lanche da Tarde'}
+                        ]}
+                    />
                     <CustomField title="Refeição" placeholder='Refeição' value={refeicao} setValue={(d)=>setRefeicao(d)}/>
                     <CustomField title="Horario" placeholder='Horario' value={hora} setValue={handleHora} keyboardType="numeric"/>
 

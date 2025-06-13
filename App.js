@@ -9,6 +9,7 @@ import * as Notifications from 'expo-notifications';
 
 // IMPORTS para fontes
 import { useFonts, K2D_400Regular } from '@expo-google-fonts/k2d';
+import axios from 'axios';
 
 export default function App() {
   const [initializing, setInitializing] = useState(true);
@@ -46,7 +47,13 @@ export default function App() {
   }
 }
 
+  async function ligarRender(){
+    const resp = await axios.get("https://nutria-6uny.onrender.com/on")
+    return resp.data;
+  }
+
   useEffect(() => {
+    ligarRender();
     manterLoggado()
     verificarNotificação()
   }, []);

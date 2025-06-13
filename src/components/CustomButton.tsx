@@ -1,4 +1,4 @@
-import {  TouchableOpacity, View, Text, Button, TextInput, StyleSheet, Modal } from "react-native";
+import {  TouchableOpacity, View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import Theme from "../theme/theme";
 import React, { useState, useEffect } from "react";
 import styles from "../theme/styles";
@@ -7,11 +7,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 interface CustomButtonProps {
   title: string;
   onPress: () => void;
-  style: StyleSheet;
+  style?: StyleSheet;
   modeButton: boolean;
+  isLoading?: boolean; // Add isLoading prop
 }
 
-const CustomButton = ({ title, onPress, modeButton }: CustomButtonProps) => {
+const CustomButton = ({ title, onPress, modeButton, isLoading = false }: CustomButtonProps) => {
   const [mode, setMode] = useState(false);
 
   useEffect(() => {
@@ -19,14 +20,16 @@ const CustomButton = ({ title, onPress, modeButton }: CustomButtonProps) => {
   }, [modeButton]);
 
   return (
-    <TouchableOpacity 
-      onPress={onPress}
+    <TouchableOpacity
+      onPress={isLoading ? undefined : onPress}
       style={[
         styless.button,
         mode
           ? styless.activeButton
           : styless.inactiveButton,
+        isLoading && { opacity: 0.7 }
       ]}
+      disabled={isLoading}
     >
       <LinearGradient
         colors={mode ? ['#2E8331', '#2F9933'] : ['#b71c1c', '#ff4e50']}
@@ -34,14 +37,18 @@ const CustomButton = ({ title, onPress, modeButton }: CustomButtonProps) => {
         end={{ x: 1, y: 0 }}
         style={styless.gradient}
       >
-        <Text
-          style={[
-            styless.ButtonText,
-            mode ? styless.activeButtonText : styless.inactiveButtonText
-          ]}
-        >
-          {title}
-        </Text>
+        {isLoading ? (
+          <ActivityIndicator size="small" color="#FFF" /> // Show loading indicator
+        ) : (
+          <Text
+            style={[
+              styless.ButtonText,
+              mode ? styless.activeButtonText : styless.inactiveButtonText
+            ]}
+          >
+            {title}
+          </Text>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );

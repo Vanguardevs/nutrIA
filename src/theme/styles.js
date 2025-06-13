@@ -76,48 +76,44 @@ const styles = StyleSheet.create({
 
    // LOGIN === LOGIN.JS
 
-  loginContainer: {
+  loginSafeArea: {
     flex: 1,
-    backgroundColor: '#EEEDE7',
   },
-  loginCenter: {
+  loginImageBackground: {
     flex: 1,
-    width: '50vg',
-    justifyContent: 'center',
-    marginTop: '50%',
+    resizeMode: "cover",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  loginInput: {
-    backgroundColor: 'gray',
-    width: '80%',
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 10,
-  },
-  loginBottom: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: '10vh'
-  },
-  loginModal: {
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: 'black', 
-    borderRadius: 10, 
-    opacity: 1
-},
-  loginModalMessage: {
-   flex: 1,
-   justifyContent: 'center', 
-   alignItems: 'center',
-   backgroundColor: 'white',
-},
-  loginBackground: {
-   height: '100%',
-   width: '100%',
-   },
+  loginCard: {
+    width: "85%",
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 5,
+    alignItems: "center",
 
+  },  
+  loginForgotContainer: {
+    marginTop: 10,
+    marginBottom: 20,
+    width: "100%",
+    alignItems: "center",
+  },
+  loginForgotText: {
+    fontSize: 15,
+  },
+  loginButton: {
+    width: "100%",
+    marginBottom: 15,
+  },
+  loginRegisterContainer: {
+    marginTop: 10,
+    alignItems: "center",
+  },
 
 
    // REGISTER === Register.js
@@ -137,6 +133,7 @@ const styles = StyleSheet.create({
    flex: 1,
    backgroundColor: '#f5f5f5',
    paddingHorizontal: 20,
+   allignItems: 'center',
    overflow: 'hidden',
   },
   registerRow: {
@@ -213,7 +210,10 @@ const styles = StyleSheet.create({
   rtButton: {
    justifyContent: 'flex-end',
    alignItems: 'center',
-   marginTop: 150,
+   marginTop: 70,
+  },
+  rtField: {
+    width: '82.5%',
   },
 
 });

@@ -57,59 +57,51 @@ export default function LoginPag() {
   }
 
   return (
-    <SafeAreaView style={[styles.loginContainer,{backgroundColor: background}]}>
-
+    <SafeAreaView style={[styles.loginSafeArea, { backgroundColor: background }]}>
       <ImageBackground
-      source={require('../../../assets/Frutas_home.png')}
-      style={styles.loginBackground}>
-
-
-        <View style={styles.loginCenter}>
-          <CustomField 
-          title='Email' 
-          placeholder="Insira seu email" 
-          keyboardType='email-address' 
-          value={email} 
-          setValue={setEmail}
-          />
-          
-
-          <CustomField 
-          title='Senha' 
-          placeholder="Insira sua senha" 
-          keyboardType="text"
-          secureTextEntry value={password} 
-          setValue={setPassword} 
+        source={require("../../../assets/Frutas_home.png")}
+        style={styles.loginImageBackground}
+        imageStyle={{ opacity: 1 }}
+      >
+        <View style={[styles.loginCard, { backgroundColor: 'rgba(245, 245, 245, 1.00)' }]}>
+          <CustomField
+            title="Email"
+            placeholder="Insira seu email"
+            keyboardType="email-address"
+            value={email}
+            setValue={setEmail}
           />
 
-          <TouchableOpacity onPress={() => navegacao.push('ForgetPassword')}>
-            <Text style={{color: texts, fontSize: 15, textAlign: 'right', marginRight: 10, marginTop: -10}}>Esqueci minha senha</Text>
+          <CustomField
+            title="Senha"
+            placeholder="Insira sua senha"
+            keyboardType="default"
+            secureTextEntry
+            value={password}
+            setValue={setPassword}
+          />
+
+          <TouchableOpacity onPress={() => navegacao.push("ForgetPassword")} style={styles.loginForgotContainer}>
+            <Text style={[styles.loginForgotText, { color: texts }]}>Esqueci minha senha</Text>
           </TouchableOpacity>
 
-        </View>
+          <CustomButton
+            title="Login"
+            onPress={logar}
+            modeButton={true}
+            style={styles.loginButton}
+          />
 
-        <View style={styles.loginBottom}>
-      
-          <CustomButton title="Login" onPress={logar} style={{width: '100%'}} modeButton={true}/>
-
-
-          <TouchableOpacity 
-          onPress={() => navegacao.push('Registro')}
-          style={{margin: 10}}
-          >
-          <Text style={{fontSize: 15, color: texts}}>
-
-            Não possui conta?{' '}
-            <Text style={{ color: 'green', fontWeight: 'bold' ,fontSize: 17 }}>Crie agora</Text>
-            
+          <TouchableOpacity onPress={() => navegacao.push("Registro")} style={styles.loginRegisterContainer}>
+            <Text style={{ fontSize: 15, color: texts }}>
+              Não possui conta?{" "}
+              <Text style={{ color: "green", fontWeight: "bold", fontSize: 17 }}>
+                Crie agora
+              </Text>
             </Text>
           </TouchableOpacity>
-
         </View>
-        
       </ImageBackground>
-
     </SafeAreaView>
-
-  )
+  );
 }

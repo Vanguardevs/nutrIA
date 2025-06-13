@@ -26,7 +26,7 @@ export default function HealthRegister() {
 
         function cadastro(){
             try {
-                if(altura == 0 || peso == 0){
+                if(altura == 0 || peso == 0 || objetivo.length === 0){
                     Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios");
                     console.log("Alguns dos campos de cadastro estão vazios")
                     return;
@@ -75,15 +75,22 @@ export default function HealthRegister() {
             }
         }
 
-        function handleAltura(input){
-
-            alturaFormatada = input.replace(/[^0-9]/g, '')
-
-            let alturaFormatada2 = alturaFormatada
-            if(input.length > 1){
-                alturaFormatada2 = `${alturaFormatada.slice(0,1)}.${alturaFormatada.slice(1,3)}`
+        function handleAltura(input) {
+            let alturaFormatada = input.replace(/[^0-9]/g, '').slice(0, 3);
+            let alturaFormatada2 = alturaFormatada;
+            if (alturaFormatada.length > 1) {
+                alturaFormatada2 = `${alturaFormatada.slice(0, 1)}.${alturaFormatada.slice(1, 3)}`;
             }
-            setAltura(alturaFormatada2) 
+            setAltura(alturaFormatada2);
+        }
+
+        function handlePeso(input) {
+            let pesoFormatado = input.replace(/[^0-9]/g, '').slice(0, 3);
+            let pesoFormatado2 = pesoFormatado;
+            if (pesoFormatado.length > 1) {
+                pesoFormatado2 = `${pesoFormatado.slice(0, 2)},${pesoFormatado.slice(2, 3) || '0'}`;
+            }
+            setPeso(pesoFormatado2);
         }
 
 
@@ -93,7 +100,7 @@ export default function HealthRegister() {
 
             <View style={styles.hrForm}>
                 <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={handleAltura} keyboardType='numeric'/>
-                <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={(d)=>setPeso(d)} keyboardType='numeric'/>
+                <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={handlePeso} keyboardType='numeric'/>
 
                     <CustomPicker
                         label="Meta"

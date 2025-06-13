@@ -5,7 +5,6 @@ import CustomField from "../../../components/CustomField";
 import CustomButton from "../../../components/CustomButton";
 import CustomPicker from "../../../components/CustomPicker";
 import styles from "../../../theme/styles";
-import RNPickerSelect from 'react-native-picker-select';
 
 export default function CreateUser() {
 
@@ -21,10 +20,20 @@ export default function CreateUser() {
   const [sexo, setSexo] = useState('');
   const navigation = useNavigation();
 
+  function isValidEmail(email) {
+    // Regex simples para validar email
+    return /\S+@\S+\.\S+/.test(email);
+  }
+
   async function nextPage() {
     try{
       if(nome.length === 0 || password.length === 0 || email.length === 0 || idade.length === 0 || sexo.length === 0){
         Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios")
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        Alert.alert("Inválido", "Esse email não é válido");
         return;
       }
 
@@ -64,7 +73,7 @@ export default function CreateUser() {
         <CustomField title="Senha" value={password} setValue={setPassword} keyboardType="text" placeholder="Insira sua senha:" secureTextEntry />
 
          <View style={styles.registerRow}> 
-          <CustomField title="Idade" value={idade} setValue={setIdade} placeholder="0" keyboardType="numeric" style={styles.registerIdade} />
+          <CustomField title="Data de Nascimento" value={idade} setValue={setIdade} placeholder="0" keyboardType="numeric" style={styles.registerIdade} />
 
           <CustomPicker
             label="Sexo"
