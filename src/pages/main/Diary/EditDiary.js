@@ -9,6 +9,33 @@ import { auth } from '../../../database/firebase';
 
 export default function EditDiary(){
 
+
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false); 
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+    const handleConfirm = (date) => {
+        console.warn("A date has been picked: ", date);
+        hideDatePicker();
+    };
+    
+    
+    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+    const showTimePicker = () => {
+        setTimePickerVisibility(true);
+    };
+    const hideTimePicker = () => {
+        setTimePickerVisibility(false);
+    };
+    const handleTimeConfirm = (time) => {
+        console.warn("A Time has been picked: ", time);
+        hideTimePicker();
+    };
+        
+
     const colorSheme = useColorScheme();
 
     const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
@@ -91,8 +118,21 @@ export default function EditDiary(){
                 <View style={styles.container_items}>
 
                     <CustomField title="Refeição" placeholder='Refeição' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
-                    <CustomField title="Horario" placeholder='Horario' value={editHora} setValue={handleHora} keyboardType="numeric"/>
-
+                    <Button title="Data" onPress={showDatePicker} value/>
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                    />
+                    
+                    <Button title="Horário" onPress={showTimePicker} />
+                    <DateTimePickerModal
+                        isVisible={isTimePickerVisible}
+                        mode="time"
+                        onConfirm={handleTimeConfirm}
+                        onCancel={hideTimePicker}
+                    />
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>
                     <CustomButton title="Excluir" onPress={excluirAgenda} modeButton={false}/>
 
