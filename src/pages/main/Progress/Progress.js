@@ -4,41 +4,72 @@ import CustomButton from '../../../components/CustomButton';
 import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import {auth} from '../../../database/firebase';
+import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function Progress() {
-
     const colorScheme = useColorScheme();
 
-    const backgroundH = colorScheme === 'dark'? '#1C1C1E' : '#F2F2F2';
+    const backgroundH = colorScheme === 'dark' ? '#1C1C1E' : '#F2F2F2';
     const textColor = colorScheme === 'dark' ? '#fff' : '#000';
+    const cardBackground = colorScheme === 'dark' ? '#2c2c2e' : '#fff';
     const lineColor = colorScheme === 'dark' ? 'rgba(134, 65, 244, 0.8)' : '#6a1b9a';
 
-    const naviagte = useNavigation();
+    const navigate = useNavigation();
 
     const [comidos, setComidos] = useState([]);
+    const [agendamentos, setAgendamentos] = useState([]);
     const [naoComidos, setNaoComidos] = useState([]);
-
-    const data = [1, 3, 2, 4, 1, 2, 5];
+    const [quantidade, setQuantidade] = useState([0]);
     const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
     useEffect(() => {
 
-        const dadosExemplo = [
-            { alimento: 'Banana', comido: true },
-            { alimento: 'Aveia', comido: true },
-            { alimento: 'Ovos', comido: true },
-            { alimento: 'Maçã', comido: false },
-            { alimento: 'Iogurte', comido: false },
-        ];
+        const db = getDatabase();
+        const userId = auth.currentUser?.uid;
+        const diariesRef = ref(db, `users/${userId}/diaries`);
 
-        const comidos = dadosExemplo.filter(item => item.comido).map(item => item.alimento);
-        const naoComidos = dadosExemplo.filter(item => !item.comido).map(item => item.alimento);
+        // Escuta mudanças em tempo real
+        const unsubscribe = onValue(diariesRef, (snapshot) => {
+            const data = snapshot.val();
 
-        setComidos(comidos);
-        setNaoComidos(naoComidos);
+            if (data && typeof data === 'object') {
+
+                const diaHoje = new Date().getDay(); 
+
+                const listaAgendas = Object.entries(data).map(([key, value]) => ({
+                    id: key,
+                    ...value,
+                }));
+
+                const comidosTemp = [];
+                const naoComidosTemp = [];
+
+                listaAgendas.forEach((agenda) => {
+                    if (agenda.progress && Array.isArray(agenda.progress)) {
+                        if (agenda.progress[diaHoje] === true) {
+                            comidosTemp.push(agenda.refeicao);
+                        } else {
+                            naoComidosTemp.push(agenda.refeicao);
+                        }
+                    }
+                });
+
+                setComidos(comidosTemp);
+                setNaoComidos(naoComidosTemp);
+            } else {
+                console.warn('Nenhum dado encontrado ou formato inválido.');
+                setComidos([]);
+                setNaoComidos([]);
+            }
+        }, (error) => {
+            console.error('Erro ao acessar o banco de dados:', error);
+        });
+        
+        return () => unsubscribe();
     }, []);
 
-    const screenWidth = Dimensions.get('window').width - 40;
+    const screenWidth = Dimensions.get('window').width;
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: backgroundH }]}>
@@ -48,22 +79,23 @@ export default function Progress() {
                 resizeMode="cover"
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={[styles.title, { color: textColor }]}>Grafico Nutricional</Text>
+                    <Text style={[styles.title, { color: textColor }]}>📊 Gráfico Nutricional</Text>
 
-                    {/* GRÁFICO */}
-                    <View style={styles.chartSection}>
+                    <View style={[styles.chartSection, styles.card, { backgroundColor: cardBackground }]}>
+
                         <LineChart
                             data={{
                                 labels: days,
                                 datasets: [
                                     {
-                                        data: data,
+                                        data: [0,1,2,3,4,5,6],
                                         color: () => lineColor,
                                         strokeWidth: 2,
                                     },
                                 ],
                             }}
-                            width={screenWidth}
+                            width={screenWidth - 72}
+
                             height={220}
                             chartConfig={{
                                 backgroundColor: backgroundH,
@@ -73,8 +105,9 @@ export default function Progress() {
                                 color: () => textColor,
                                 labelColor: () => textColor,
                                 propsForDots: {
-                                    r: "5",
-                                    strokeWidth: "2",
+                                    r: '5',
+                                    strokeWidth: '2',
+
                                     stroke: lineColor,
                                 },
                             }}
@@ -85,13 +118,15 @@ export default function Progress() {
                         />
                     </View>
 
-                    {/* BOTAO PARA ALIMENTOS COMIDOS */}
-                    <View style={{alignItems: 'center', marginBottom: 10, marginTop: 10}}>
-                        <CustomButton title="Alimentos Comidos" onPress={() => naviagte.navigate('ResumoDiario', { comidos, naoComidos })} modeButton={true} />
+                    <View style={styles.buttonWrapper}>
+                        <CustomButton
+                            title="Ver Resumo Diário"
+                            onPress={() => navigate.navigate('ResumoDiario', { comidos, naoComidos })}
+                            modeButton={true}
+                        />
                     </View>
 
-                    {/* COMIDO */}
-                    <View style={styles.section}>
+                    <View style={[styles.card, { backgroundColor: cardBackground }]}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="check-box" size={24} color="green" />
                             <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Comidos</Text>
@@ -100,9 +135,8 @@ export default function Progress() {
                             <Text key={index} style={[styles.item, { color: textColor }]}>• {alimento}</Text>
                         ))}
                     </View>
-                    
-                    {/* NAO COMIDO */}
-                    <View style={styles.section}>
+
+                    <View style={[styles.card, { backgroundColor: cardBackground }]}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="cancel" size={24} color="red" />
                             <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Não Comidos</Text>
@@ -129,36 +163,53 @@ const styles = StyleSheet.create({
     scrollContent: {
         alignItems: 'center',
         padding: 20,
+        height: 'auto',
     },
     title: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
-        marginBottom: 20,
         alignSelf: 'flex-start',
-        textAlign: 'center'
+        marginBottom: 20,
     },
     chartSection: {
         width: '100%',
-        marginBottom: 30,
+        alignItems: 'center',
+        padding: 16,
+        borderRadius: 16,
+        marginBottom: 20,
+    },
+    buttonWrapper: {
+        marginVertical: 10,
+        width: '100%',
         alignItems: 'center',
     },
-    section: {
+    card: {
         width: '100%',
+        borderRadius: 16,
+        padding: 16,
         marginBottom: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.05,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 6,
+        elevation: 3,
     },
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 8,
+
+        marginBottom: '20%'
     },
     sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 20,
+        fontWeight: '600',
         marginLeft: 8,
     },
     item: {
         fontSize: 16,
-        marginLeft: 16,
-        marginBottom: 4,
+
+        marginLeft: 8,
+        marginBottom: 6,
     },
 });
