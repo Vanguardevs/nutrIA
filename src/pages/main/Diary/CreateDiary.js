@@ -1,4 +1,4 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, Button} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, Button, TouchableOpacity} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
 import CustomButton from '../../../components/CustomButton';
@@ -34,7 +34,10 @@ export default function CreateDiary(){
         setTimePickerVisibility(false);
     };
     const handleTimeConfirm = (time) => {
-        console.warn("A Time has been picked: ", time);
+        const hours = time.getHours().toString().padStart(2, '0');
+        const minutes = time.getMinutes().toString().padStart(2, '0');
+        const formattedTime = `${hours}:${minutes}`;
+        setHora(formattedTime); // Atualiza o estado com o horário formatado
         hideTimePicker();
     };
     
@@ -121,20 +124,22 @@ export default function CreateDiary(){
                     />
                     <CustomField title="Refeição" placeholder='Refeição' value={refeicao} setValue={(d)=>setRefeicao(d)}/>
 
-                    <Button title="Data" onPress={showDatePicker} value/>
-                    <DateTimePickerModal
-                        isVisible={isDatePickerVisible}
-                        mode="date"
-                        onConfirm={handleConfirm}
-                        onCancel={hideDatePicker}
-                    />
+                    <TouchableOpacity title="Horário" onPress={showTimePicker} style={{width: '25%'}}>
+                        <CustomField 
+                            title="Horário" 
+                            placeholder='00:00' 
+                            value={hora}
+                            setValue={handleHora} 
+                            editable={false}
+                        />
+                    </TouchableOpacity>
 
-                    <Button title="Horário" onPress={showTimePicker} />
                     <DateTimePickerModal
                         isVisible={isTimePickerVisible}
                         mode="time"
                         onConfirm={handleTimeConfirm}
                         onCancel={hideTimePicker}
+                        value={hora}
                     />
 
                     <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>

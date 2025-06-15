@@ -27,6 +27,7 @@ export default function Diary() {
   const [agendas, setAgendas] = useState([])
   const [concluido, setConcluido] = useState(false);
   
+
   async function verificarTodasAgendas(){
 
     try{
@@ -47,7 +48,14 @@ export default function Diary() {
             id: key,
             ...value,
           }));
-          setAgendas(listaAgendas);
+
+          const hoje = new Date().getDay();
+
+          const agendasHoje = listaAgendas.filter(agenda =>{
+            return agenda.progress[hoje] === false;
+          })
+
+          setAgendas(agendasHoje);
         }
         else{
           setAgendas([])
@@ -86,30 +94,39 @@ export default function Diary() {
   }
 
   async function createNotification() {
-    
     for (const agenda of agendas) {
-      const hora = horaFormatada(agenda.horario);
       
-      const now = new Date();
-      const triggerDate = new Date();
-      triggerDate.setHours(hora.horas);
-      triggerDate.setMinutes(hora.minutos);
-      triggerDate.setSeconds(0);
+        if (!agenda.horario) {
+            console.error("Propriedade 'horario' não existe no objeto agenda:", agenda);
+            continue;
+        }
 
-      if (triggerDate <= now) {
-        triggerDate.setDate(triggerDate.getDate() + 1);
-      }
+        const hora = horaFormatada(agenda.horario);
+        if (!hora) {
+            console.error("Erro ao formatar o horário:", agenda.horario);
+            continue;
+        }
 
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: `Hora de se alimentar! (${agenda.refeicao})`,
-          body: "Este é o horário de se alimentar de " + agenda.refeicao,
-          data: { data: 'goes here' },
-        },
-        trigger: {
-          date: triggerDate, 
-        },
-      });
+        const now = new Date();
+        const triggerDate = new Date();
+        triggerDate.setHours(hora.horas);
+        triggerDate.setMinutes(hora.minutos);
+        triggerDate.setSeconds(0);
+
+        if (triggerDate <= now) {
+            triggerDate.setDate(triggerDate.getDate() + 1);
+        }
+
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: `Hora de se alimentar! (${agenda.refeicao})`,
+                body: "Este é o horário de se alimentar de " + agenda.refeicao,
+                data: { data: 'goes here' },
+            },
+            trigger: {
+                date: triggerDate,
+            },
+        });
     }
   }
 

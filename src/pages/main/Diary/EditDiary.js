@@ -1,4 +1,4 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, Button, useColorScheme} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomButton from '../../../components/CustomButton';
 import React, { useState } from 'react';
@@ -6,8 +6,24 @@ import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, remove, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import CustomPicker from '../../../components/CustomPicker';
+
 
 export default function EditDiary(){
+    
+    const colorSheme = useColorScheme();
+
+    const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+    const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+
+    const route = useRoute();
+    const navigation = useNavigation();
+    const {id, refeicao, hora} = route.params;
+
+    const [editRefeicao, setEditRefeicao] = useState(refeicao);
+    const [editHora, setEditHora] = useState(hora);
+    const [tipoRefeicao, setTipoRefeicao] = useState('');
 
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false); 
@@ -36,17 +52,6 @@ export default function EditDiary(){
     };
         
 
-    const colorSheme = useColorScheme();
-
-    const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
-    const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
-
-    const route = useRoute();
-    const navigation = useNavigation();
-    const {id, refeicao, hora} = route.params;
-
-    const [editRefeicao, setEditRefeicao] = useState(refeicao);
-    const [editHora, setEditHora] = useState(hora);
 
     function handleHora(input){
 
@@ -117,7 +122,19 @@ export default function EditDiary(){
 
                 <View style={styles.container_items}>
 
-                    <CustomField title="Refeição" placeholder='Refeição' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
+                    <CustomPicker
+                        label="Refeição"
+                        selectedValue={tipoRefeicao}
+                        onValueChange={setTipoRefeicao}
+                        options={[
+                            {label:'Café da Manhã', value:'Café da Manhã'}, 
+                            {label:'Almoço', value:'Almoço'}, 
+                            {label:'Jantar', value:'Jantar'}, 
+                            {label:'Lanche da Tarde', value:'Lanche da Tarde'}
+                        ]}
+                    />
+
+                    <CustomField title="Alimento" placeholder='Alimento' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
                     <Button title="Data" onPress={showDatePicker} value/>
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}

@@ -21,6 +21,7 @@ export default function Progress() {
     const [agendamentos, setAgendamentos] = useState([]);
     const [naoComidos, setNaoComidos] = useState([]);
     const [quantidade, setQuantidade] = useState([0]);
+    const [quantidadePorDia, setQuantidadePorDia] = useState([]);
     const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
     useEffect(() => {
@@ -57,10 +58,27 @@ export default function Progress() {
 
                 setComidos(comidosTemp);
                 setNaoComidos(naoComidosTemp);
+
+                // Inicializa um array com 7 posições (uma para cada dia da semana)
+                const diasDaSemana = Array(7).fill(0);
+
+                listaAgendas.forEach((agenda) => {
+                    if (agenda.progress && Array.isArray(agenda.progress)) {
+                        agenda.progress.forEach((status, dia) => {
+                            if (status !== undefined) {
+                                diasDaSemana[dia] += 1;
+                            }
+                        });
+                    }
+                });
+
+                setQuantidadePorDia(diasDaSemana);
+                console.log(quantidadePorDia);
             } else {
                 console.warn('Nenhum dado encontrado ou formato inválido.');
                 setComidos([]);
                 setNaoComidos([]);
+                setQuantidadePorDia(Array(7).fill(0))
             }
         }, (error) => {
             console.error('Erro ao acessar o banco de dados:', error);
@@ -88,7 +106,7 @@ export default function Progress() {
                                 labels: days,
                                 datasets: [
                                     {
-                                        data: [0,1,2,3,4,5,6],
+                                        data: [1,2,3,4,5],
                                         color: () => lineColor,
                                         strokeWidth: 2,
                                     },
