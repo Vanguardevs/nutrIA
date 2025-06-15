@@ -5,7 +5,7 @@ import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import {auth} from '../../../database/firebase';
-import { getDatabase, ref, onValue } from 'firebase/database';
+import { getDatabase, ref, onValue, set } from 'firebase/database';
 
 export default function Progress() {
     const colorScheme = useColorScheme();
@@ -25,16 +25,17 @@ export default function Progress() {
     const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
     useEffect(() => {
-
         const db = getDatabase();
         const userId = auth.currentUser?.uid;
         const diariesRef = ref(db, `users/${userId}/diaries`);
 
-        // Escuta mudanças em tempo real
         const unsubscribe = onValue(diariesRef, (snapshot) => {
             const data = snapshot.val();
 
             if (data && typeof data === 'object') {
+                const quantidadeAgendas = Object.keys(data).length;
+                const arrayQuantidade = Array.from({ length: quantidadeAgendas }, (_, i) => i + 1);
+                setQuantidade(arrayQuantidade);
 
                 const diaHoje = new Date().getDay(); 
 
@@ -59,31 +60,14 @@ export default function Progress() {
                 setComidos(comidosTemp);
                 setNaoComidos(naoComidosTemp);
 
-                // Inicializa um array com 7 posições (uma para cada dia da semana)
-                const diasDaSemana = Array(7).fill(0);
-
-                listaAgendas.forEach((agenda) => {
-                    if (agenda.progress && Array.isArray(agenda.progress)) {
-                        agenda.progress.forEach((status, dia) => {
-                            if (status !== undefined) {
-                                diasDaSemana[dia] += 1;
-                            }
-                        });
-                    }
-                });
-
-                setQuantidadePorDia(diasDaSemana);
-                console.log(quantidadePorDia);
             } else {
                 console.warn('Nenhum dado encontrado ou formato inválido.');
-                setComidos([]);
-                setNaoComidos([]);
-                setQuantidadePorDia(Array(7).fill(0))
+                setQuantidade([]);
             }
         }, (error) => {
             console.error('Erro ao acessar o banco de dados:', error);
         });
-        
+
         return () => unsubscribe();
     }, []);
 
@@ -101,39 +85,41 @@ export default function Progress() {
 
                     <View style={[styles.chartSection, styles.card, { backgroundColor: cardBackground }]}>
 
-                        <LineChart
-                            data={{
-                                labels: days,
-                                datasets: [
-                                    {
-                                        data: [1,2,3,4,5],
-                                        color: () => lineColor,
-                                        strokeWidth: 2,
+                        {quantidade.length > 0 ? (
+                            <LineChart
+                                data={{
+                                    labels: days,
+                                    datasets: [
+                                        {
+                                            data: quantidade,
+                                            color: () => lineColor,
+                                            strokeWidth: 2,
+                                        },
+                                    ],
+                                }}
+                                width={screenWidth - 72}
+                                height={220}
+                                chartConfig={{
+                                    backgroundColor: backgroundH,
+                                    backgroundGradientFrom: backgroundH,
+                                    backgroundGradientTo: backgroundH,
+                                    decimalPlaces: 0,
+                                    color: () => textColor,
+                                    labelColor: () => textColor,
+                                    propsForDots: {
+                                        r: '5',
+                                        strokeWidth: '2',
+                                        stroke: lineColor,
                                     },
-                                ],
-                            }}
-                            width={screenWidth - 72}
-
-                            height={220}
-                            chartConfig={{
-                                backgroundColor: backgroundH,
-                                backgroundGradientFrom: backgroundH,
-                                backgroundGradientTo: backgroundH,
-                                decimalPlaces: 0,
-                                color: () => textColor,
-                                labelColor: () => textColor,
-                                propsForDots: {
-                                    r: '5',
-                                    strokeWidth: '2',
-
-                                    stroke: lineColor,
-                                },
-                            }}
-                            bezier
-                            style={{
-                                borderRadius: 16,
-                            }}
-                        />
+                                }}
+                                bezier
+                                style={{
+                                    borderRadius: 16,
+                                }}
+                            />
+                        ) : (
+                            <Text style={[styles.title, { color: textColor }]}>Nenhum dado disponível para o gráfico.</Text>
+                        )}
                     </View>
 
                     <View style={styles.buttonWrapper}>

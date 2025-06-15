@@ -12,7 +12,7 @@ import Header from "../pages/cabecalho/header.js";
 import Home from '../pages/main/Home.js';
 import AccountUser from '../pages/main/Config/Account.js';
 import DataUser from '../pages/main/Config/DataUser.js';
-import SecurityAccount from '../pages/main/Config/SecurityAccount.js';
+import HealthData from '../pages/main/Config/HealthData.js';
 import Settings from '../pages/main/Config/Config.js';
 import ResumoDiario from '../pages/main/Progress/ResumoDiario.js';
 
@@ -29,7 +29,7 @@ const StackItems =[
     {"route":"Config", "label": Settings, "headerTitle": "Configurações"},
     {"route":"Create-Diary", "label": CreateDiary, "headerTitle": "Criar Agenda"},
     {"route":"Edit-Diary", "label": EditDiary, "headerTitle": "Editar Agenda"},
-    {"route":"SecurityAccount", "label": SecurityAccount, "headerTitle": "Seguraça"},
+    {"route":"HealthData", "label": HealthData, "headerTitle": "Dados de Saúde"},
     {"route":"AccountUser", "label": AccountUser, "headerTitle": "Conta"},
     {"route":"DataUser", "label": DataUser, "headerTitle": "Dados Pessoais"},
     {"route":"ResumoDiario", "label": ResumoDiario, "headerTitle": "Resumo Diário"},
