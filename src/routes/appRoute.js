@@ -15,6 +15,7 @@ import DataUser from '../pages/main/Config/DataUser.js';
 import HealthData from '../pages/main/Config/HealthData.js';
 import Settings from '../pages/main/Config/Config.js';
 import ResumoDiario from '../pages/main/Progress/ResumoDiario.js';
+import EditHealth from '../pages/main/Config/EditHealth.js';
 
 
 
@@ -33,6 +34,7 @@ const StackItems =[
     {"route":"AccountUser", "label": AccountUser, "headerTitle": "Conta"},
     {"route":"DataUser", "label": DataUser, "headerTitle": "Dados Pessoais"},
     {"route":"ResumoDiario", "label": ResumoDiario, "headerTitle": "Resumo Diário"},
+    {"route":"EditHealth", "label": EditHealth, "headerTitle": "Editar Condições médicas"},
 ]
 
 

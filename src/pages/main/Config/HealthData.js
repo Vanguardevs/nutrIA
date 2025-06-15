@@ -4,10 +4,11 @@ import CustomField from '../../../components/CustomField';
 import { View, SafeAreaView, Text, useColorScheme, TouchableOpacity } from 'react-native';
 import { getDatabase, onValue, ref } from 'firebase/database';
 import { auth } from '../../../database/firebase';
- 
+import { useNavigation } from '@react-navigation/native';
 
 export default function HealthData() {
 
+    const navigation = useNavigation();
 
     const [altura, setAltura] = useState();
     const [peso, setPeso] = useState();
@@ -44,7 +45,7 @@ export default function HealthData() {
                     value={peso}
                     setValue={setPeso}
                 />
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>navigation.navigate("EditHealth")} style={{marginTop: 20, padding: 10, backgroundColor: '#007AFF', borderRadius: 5}}>
                     <Text>Condições Médicas</Text>
                 </TouchableOpacity>
 

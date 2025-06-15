@@ -32,9 +32,9 @@ export default function Settings(){
 
                 <CustomCardO title="Dados Pessoais" onPress={()=> navigation.navigate("DataUser")} nameImg="happy-outline"/>
 
+                <CustomCardO title="Dados Saúde" onPress={()=> navigation.navigate("HealthData")} nameImg="medkit"/>
+                    
                 <CustomCardO title="Conta" onPress={()=> navigation.navigate("AccountUser")} nameImg="person-circle-outline"/>
-
-                <CustomCardO title="Dados Saúde" onPress={()=> navigation.navigate("HealthData")} nameImg="lock-closed"/>
 
                 <CustomButton title="Sair" onPress={loggout} modeButton={false}/>
             </View>
