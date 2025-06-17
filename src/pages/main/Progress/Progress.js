@@ -4,8 +4,8 @@ import CustomButton from '../../../components/CustomButton';
 import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import {auth} from '../../../database/firebase';
-import { getDatabase, ref, onValue, set } from 'firebase/database';
+import { auth } from '../../../database/firebase';
+import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function Progress() {
     const colorScheme = useColorScheme();
@@ -18,11 +18,10 @@ export default function Progress() {
     const navigate = useNavigation();
 
     const [comidos, setComidos] = useState([]);
-    const [agendamentos, setAgendamentos] = useState([]);
     const [naoComidos, setNaoComidos] = useState([]);
-    const [quantidade, setQuantidade] = useState([0]);
-    const [quantidadePorDia, setQuantidadePorDia] = useState([]);
-    const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+    const [quantidadePorDia, setQuantidadePorDia] = useState([0, 0, 0, 0, 0, 0, 0]);
+
+    const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']; // 0 = Domingo
 
     useEffect(() => {
         const db = getDatabase();
@@ -33,22 +32,24 @@ export default function Progress() {
             const data = snapshot.val();
 
             if (data && typeof data === 'object') {
-                const quantidadeAgendas = Object.keys(data).length;
-                const arrayQuantidade = Array.from({ length: quantidadeAgendas }, (_, i) => i + 1);
-                setQuantidade(arrayQuantidade);
-
-                const diaHoje = new Date().getDay(); 
-
                 const listaAgendas = Object.entries(data).map(([key, value]) => ({
                     id: key,
                     ...value,
                 }));
 
+                const progressoPorDia = Array(7).fill(0);
+                const diaHoje = new Date().getDay();
                 const comidosTemp = [];
                 const naoComidosTemp = [];
 
                 listaAgendas.forEach((agenda) => {
                     if (agenda.progress && Array.isArray(agenda.progress)) {
+                        agenda.progress.forEach((feito, dia) => {
+                            if (feito === true) {
+                                progressoPorDia[dia] += 1;
+                            }
+                        });
+
                         if (agenda.progress[diaHoje] === true) {
                             comidosTemp.push(agenda.refeicao);
                         } else {
@@ -59,13 +60,12 @@ export default function Progress() {
 
                 setComidos(comidosTemp);
                 setNaoComidos(naoComidosTemp);
-
+                setQuantidadePorDia(progressoPorDia);
             } else {
-                console.warn('Nenhum dado encontrado ou formato inválido.');
-                setQuantidade([]);
+                setQuantidadePorDia(Array(7).fill(0));
+                setComidos([]);
+                setNaoComidos([]);
             }
-        }, (error) => {
-            console.error('Erro ao acessar o banco de dados:', error);
         });
 
         return () => unsubscribe();
@@ -84,42 +84,37 @@ export default function Progress() {
                     <Text style={[styles.title, { color: textColor }]}>📊 Gráfico Nutricional</Text>
 
                     <View style={[styles.chartSection, styles.card, { backgroundColor: cardBackground }]}>
-
-                        {quantidade.length > 0 ? (
-                            <LineChart
-                                data={{
-                                    labels: days,
-                                    datasets: [
-                                        {
-                                            data: quantidade,
-                                            color: () => lineColor,
-                                            strokeWidth: 2,
-                                        },
-                                    ],
-                                }}
-                                width={screenWidth - 72}
-                                height={220}
-                                chartConfig={{
-                                    backgroundColor: backgroundH,
-                                    backgroundGradientFrom: backgroundH,
-                                    backgroundGradientTo: backgroundH,
-                                    decimalPlaces: 0,
-                                    color: () => textColor,
-                                    labelColor: () => textColor,
-                                    propsForDots: {
-                                        r: '5',
-                                        strokeWidth: '2',
-                                        stroke: lineColor,
+                        <LineChart
+                            data={{
+                                labels: days,
+                                datasets: [
+                                    {
+                                        data: quantidadePorDia,
+                                        color: () => lineColor,
+                                        strokeWidth: 2,
                                     },
-                                }}
-                                bezier
-                                style={{
-                                    borderRadius: 16,
-                                }}
-                            />
-                        ) : (
-                            <Text style={[styles.title, { color: textColor }]}>Nenhum dado disponível para o gráfico.</Text>
-                        )}
+                                ],
+                            }}
+                            width={screenWidth - 72}
+                            height={220}
+                            chartConfig={{
+                                backgroundColor: backgroundH,
+                                backgroundGradientFrom: backgroundH,
+                                backgroundGradientTo: backgroundH,
+                                decimalPlaces: 0,
+                                color: () => textColor,
+                                labelColor: () => textColor,
+                                propsForDots: {
+                                    r: '5',
+                                    strokeWidth: '2',
+                                    stroke: lineColor,
+                                },
+                            }}
+                            bezier
+                            style={{
+                                borderRadius: 16,
+                            }}
+                        />
                     </View>
 
                     <View style={styles.buttonWrapper}>
@@ -202,7 +197,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 8,
-        marginBottom: '5%'
     },
     sectionTitle: {
         fontSize: 20,
