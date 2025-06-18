@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import { useColorScheme, Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground, KeyboardAvoidingView, Platform} from "react-native"; // Adicionado KeyboardAvoidingView, Platform
-import { useState, useEffect } from 'react';
+import { useColorScheme, Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground, KeyboardAvoidingView, Platform, StatusBar, Dimensions, Keyboard } from "react-native";
+import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from "axios";
 import {TextInput} from "react-native-paper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -8,137 +8,192 @@ import CustomMessageCamp from "../../components/CustomMessageCamp";
 import { auth } from "../../database/firebase";
 import { GiftedChat } from "react-native-gifted-chat";
 
-
 export default function Home() {
-
     const colorScheme = useColorScheme();
-    
     const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
-    
     const navigation = useNavigation();
-    
     const [messages, setMessages] = useState([]);
-
-    const tabBarAreaHeight = 90;
-    const [InputMessage, setInputMessage] = useState("")            
-    const [outputMessage, setOutputMessage] = useState("Resultados aqui")  
+    const [InputMessage, setInputMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
     
-    const enviarMensagem = async() => {
-        
-        const message = {                                          
-            _id:Math.random().toString(36).substring(7),            
-            text:InputMessage,                                    
-            createdAt:new Date(),                                 
-            user: {_id:1}                                           
-        }
-        
-        
-        setMessages((previousMessages)=>                          
-            GiftedChat.append(previousMessages,[message])
-    )
+    // Definindo altura da tabBar
+    const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 90 : 70;
 
-    setInputMessage("");
-
-    const userID = auth.currentUser?.uid
-
-    const response = await axios.post("https://nutria-6uny.onrender.com/question", {"pergunta":InputMessage, "id_user": userID}); 
-    console.log(response.data.message);   /* ENVIANDO MENSAGEM PARA O BACKEND NUTRIA */
-    setOutputMessage(response.data.message.resposta);
-    
-    // const gemini = new GoogleGenerativeAI("AIzaSyC-9oOoUxE0v13DNuE37qBzClAfhJrxRJs");
-    // const model = await gemini.getGenerativeModel({model:"gemini-1.5-flash"});
-    // const result = await model.generateContent(InputMessage);                          
-    // console.log(result.response.text());
-    // setOutputMessage(result.response.text);
-
-        const messageR = {                                                       
-            _id:Math.random().toString(36).substring(7),                         
-            text: response.data.message.resposta,                                         
-            createdAt:new Date(),                                                 
-            user: {_id:2, name: "Nutria"}                                      
-        }
-    
-        setMessages((previousMessages)=>                           
-            GiftedChat.append(previousMessages,[messageR])
-    )
-    }
-    
     useEffect(() => {
-        async function ligarRender(){
-            const resp = await axios.get("https://nutria-6uny.onrender.com/on")
-            return resp.data;
-        }
-
-        ligarRender();
+        // Carregar mensagens salvas ao montar o componente
+        loadInitialMessages();
         
+        // Listeners para o teclado
+        const keyboardWillShow = (event) => {
+            setKeyboardHeight(event.endCoordinates.height);
+        };
+        
+        const keyboardWillHide = () => {
+            setKeyboardHeight(0);
+        };
+
+        const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+        const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+        
+        const keyboardDidShowListener = Keyboard.addListener(showEvent, keyboardWillShow);
+        const keyboardDidHideListener = Keyboard.addListener(hideEvent, keyboardWillHide);
+        
+        async function ligarRender(){
+            try {
+                const resp = await axios.get("https://nutria-6uny.onrender.com/on");
+                return resp.data;
+            } catch (error) {
+                console.error("Erro ao conectar com o servidor:", error);
+            }
+        }
+        ligarRender();
+
+        return () => {
+            keyboardDidShowListener?.remove();
+            keyboardDidHideListener?.remove();
+        };
     }, []);
 
+    const loadInitialMessages = useCallback(() => {
+        // Aqui você pode carregar mensagens do storage local se necessário
+        setMessages([]);
+    }, []);
 
+    const onSend = useCallback(async (newMessage) => {
+        if (!newMessage || isLoading) return;
+        
+        setIsLoading(true);
+        try {
+            // Adiciona a mensagem do usuário
+            const userMessage = {
+                _id: Math.random().toString(36).substring(7),
+                text: newMessage,
+                createdAt: new Date(),
+                user: { _id: 1 }
+            };
 
+            setMessages(previousMessages => 
+                GiftedChat.append(previousMessages, [userMessage])
+            );
 
-    //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
+            const userID = auth.currentUser?.uid;
+            const response = await axios.post("https://nutria-6uny.onrender.com/question", {
+                "pergunta": newMessage,
+                "id_user": userID
+            });
+
+            // Adiciona a resposta do assistente
+            const assistantMessage = {
+                _id: Math.random().toString(36).substring(7),
+                text: response.data.message.resposta,
+                createdAt: new Date(),
+                user: { _id: 2, name: "Nutria" }
+            };
+
+            setMessages(previousMessages => 
+                GiftedChat.append(previousMessages, [assistantMessage])
+            );
+
+        } catch (error) {
+            console.error("Erro ao enviar mensagem:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [isLoading]);
+
+    const enviarMensagem = async () => {
+        if (InputMessage.trim()) {
+            await onSend(InputMessage.trim());
+            setInputMessage("");
+        }
+    };
+
     return(
-        <SafeAreaView style={[styles.homeContainer,{backgroundColor: background}]}>
+        <SafeAreaView style={[styles.homeContainer,{backgroundColor: background}]}> 
             <ImageBackground
-                resizeMode="cover" // Garante que a imagem cubra a área
+                resizeMode="cover"
                 source={require('../../../assets/Frutas_home.png')}
-                style={styles.homeBackground}>
-
+                style={styles.homeBackground}
+            >
+                <View style={styles.contentContainer}>
+                    <View style={[
+                        styles.messagesWrapper,
+                        {
+                            paddingBottom: keyboardHeight > 0 ? 120 : 60,
+                        }
+                    ]}>
+                        <GiftedChat 
+                            messages={messages} 
+                            renderInputToolbar={() => null} 
+                            user={{_id:1}}
+                            listViewProps={{
+                                contentContainerStyle: [
+                                    styles.chatContentContainer,
+                                    {
+                                        paddingBottom: keyboardHeight > 0 ? 20 : 10,
+                                    }
+                                ],
+                                keyboardShouldPersistTaps: 'handled',
+                                style: { flex: 1 }
+                            }}
+                            minInputToolbarHeight={0}
+                            inverted={true}
+                            extraData={{ keyboardHeight }}
+                        />
+                    </View>
                     
-                    <KeyboardAvoidingView 
-                        behavior={Platform.OS === "ios" ? "padding" : "height"} 
-                        style={[styles.keyboardAvoidingContainer, { paddingBottom: tabBarAreaHeight }]}
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+                        style={[
+                            styles.inputContainer,
+                            {
+                                bottom: keyboardHeight > 0 ? keyboardHeight + 10 : TAB_BAR_HEIGHT,
+                            }
+                        ]}
                     >
-                        <View style={styles.homeMid}>
-                            
-                            <GiftedChat messages={messages} renderInputToolbar={() => null} user={{_id:1}}> </GiftedChat>
-
-                        </View>
-
-                        <CustomMessageCamp placeholder="Mande sua pergunta" message={InputMessage} setMessage={setInputMessage} onSend={async() => await enviarMensagem()}/>            
+                        <CustomMessageCamp 
+                            placeholder="Mande sua pergunta" 
+                            message={InputMessage} 
+                            setMessage={setInputMessage} 
+                            onSend={enviarMensagem}
+                        />
                     </KeyboardAvoidingView>
-
+                </View>
             </ImageBackground>
         </SafeAreaView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
-    homeContainer:{
+    homeContainer: {
         flex: 1,
     },
     homeBackground: {
         flex: 1,
-        height: '100%',
-        width: '100%',
     },
-    keyboardAvoidingContainer: {
+    contentContainer: {
         flex: 1,
-        width: '100%',
+        position: 'relative',
+    },
+    messagesWrapper: {
+        flex: 1,
+        paddingTop: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0,
+    },
+    chatContentContainer: {
+        flexGrow: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
         justifyContent: 'flex-end',
     },
-    contentWrapper: {
-        flex: 1,
+    inputContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        backgroundColor: 'transparent',
+        paddingHorizontal: 16, // aumentado
+        paddingVertical: 16, // novo espaçamento vertical
+        zIndex: 1000,
     },
-    homeImage: {
-        height: 30,
-        width: 49,
-        marginLeft: 10,
-    },
-    homeFooter: {
-        flexDirection: "row",
-        width: '100%',
-    },
-    homeText: {
-        flex: 1,
-        marginLeft: 0,
-        borderRadius: 300,
-        borderCurve: 9000,
-    },
-    homeMid: {
-        flex: 1,
-        height: '100%',
-        width: '100%', // Ocupa a largura
-        justifyContent: "center",
-    },
-})
+});

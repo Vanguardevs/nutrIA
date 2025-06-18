@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme, ImageBackground, ScrollView, KeyboardAvoidingView, Platform} from "react-native";
+import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomField from "../../../components/CustomField"; 
 import CustomButton from "../../../components/CustomButton";
@@ -20,7 +20,9 @@ export default function CreateUser() {
     const [password, setPassword] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [sexo, setSexo] = useState('');
-
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const handleDateChange = (text) => {
         let formattedText = text.replace(/\D/g, ''); 
@@ -71,25 +73,57 @@ export default function CreateUser() {
         return idadeCalculada;
     };
 
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function validatePassword(password) {
+        // Pelo menos 8 caracteres, 1 maiúscula, 1 minúscula, 1 número
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+    }
+
     async function nextPage() {
-        if (!nome || !password || !email || !dataNascimento || !sexo) {
+        let errors = {};
+        if (!nome) errors.nome = true;
+        if (!email) errors.email = true;
+        if (!password) errors.password = true;
+        if (!dataNascimento) errors.dataNascimento = true;
+        if (!sexo) errors.sexo = true;
+
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             Alert.alert("Atenção", "Por favor, preencha todos os campos.");
             return;
         }
 
-        if (password.length < 8) {
-            Alert.alert("Senha Inválida", "A senha deve ter no mínimo 8 caracteres.");
+        if (!validateEmail(email)) {
+            setFieldErrors({ email: true });
+            Alert.alert("E-mail inválido", "Digite um e-mail válido.");
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            setFieldErrors({ password: true });
+            Alert.alert("Senha fraca", "A senha deve ter no mínimo 8 caracteres, incluindo maiúscula, minúscula e número.");
             return;
         }
 
         const idadeResultante = calcularIdade(dataNascimento);
-
         if (idadeResultante === null || isNaN(idadeResultante) || idadeResultante < 12) {
+            setFieldErrors({ dataNascimento: true });
             Alert.alert("Idade Inválida", "Você deve ter no mínimo 12 anos para usar o aplicativo e a data de nascimento deve estar no formato DD/MM/AAAA.");
             return;
         }
 
-        navigation.navigate("HealthRegister", { nome, email, password, idade: idadeResultante, sexo });
+        setLoading(true);
+        setFieldErrors({});
+        // Simulação de verificação de e-mail duplicado (ideal: fazer no backend)
+        // await ...
+        setTimeout(() => {
+            setLoading(false);
+            navigation.navigate("HealthRegister", { nome, email, password, idade: idadeResultante, sexo });
+        }, 1000);
     }
 
     return (
@@ -116,12 +150,16 @@ export default function CreateUser() {
                                 value={nome} 
                                 setValue={setNome} 
                                 placeholder="Insira seu nome" 
+                                autoComplete="name"
+                                textContentType="name"
                             />
                             <CustomField 
                                 title="Email" 
                                 value={email} 
                                 setValue={setEmail} 
-                                keyboardType="email-address" 
+                                keyboardType="email-address"
+                                autoComplete="email" 
+                                textContentType="emailAddress"
                                 placeholder="exemplo@email.com" 
                             />
                             <CustomField 
@@ -129,9 +167,16 @@ export default function CreateUser() {
                                 value={password} 
                                 setValue={setPassword} 
                                 placeholder="Mínimo de 8 caracteres" 
-                                secureTextEntry 
+                                secureTextEntry={!showPassword}
+                                autoComplete="password"
+                                textContentType="newPassword"
+                                rightIcon={
+                                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                                        <Text style={{ color: 'green', fontWeight: 'bold' }}>{showPassword ? 'Ocultar' : 'Mostrar'}</Text>
+                                    </TouchableOpacity>
+                                }
                             />
-
+                            
                             <View style={styles.centeredPickerContainer}>
                                 <CustomPicker
                                     label="Sexo"
@@ -153,10 +198,16 @@ export default function CreateUser() {
                                 placeholder="DD/MM/AAAA" 
                                 keyboardType="numeric"
                                 maxLength={10}
+                                autoComplete="birthdate"
+                                textContentType="none"
                             />
 
                             <View style={styles.buttonContainer}>
-                                <CustomButton title="Próximo" onPress={nextPage} modeButton={true} />
+                                {loading ? (
+                                    <ActivityIndicator size="large" color="green" />
+                                ) : (
+                                    <CustomButton title="Próximo" onPress={nextPage} modeButton={true} />
+                                )}
                             </View>
 
                             <TouchableOpacity onPress={() => navigation.goBack()}>

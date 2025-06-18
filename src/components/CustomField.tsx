@@ -10,25 +10,25 @@ interface CustomFieldProps extends TextInput { //Extende pra tudo que seja texti
 }
 
 const CustomField: React.FC<CustomFieldProps> = ({ title, placeholder, value, setValue,  darkMode, ...props}) => {
-
-  const colorSheme = useColorScheme();
-
-  const background = colorSheme === 'dark'? "#1C1C1E" : "white"
-  const texts = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+  const colorScheme = useColorScheme();
+  const background = colorScheme === 'dark'? "#1C1C1E" : "#fff";
+  const texts = colorScheme === 'dark'? "#F2F2F2" : "#1C1C1E";
+  const borderColor = colorScheme === 'dark' ? '#333' : '#2E8331';
 
   return (
-      <>
-        <View style={styles.container}>
-          <Text style={[styles.label,{color:texts}]}>{title}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={placeholder}
-            value={value}
-            onChangeText={setValue}
-            {...props}
-          />
-        </View>
-      </>
+      <View style={[styles.container]}> 
+        <Text style={[styles.label,{color:texts}]}>{title}</Text>
+        <TextInput
+          style={[styles.input, {backgroundColor: background, color: texts, borderColor, textAlign: 'center'}]}
+          placeholder={placeholder}
+          placeholderTextColor={colorScheme === 'dark' ? '#888' : '#aaa'}
+          value={value}
+          onChangeText={setValue}
+          maxLength={200}
+          returnKeyType="done"
+          {...props}
+        />
+      </View>
   );
 }
 
@@ -36,7 +36,9 @@ const styles = StyleSheet.create({
   container:{
     justifyContent: 'center', 
     alignItems: 'center', 
-    flexDirection: 'column'
+    flexDirection: 'column',
+    width: '100%',
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
@@ -51,21 +53,20 @@ const styles = StyleSheet.create({
     textDecorationColor:'white'
   },
   input: {
-    backgroundColor: "#fff",
-    height: 40,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    width: '85%',
-    marginLeft: '1%',
-    borderColor: "#2E8331",
-    borderWidth: 2,
-    color:"#333",
+    height: 44,
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    borderWidth: 1.5,
+    fontSize: 17,
+    width: '95%',
+    marginBottom: 5,
     shadowColor: "#000", 
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
     elevation: 2,
+    minHeight: 44,
+    maxHeight: 120,
   }
 });
 

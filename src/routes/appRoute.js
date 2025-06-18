@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {useColorScheme} from "react-native";
+import {useColorScheme, Platform, StatusBar} from "react-native";
 
 //Páginas de navegação do aplicativo já logado
 import Progress from "../pages/main//Progress/Progress.js";
@@ -87,8 +87,11 @@ export default function AppTabs() {
                         name={item.route}
                         component={item.label}
                         options={{
-                            header: (props) => <Header {...props} />,
-                            keyboardHidesTabBar: item.route === 'Nutria',
+                            header: (props) => <Header {...props} options={{ headerShown: true }} />,
+                            headerStyle: {
+                                height: Platform.OS === 'ios' ? 90 : 60,
+                            },
+                            headerStatusBarHeight: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,                            keyboardHidesTabBar: item.route === 'Nutria',
                             title: item.route,
                             tabBarIcon: ({ color, focused }) => (
                                 <Ionicons

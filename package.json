@@ -34,6 +34,7 @@
     "react-native-chart-kit": "^6.12.0",
     "react-native-get-random-values": "^1.11.0",
     "react-native-gifted-chat": "2.6.3",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-paper": "4.9.2",
     "react-native-picker-select": "^9.3.1",
