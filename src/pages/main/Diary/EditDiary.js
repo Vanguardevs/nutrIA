@@ -1,4 +1,4 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, Button, useColorScheme} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomButton from '../../../components/CustomButton';
 import React, { useState } from 'react';
@@ -134,24 +134,26 @@ export default function EditDiary(){
                         ]}
                     />
 
-                    <CustomField title="Alimento" placeholder='Alimento' value={editRefeicao} setValue={(d)=>setEditRefeicao(d)}/>
-                    <Button title="Data" onPress={showDatePicker} value/>
+                    <CustomField title="Alimento" placeholder='Alimento' value={editRefeicao} setValue={setEditRefeicao}/>
+
+                    <CustomButton title="Data" onPress={showDatePicker} modeButton={true} style={{marginBottom: 8}}/>
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
                         mode="date"
                         onConfirm={handleConfirm}
                         onCancel={hideDatePicker}
                     />
-                    
-                    <Button title="Horário" onPress={showTimePicker} />
+
+                    <CustomButton title="Horário" onPress={showTimePicker} modeButton={true} style={{marginBottom: 8}}/>
                     <DateTimePickerModal
                         isVisible={isTimePickerVisible}
                         mode="time"
                         onConfirm={handleTimeConfirm}
                         onCancel={hideTimePicker}
                     />
-                    <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true}/>
-                    <CustomButton title="Excluir" onPress={excluirAgenda} modeButton={false}/>
+
+                    <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true} style={{marginTop: 16}}/>
+                    <CustomButton title="Excluir" onPress={excluirAgenda} modeButton={false} style={{marginTop: 8}}/>
 
                 </View>
 

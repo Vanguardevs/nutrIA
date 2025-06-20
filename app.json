@@ -11,7 +11,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Precisamos do microfone para reconhecimento de voz."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +22,11 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.vanguardnutria.softwareAssistant",
-      "newArchEnabled": true
+      "newArchEnabled": true,
+      "permissions": [
+        "RECORD_AUDIO",
+        "INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

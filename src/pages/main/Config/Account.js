@@ -95,7 +95,7 @@ export default function AccountUser() {
       <ImageBackground
         source={require('../../../../assets/frutas_fundo.png')}
         style={styles.imageBackground}
-        imageStyle={{ opacity: 1 }}
+        imageStyle={{ opacity: 0.5 }}
       >
         <View style={[styles.container, { backgroundColor: cardColor }]}>
           <Text style={[styles.title, { color: textColor }]}>Minha Conta</Text>

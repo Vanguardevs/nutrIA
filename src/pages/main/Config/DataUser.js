@@ -79,7 +79,7 @@ export default function DataUser() {
       <ImageBackground
         source={require('../../../../assets/frutas_fundo.png')}
         style={styles.imageBackground}
-        imageStyle={{ opacity: 1 }}
+        imageStyle={{ opacity: 0.5 }}
       >
         <View style={[styles.container, { backgroundColor: cardBackground }]}>
           <Text style={[styles.title, { color: textColor }]}>Atualizar Dados</Text>

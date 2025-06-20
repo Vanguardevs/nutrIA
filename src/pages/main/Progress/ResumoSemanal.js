@@ -59,8 +59,8 @@ export default function ResumoSemanal() {
           <Text style={styles.diaNome}>{diaData.dia}</Text>
           <Text>Calorias: {diaData.calorias} kcal</Text>
           <Text>Valor Energético: {diaData.valorEnergetico} kJ</Text>
-          <Text>Alimentos Comidos: {diaData.comidos}</Text>
-          <Text>Alimentos Não Comidos: {diaData.naoComidos}</Text>
+          <Text>Refeições Realizadas: {diaData.comidos}</Text>
+          <Text>Refeições Não Realizadas: {diaData.naoComidos}</Text>
         </View>
       ))}
 
@@ -68,8 +68,8 @@ export default function ResumoSemanal() {
         <Text style={styles.totalTitle}>Totais Semanais</Text>
         <Text>Calorias Totais: {totalCalorias} kcal</Text>
         <Text>Valor Energético Total: {totalValorEnergetico} kJ</Text>
-        <Text>Total Alimentos Comidos: {totalComidos}</Text>
-        <Text>Total Alimentos Não Comidos: {totalNaoComidos}</Text>
+        <Text>Total Refeições Realizadas: {totalComidos}</Text>
+        <Text>Total Refeições Não Realizadas: {totalNaoComidos}</Text>
       </View>
     </ScrollView>
   );

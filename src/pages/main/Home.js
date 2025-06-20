@@ -13,7 +13,8 @@ import {
     StatusBar,
     Keyboard,
     SafeAreaView,
-    Image
+    Image,
+    KeyboardAvoidingView
 } from 'react-native';
 import Voice from '@react-native-voice/voice';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,9 +23,10 @@ import axios from "axios";
 import { auth } from "../../database/firebase";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
 
 // Componente animado para o balão de mensagem
-const MessageBubble = React.memo(({ message, isUser, index }) => {
+const MessageBubble = React.memo(({ message, isUser, index, timestamp }) => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(30)).current;
     const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -74,7 +76,7 @@ const MessageBubble = React.memo(({ message, isUser, index }) => {
                     styles.messageBubble,
                     {
                         alignSelf: isUser ? 'flex-end' : 'flex-start',
-                        backgroundColor: isUser ? '#007AFF' : '#F2F2F7',
+                        backgroundColor: isUser ? '#2E8331' : '#F2F2F7',
                         opacity: fadeAnim,
                         transform: [
                             { translateY: slideAnim },
@@ -89,6 +91,22 @@ const MessageBubble = React.memo(({ message, isUser, index }) => {
                 ]}>
                     {message}
                 </Text>
+                {timestamp && (
+                    <Text style={{
+                        color: isUser ? '#D0F5D8' : '#888',
+                        fontSize: 11,
+                        marginTop: 4,
+                        textAlign: isUser ? 'right' : 'left',
+                    }}>
+                        {new Date(timestamp).toLocaleString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </Text>
+                )}
             </Animated.View>
         </View>
     );
@@ -404,6 +422,7 @@ export default function Home({ navigation }) {
             message={item.message} 
             isUser={item.isUser} 
             index={index}
+            timestamp={item.timestamp}
         />
     ), []);
 
@@ -412,77 +431,63 @@ export default function Home({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-            
-            <View style={styles.chatContainer}>
-                <FlatList
-                    ref={flatListRef}
-                    data={messages}
-                    renderItem={renderMessage}
-                    keyExtractor={keyExtractor}
-                    contentContainerStyle={[
-                        styles.messagesList,
-                        { 
-                            paddingBottom: keyboardHeight > 0 ? 20 : 120, // igual ao valor acima
-                            minHeight: messages.length === 0 ? SCREEN_HEIGHT * 0.7 : undefined
-                        }
-                    ]}
-                    showsVerticalScrollIndicator={false}
-                    removeClippedSubviews={Platform.OS === 'android'}
-                    maxToRenderPerBatch={10}
-                    windowSize={10}
-                    ListEmptyComponent={() => (
-                        <View style={styles.emptyContainer}>
-                            <Ionicons name="chatbubbles-outline" size={64} color="#C7C7CC" />
-                            <Text style={styles.emptyText}>Nenhuma mensagem ainda</Text>
-                            <Text style={styles.emptySubText}>
-                                Envie uma mensagem ou use o microfone para começar
-                            </Text>
-                        </View>
-                    )}
-                />
-                
-                <TypingIndicator visible={isTyping} />
-            </View>
-            
-            <Animated.View 
-                style={[
-                    styles.inputContainer,
-                    { transform: [{ translateY: inputContainerAnim }] }
-                ]}
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={TAB_BAR_HEIGHT}
             >
-                <Animated.View style={{ transform: [{ scale: micPulseAnim }] }}>
-                    <TouchableOpacity
-                        onPress={isListening ? stopListening : startListening}
-                        style={[
-                            styles.micButton,
-                            { 
-                                backgroundColor: isListening ? '#E8F4FD' : '#F2F2F7',
-                                borderColor: isListening ? '#007AFF' : '#D1D1D6',
-                                borderWidth: isListening ? 2 : 1,
-                                shadowColor: isListening ? '#007AFF' : '#000',
-                                shadowOffset: { width: 0, height: isListening ? 2 : 1 },
-                                shadowOpacity: isListening ? 0.3 : 0.1,
-                                shadowRadius: isListening ? 4 : 2,
-                                elevation: isListening ? 4 : 2,
+                <View style={styles.chatContainer}>
+                    <FlatList
+                        ref={flatListRef}
+                        data={messages}
+                        renderItem={renderMessage}
+                        keyExtractor={keyExtractor}
+                        contentContainerStyle={[
+                            styles.messagesList,
+                            {
+                                paddingBottom: TAB_BAR_HEIGHT + 16, // Garante espaço para o input acima da tab bar
+                                minHeight: messages.length === 0 ? SCREEN_HEIGHT * 0.7 : undefined
                             }
                         ]}
-                        activeOpacity={0.7}
-                    >
-                        <Ionicons 
-                            name={isListening ? "mic" : "mic-outline"} 
-                            size={24} 
-                            color={isListening ? "#007AFF" : "#8E8E93"} 
-                        />
-                    </TouchableOpacity>
+                        showsVerticalScrollIndicator={false}
+                        removeClippedSubviews={Platform.OS === 'android'}
+                        maxToRenderPerBatch={10}
+                        windowSize={10}
+                        ListEmptyComponent={() => (
+                            <View style={styles.emptyContainer}>
+                                <Ionicons name="chatbubbles-outline" size={64} color="#C7C7CC" />
+                                <Text style={styles.emptyText}>Nenhuma mensagem ainda</Text>
+                                <Text style={styles.emptySubText}>
+                                    Envie uma mensagem ou use o microfone para começar
+                                </Text>
+                            </View>
+                        )}
+                    />
+                </View>
+                <View style={{ width: '100%', marginBottom: 32 }}>
+                    <TypingIndicator visible={isTyping} />
+                </View>
+                <Animated.View 
+                    style={[
+                        styles.inputContainer,
+                        { 
+                            transform: [{ translateY: inputContainerAnim }],
+                            marginBottom: TAB_BAR_HEIGHT + 12 // Mais distância do input para a tab bar
+                        }
+                    ]}
+                >
+                    <CustomMessageCamp
+                        message={input}
+                        setMessage={setInput}
+                        onSend={handleSend}
+                        style={styles.messageInput}
+                        isListening={isListening}
+                        startListening={startListening}
+                        stopListening={stopListening}
+                        micPulseAnim={micPulseAnim}
+                    />
                 </Animated.View>
-                
-                <CustomMessageCamp
-                    message={input}
-                    setMessage={setInput}
-                    onSend={handleSend}
-                    style={styles.messageInput}
-                />
-            </Animated.View>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
@@ -499,7 +504,7 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         paddingHorizontal: 14,
         flexGrow: 1,
-        paddingBottom: 120, // ajuste conforme necessário
+        paddingBottom: 120,
     },
     messageBubble: {
         marginVertical: 6,
@@ -525,19 +530,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'center',
-        paddingHorizontal: 50,
-        paddingVertical: 100,
-        backgroundColor: '#FFFFFF',
-        borderTopWidth: 1,
-        borderTopColor: '#E5E5EA',
+        paddingHorizontal: 0,
+        paddingBottom: 8,
+        backgroundColor: '#F8F9FB',
     },
     micButton: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
+        width: 38,
+        height: 38,
+        borderRadius: 19,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 10,
+        marginRight: 8,
         marginBottom: 0,
         backgroundColor: '#F2F2F7',
         borderWidth: 1,
@@ -567,18 +570,19 @@ const styles = StyleSheet.create({
     },
     messageInput: {
         flex: 1,
-        minHeight: 44,
-        maxHeight: 120,
+        minHeight: 60,
+        maxHeight: 160,
+        maxWidth: '100%',
         backgroundColor: '#F8F9FB',
-        borderRadius: 16,
-        paddingHorizontal: 14,
-        fontSize: 16,
+        borderRadius: 14,
+        paddingHorizontal: 10,
+        fontSize: 15,
         marginBottom: 0,
         borderWidth: 1,
         borderColor: '#E5E5EA',
     },
     typingContainer: {
-        paddingHorizontal: 18,
+        paddingHorizontal: 14,
         paddingBottom: 8,
         alignItems: 'flex-start',
         width: '100%',

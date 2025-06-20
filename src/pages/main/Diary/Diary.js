@@ -155,32 +155,38 @@ export default function Diary() {
   }, [agendas]);
 
   return (
-    <ScrollView style={[styles.container,{backgroundColor: backgoundH}]} contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
-      
-      <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.homeBackground}>
+    <View style={{ flex: 1 }}>
+      <View style={styles.fabTopContainer}>
+        <TouchableOpacity
+          style={styles.fabTop}
+          onPress={() => navigate.navigate('Create-Diary')}
+        >
+          <Ionicons name="add" size={32} color="#fff" />
+        </TouchableOpacity>
+      </View>
 
-        {agendas.map((agenda)=>(
-          <CardCustomCalendar
-            key={agenda.id}
-            horario={agenda.horario}
-            alimentacao={agenda.refeicao}
-            onPressEdit={()=>{navigate.navigate("Edit-Diary", {id: agenda.id, refeicao: agenda.refeicao, hora: agenda.horario})}}
-            onPressConcluido={()=>AgendaConcluida(agenda.id)}
-          />
-        ))}
+      <ScrollView style={[styles.container,{backgroundColor: backgoundH}]} contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
+        
+        <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.homeBackground}>
 
-        <View style={{alignItems: 'center', marginTop:20}}>
+          {agendas.map((agenda)=>(
+            <CardCustomCalendar
+              key={agenda.id}
+              horario={agenda.horario}
+              alimentacao={agenda.refeicao}
+              onPressEdit={()=>{navigate.navigate("Edit-Diary", {id: agenda.id, refeicao: agenda.refeicao, hora: agenda.horario})}}
+              onPressConcluido={()=>AgendaConcluida(agenda.id)}
+            />
+          ))}
 
-          <TouchableOpacity style={styles.button} onPress={()=>{setConcluido(true); navigate.navigate("Create-Diary")}}>
-            <Ionicons name="add-outline" size={20} color={backgoundIcons}/>
-          </TouchableOpacity>
+          <View style={{alignItems: 'center', marginTop:20}}>
 
-        </View>
+          </View>
 
-        <View/>
-      </ImageBackground>
-    </ScrollView>
-
+          <View/>
+        </ImageBackground>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -219,5 +225,30 @@ const styles = StyleSheet.create({
     fontSize: 40, 
     fontWeight: 'bold', 
     textAlign: 'center',
+  },
+  fabTopContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 24,
+    marginBottom: 16,
+  },
+  fabTop: {
+    backgroundColor: '#2E8331',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  fabText: {
+    color: '#fff',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: -2,
   },
 });

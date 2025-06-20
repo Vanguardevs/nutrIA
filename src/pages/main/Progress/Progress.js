@@ -128,7 +128,7 @@ export default function Progress() {
                     <View style={[styles.card, { backgroundColor: cardBackground }]}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="check-box" size={24} color="green" />
-                            <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Comidos</Text>
+                            <Text style={[styles.sectionTitle, { color: textColor }]}>Refeições Realizadas</Text>
                         </View>
                         {comidos.map((alimento, index) => (
                             <Text key={index} style={[styles.item, { color: textColor }]}>• {alimento}</Text>
@@ -138,7 +138,7 @@ export default function Progress() {
                     <View style={[styles.card, { backgroundColor: cardBackground }]}>
                         <View style={styles.sectionHeader}>
                             <MaterialIcons name="cancel" size={24} color="red" />
-                            <Text style={[styles.sectionTitle, { color: textColor }]}>Alimentos Não Comidos</Text>
+                            <Text style={[styles.sectionTitle, { color: textColor }]}>Refeições Não Realizadas</Text>
                         </View>
                         {naoComidos.map((alimento, index) => (
                             <Text key={index} style={[styles.item, { color: textColor }]}>• {alimento}</Text>

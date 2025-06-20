@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
-export default function ResumoDiario({ route }) {
+export default function ResumoDiario({ route, navigation }) {
     const { comidos = [], naoComidos = [] } = route.params || {};
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: 'Resumo Diário',
+            headerTitleStyle: {
+                color: '#2E8331',
+                fontWeight: 'bold',
+                fontSize: 28,
+                alignSelf: 'center',
+            },
+        });
+    }, [navigation]);
 
     const alimentosDetalhes = {
         Banana: { calorias: 89, valorEnergetico: 370 },
@@ -37,11 +49,11 @@ export default function ResumoDiario({ route }) {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>🍽️ Alimentos Comidos</Text>
-            {comidos.length ? renderAlimentos(comidos) : <Text style={styles.vazio}>Nenhum alimento comido.</Text>}
+            <Text style={styles.title}>🍽️ Refeições Realizadas</Text>
+            {comidos.length ? renderAlimentos(comidos) : <Text style={styles.vazio}>Nenhuma refeição realizada.</Text>}
 
-            <Text style={styles.title}>🥄 Alimentos Não Comidos</Text>
-            {naoComidos.length ? renderAlimentos(naoComidos) : <Text style={styles.vazio}>Nenhum alimento ignorado.</Text>}
+            <Text style={styles.title}>🍃 Refeições Não Realizadas</Text>
+            {naoComidos.length ? renderAlimentos(naoComidos) : <Text style={styles.vazio}>Nenhuma refeição não realizada.</Text>}
 
             <View style={styles.totalContainer}>
                 <Text style={styles.totalTitle}>Resumo Nutricional</Text>
@@ -55,16 +67,17 @@ export default function ResumoDiario({ route }) {
 const styles = StyleSheet.create({
     container: {
         padding: 20,
-        backgroundColor: '#f7f9fc',
+        backgroundColor: '#E9FBEA',
     },
     title: {
         fontSize: 20,
         fontWeight: '600',
         marginVertical: 12,
-        color: '#333',
+        color: '#2E8331',
+        textAlign: 'center',
     },
     itemCard: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#D0F5D8',
         padding: 16,
         borderRadius: 12,
         marginBottom: 10,
@@ -77,35 +90,35 @@ const styles = StyleSheet.create({
     nome: {
         fontSize: 18,
         fontWeight: '500',
-        color: '#222',
+        color: '#2E8331',
         marginBottom: 4,
     },
     detalhe: {
         fontSize: 14,
-        color: '#666',
+        color: '#1C1C1E',
     },
     totalContainer: {
         marginTop: 30,
         padding: 20,
-        backgroundColor: '#e6f0ff',
+        backgroundColor: '#2E8331',
         borderRadius: 12,
         borderLeftWidth: 5,
-        borderLeftColor: '#4a90e2',
+        borderLeftColor: '#14591A',
     },
     totalTitle: {
         fontSize: 18,
         fontWeight: '600',
         marginBottom: 8,
-        color: '#2b4c7e',
+        color: '#D0F5D8',
     },
     totalText: {
         fontSize: 16,
         fontWeight: '500',
-        color: '#2b4c7e',
+        color: '#D0F5D8',
     },
     vazio: {
         fontStyle: 'italic',
-        color: '#999',
+        color: '#2E8331',
         marginBottom: 10,
         marginLeft: 4,
     },
