@@ -8,27 +8,32 @@ import { sendPasswordResetEmail, updateEmail } from 'firebase/auth';
 
 export default function AccountUser() {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const colorScheme = useColorScheme();
   const background = colorScheme === 'dark' ? "#1C1C1E" : "#F2F2F2";
   const textColor = colorScheme === 'dark' ? "#F2F2F2" : "#1C1C1E";
   const cardColor = colorScheme === 'dark' ? "rgba(44,44,46,0.85)" : "rgba(255,255,255,0.85)";
 
-  useEffect(() => {
-    function getData() {
-      const db = getDatabase();
-      const userID = auth.currentUser.uid;
-      const userRef = ref(db, 'users/' + userID);
+  const user = auth.currentUser;
 
-      onValue(userRef, (resp) => {
-        const data = resp.val();
-        if (data) {
-          setEmail(data.email);
-        }
-      });
+  useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
     }
-    getData();
-  }, []);
+    const db = getDatabase();
+    const userRef = ref(db, 'users/' + user.uid);
+
+    const unsubscribe = onValue(userRef, (resp) => {
+      if (resp.exists()) {
+        setEmail(resp.val().email || '');
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   function RedefinePassword() {
     if (email === '') {
@@ -67,6 +72,22 @@ export default function AccountUser() {
             Alert.alert('Erro ao atualizar email. Tente novamente mais tarde.');
           });
       });
+  }
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Carregando...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Usuário não encontrado.</Text>
+      </View>
+    );
   }
 
   return (

@@ -49,9 +49,7 @@ export default function LoginPag() {
         console.log("Erro ao fazer login:", error);
       });
   }
-
   return (
-
     <SafeAreaView style={[styles.loginSafeArea, { backgroundColor: background }]}>
       <ImageBackground
         source={require("../../../assets/Frutas_home.png")}
@@ -65,6 +63,9 @@ export default function LoginPag() {
             keyboardType="email-address"
             value={email}
             setValue={setEmail}
+            autoComplete="email"
+            textContentType="emailAddress"
+            autoCapitalize="none"
           />
 
           <CustomField
@@ -74,6 +75,9 @@ export default function LoginPag() {
             secureTextEntry
             value={password}
             setValue={setPassword}
+            autoComplete="password"
+            textContentType="password"
+            autoCapitalize="none"
           />
           <TouchableOpacity onPress={() => navegacao.push("ForgetPassword")} style={styles.loginForgotContainer}>
             <Text style={[styles.loginForgotText, { color: texts }]}>Esqueci minha senha</Text>
@@ -87,7 +91,7 @@ export default function LoginPag() {
           />
           <TouchableOpacity onPress={() => navegacao.push("Registro")} style={styles.loginRegisterContainer}>
             <Text style={{ fontSize: 15, color: texts }}>
-              Não possui conta?{" "}
+              Não possui conta?{' '}
               <Text style={{ color: "green", fontWeight: "bold", fontSize: 17 }}>
                 Crie agora
               </Text>

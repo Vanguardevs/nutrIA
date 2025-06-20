@@ -7,7 +7,8 @@ import Progress from "../pages/main//Progress/Progress.js";
 import CreateDiary from '../pages/main/Diary/CreateDiary.js';
 import EditDiary from '../pages/main/Diary/EditDiary.js';
 import Diary from "../pages/main/Diary/Diary.js";
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 import Header from "../pages/cabecalho/header.js";
 import Home from '../pages/main/Home.js';
 import AccountUser from '../pages/main/Config/Account.js';
@@ -19,11 +20,10 @@ import EditHealth from '../pages/main/Config/EditHealth.js';
 
 
 
-
 const TabArr = [
-    {"route":'Nutria', "label": Home, "icon_active": 'leaf-outline', "icon": 'leaf', 'color_basic': 'gray', "color_hover": "green"},
-    {"route":'Agendas', "label": Diary, "icon_active": 'calendar-outline', "icon": 'calendar', 'color_basic': 'gray', "color_hover": "green"},
-    {"route":'Progresso', "label": Progress, "icon_active": 'analytics-outline', "icon": 'analytics', 'color_basic': 'gray', "color_hover": "green"},
+    {"route":'Nutria', "label": Home, "icon_active": 'leaf-outline', "icon": 'leaf', 'color_basic': 'gray', "color_hover": "green", "title": "Nutria"},
+    {"route":'Agendas', "label": Diary, "icon_active": 'calendar-outline', "icon": 'calendar', 'color_basic': 'gray', "color_hover": "green", "title": "Agendas"},
+    {"route":'Progresso', "label": Progress, "icon_active": 'analytics-outline', "icon": 'analytics', 'color_basic': 'gray', "color_hover": "green", "title": "Progresso"},
 ];
 
 const StackItems =[
@@ -86,13 +86,16 @@ export default function AppTabs() {
                         key={index}
                         name={item.route}
                         component={item.label}
-                        options={{
-                            header: (props) => <Header {...props} options={{ headerShown: true }} />,
+                        options={({ navigation }) => ({
+                            headerShown: true,
+                            headerTitle: item.title,
                             headerStyle: {
                                 height: Platform.OS === 'ios' ? 90 : 60,
+                                justifyContent: 'center',
+                                alignItems: 'center',
                             },
-                            headerStatusBarHeight: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,                            keyboardHidesTabBar: item.route === 'Nutria',
-                            title: item.route,
+                            headerStatusBarHeight: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,
+                            keyboardHidesTabBar: item.route === 'Nutria',
                             tabBarIcon: ({ color, focused }) => (
                                 <Ionicons
                                     name={focused ? item.icon_active : item.icon}
@@ -100,8 +103,40 @@ export default function AppTabs() {
                                     color={focused ? item.color_hover : item.color_basic} 
                                 />
                             ),
-                            tabBarActiveTintColor: 'green'
-                        }}
+                            tabBarActiveTintColor: 'green',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                                color: 'green',
+                                fontSize: 28,
+                                alignSelf: 'center',
+                                textAlign: 'center',
+                                width: '100%',
+                                marginTop: Platform.OS === 'ios' ? 20 : 0,
+                            },
+                            // Exibe o botão de configurações nas abas Nutria, Agendas e Progresso
+                            headerRight: () => (
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('Config')}
+                                    style={{
+                                        marginRight: 12,
+                                        marginLeft: 4,
+                                        backgroundColor: '#2E8331',
+                                        borderRadius: 20,
+                                        width: 40,
+                                        height: 40,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        shadowColor: '#2E8331',
+                                        shadowOffset: { width: 0, height: 1 },
+                                        shadowOpacity: 0.12,
+                                        shadowRadius: 2,
+                                        elevation: 1,
+                                    }}
+                                >
+                                    <Ionicons name="options" size={24} color="#FFF" />
+                                </TouchableOpacity>
+                            ),
+                        })}
                     />
                 ))}
             </Tab.Navigator>

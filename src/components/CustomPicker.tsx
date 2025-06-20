@@ -15,104 +15,116 @@ interface CustomPickerProps {
 const CustomPicker = ({ label, selectedValue, onValueChange, options }: CustomPickerProps) => {
   const colorScheme = useColorScheme();
 
-  const background = colorScheme === 'dark' ? "#1C1C1E" : "white";
+  const background = colorScheme === 'dark' ? "#1C1C1E" : "#fff";
   const texts = colorScheme === 'dark' ? "#F2F2F2" : "#1C1C1E";
+  const border = colorScheme === 'dark' ? '#2E8331' : '#2E8331';
 
-  return (
-    <View style={styles.container1}>
-      
-      <View style={styles.container2}>
-
+  return (    <View style={styles.container1}> 
+      <View style={styles.container2}> 
         <Text style={[styles.label, { color: texts }]}>{label}</Text>
-        
-        <RNPickerSelect
-          useNativeAndroidPickerStyle={false}
-          onValueChange={onValueChange}
-          items={options}
-          value={selectedValue}
-          placeholder={{ label: "Selecione uma opção...", value: null }}
-          style={{...pickerSelectStyles, iconContainer: {top:10, right:5}}}
-          Icon={()=>{
-            return(<Ionicons name="caret-down-outline" size={19} color="black" />)
-          }}
-        />
-
+        <View style={{
+          borderWidth: 2,
+          borderColor: border,
+          borderRadius: 15,
+          backgroundColor: background,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 3,
+          width: '100%',
+          overflow: 'hidden',
+        }}>
+          <RNPickerSelect
+            useNativeAndroidPickerStyle={false}
+            onValueChange={onValueChange}
+            items={options}
+            value={selectedValue}
+            placeholder={{ label: "Selecione uma opção...", value: null }}
+            style={{              ...pickerSelectStyles,
+              inputIOS: {
+                ...pickerSelectStyles.inputIOS,
+                backgroundColor: background,
+                color: texts,
+              },
+              inputAndroid: {
+                ...pickerSelectStyles.inputAndroid,
+                backgroundColor: background,
+                color: texts,
+              },
+              inputWeb: {
+                ...pickerSelectStyles.inputWeb,
+                backgroundColor: background,
+                color: texts,
+              },
+              placeholder: {
+                color: colorScheme === 'dark' ? '#888' : '#666',
+              },
+              iconContainer: { top: 12, right: 12 },
+            }}
+            Icon={() => (
+              <Ionicons name="caret-down-outline" size={22} color={colorScheme === 'dark' ? '#F2F2F2' : '#2E8331'} />
+            )}
+          />
+        </View>
       </View>
-
-      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container2: {
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
   },
-  container1:{
-    flexDirection: 'row'
+  container1: {
+    width: '100%',
+    paddingHorizontal: 16,
+    marginVertical: 8,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
   },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 16,
-    paddingTop: 13,
-    paddingHorizontal: 10,
-    paddingBottom: 12,
-    borderWidth: 2,
-    borderColor: '#2E8331',
-    borderRadius: 5,
-    backgroundColor: 'white',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderWidth: 0,
     color: '#333',
-    marginBottom: 15,
     width: '100%',
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    paddingRight: 30
+    paddingRight: 35,
+    textAlign: 'center',
   },
   inputAndroid: {
     fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 2,
-    borderColor: '#2E8331',
-    borderRadius: 5,
-    backgroundColor: 'white',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderWidth: 0,
     color: '#333',
-    marginBottom: 15,
     width: '100%',
-    paddingRight: 40
+    paddingRight: 35,
+    textAlign: 'center',
   },
   inputWeb: {
     fontSize: 16,
-    paddingTop: 13,
-    paddingHorizontal: 10,
-    paddingBottom: 12,
-    borderWidth: 2,
-    borderColor: '#2E8331',
-    borderRadius: 5,
-    backgroundColor: 'white',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderWidth: 0,
     color: '#333',
-    marginBottom: 15,
     width: '100%',
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    paddingRight: 30
-    
+    paddingRight: 35,
+    textAlign: 'center',
   },
   placeholder: {
     color: '#999',
+    textAlign: 'center',
   },
 });
 

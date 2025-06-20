@@ -33,6 +33,12 @@ export default function Header(props) {
                          props.options.title) : "NutrIA"}
                 </Text>
                 <View style={styles.opcoes}>
+                    {/* Botão de apagar chat */}
+                    {props.onClearMessages && (
+                        <TouchableOpacity onPress={props.onClearMessages}>
+                            <Ionicons name="trash-outline" size={32} color="red" style={{marginRight: 10}} />
+                        </TouchableOpacity>
+                    )}
                     <TouchableOpacity onPress={()=> navigation.navigate('Config')}>
                         <Ionicons name="options" size={35} color={backgoundIcons} style={styles.image}/>
                     </TouchableOpacity>
@@ -70,7 +76,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: '500',
-        marginLeft: "4%"
+        marginLeft: "4%",
     },
     nutriaTitle: {
         fontWeight: '900',

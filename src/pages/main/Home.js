@@ -1,199 +1,629 @@
-import { useNavigation } from "@react-navigation/native";
-import { useColorScheme, Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Image, ImageBackground, KeyboardAvoidingView, Platform, StatusBar, Dimensions, Keyboard } from "react-native";
-import { useState, useEffect, useCallback, useRef } from 'react';
-import axios from "axios";
-import {TextInput} from "react-native-paper";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
+import { 
+    View, 
+    TextInput, 
+    TouchableOpacity, 
+    FlatList, 
+    StyleSheet, 
+    Text, 
+    Animated, 
+    Alert,
+    Dimensions,
+    Platform,
+    StatusBar,
+    Keyboard,
+    SafeAreaView,
+    Image
+} from 'react-native';
+import Voice from '@react-native-voice/voice';
+import { Ionicons } from '@expo/vector-icons';
 import CustomMessageCamp from "../../components/CustomMessageCamp";
+import axios from "axios";
 import { auth } from "../../database/firebase";
-import { GiftedChat } from "react-native-gifted-chat";
 
-export default function Home() {
-    const colorScheme = useColorScheme();
-    const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
-    const navigation = useNavigation();
-    const [messages, setMessages] = useState([]);
-    const [InputMessage, setInputMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [keyboardHeight, setKeyboardHeight] = useState(0);
-    
-    // Definindo altura da tabBar
-    const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 90 : 70;
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// Componente animado para o balão de mensagem
+const MessageBubble = React.memo(({ message, isUser, index }) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(30)).current;
+    const scaleAnim = useRef(new Animated.Value(0.8)).current;
 
     useEffect(() => {
-        // Carregar mensagens salvas ao montar o componente
-        loadInitialMessages();
-        
-        // Listeners para o teclado
-        const keyboardWillShow = (event) => {
-            setKeyboardHeight(event.endCoordinates.height);
-        };
-        
-        const keyboardWillHide = () => {
-            setKeyboardHeight(0);
-        };
+        // Reset animations
+        fadeAnim.setValue(0);
+        slideAnim.setValue(30);
+        scaleAnim.setValue(0.8);
 
-        const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-        const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-        
-        const keyboardDidShowListener = Keyboard.addListener(showEvent, keyboardWillShow);
-        const keyboardDidHideListener = Keyboard.addListener(hideEvent, keyboardWillHide);
-        
-        async function ligarRender(){
-            try {
-                const resp = await axios.get("https://nutria-6uny.onrender.com/on");
-                return resp.data;
-            } catch (error) {
-                console.error("Erro ao conectar com o servidor:", error);
-            }
+        // Staggered animation for multiple messages
+        const delay = index * 100;
+
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 500,
+                delay,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 400,
+                delay,
+                useNativeDriver: true,
+            }),
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                delay,
+                useNativeDriver: true,
+                tension: 100,
+                friction: 8,
+            })
+        ]).start();
+    }, [message, fadeAnim, slideAnim, scaleAnim, index]);
+
+    return (
+        <View style={{ flexDirection: isUser ? 'row-reverse' : 'row', alignItems: 'flex-end' }}>
+            {!isUser && (
+                <Image
+                    source={require('../../../assets/icon.png')}
+                    style={{ width: 32, height: 32, borderRadius: 16, marginRight: 6, marginLeft: 2 }}
+                />
+            )}
+            <Animated.View
+                style={[
+                    styles.messageBubble,
+                    {
+                        alignSelf: isUser ? 'flex-end' : 'flex-start',
+                        backgroundColor: isUser ? '#007AFF' : '#F2F2F7',
+                        opacity: fadeAnim,
+                        transform: [
+                            { translateY: slideAnim },
+                            { scale: scaleAnim }
+                        ],
+                    }
+                ]}
+            >
+                <Text style={[
+                    styles.messageText,
+                    { color: isUser ? '#FFFFFF' : '#1C1C1E' }
+                ]}>
+                    {message}
+                </Text>
+            </Animated.View>
+        </View>
+    );
+});
+
+// Componente para indicador de digitação
+const TypingIndicator = ({ visible }) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const dotAnims = useRef([
+        new Animated.Value(0),
+        new Animated.Value(0),
+        new Animated.Value(0)
+    ]).current;
+
+    useEffect(() => {
+        if (visible) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+
+            // Animação dos pontos
+            const animateDots = () => {
+                const animations = dotAnims.map((anim, index) => 
+                    Animated.sequence([
+                        Animated.delay(index * 200),
+                        Animated.timing(anim, {
+                            toValue: 1,
+                            duration: 600,
+                            useNativeDriver: true,
+                        }),
+                        Animated.timing(anim, {
+                            toValue: 0,
+                            duration: 600,
+                            useNativeDriver: true,
+                        })
+                    ])
+                );
+                
+                Animated.loop(
+                    Animated.parallel(animations)
+                ).start();
+            };
+
+            animateDots();
+        } else {
+            Animated.timing(fadeAnim, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
         }
-        ligarRender();
+    }, [visible, fadeAnim, dotAnims]);
+
+    if (!visible) return null;
+
+    return (
+        <Animated.View style={[styles.typingContainer, { opacity: fadeAnim }]}>
+            <View style={styles.typingBubble}>
+                <View style={styles.dotsContainer}>
+                    {dotAnims.map((anim, index) => (
+                        <Animated.View
+                            key={index}
+                            style={[
+                                styles.dot,
+                                { opacity: anim }
+                            ]}
+                        />
+                    ))}
+                </View>
+            </View>
+        </Animated.View>
+    );
+};
+
+// Componente principal
+export default function Home({ navigation }) {
+    const [input, setInput] = useState('');
+    const [isListening, setIsListening] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [isTyping, setIsTyping] = useState(false);
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+    
+    const flatListRef = useRef(null);
+    const micPulseAnim = useRef(new Animated.Value(1)).current;
+    const inputContainerAnim = useRef(new Animated.Value(0)).current;
+
+    // Animação de pulso para o botão do microfone
+    useEffect(() => {
+        if (isListening) {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(micPulseAnim, {
+                        toValue: 1.2,
+                        duration: 1000,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(micPulseAnim, {
+                        toValue: 1,
+                        duration: 1000,
+                        useNativeDriver: true,
+                    })
+                ])
+            ).start();
+        } else {
+            micPulseAnim.setValue(1);
+        }
+    }, [isListening, micPulseAnim]);
+
+    // Monitorar teclado
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+            (e) => {
+                setKeyboardHeight(e.endCoordinates.height);
+                Animated.timing(inputContainerAnim, {
+                    toValue: Platform.OS === 'ios' ? -e.endCoordinates.height + 34 : 0,
+                    duration: 250,
+                    useNativeDriver: true,
+                }).start();
+            }
+        );
+
+        const keyboardDidHideListener = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+            () => {
+                setKeyboardHeight(0);
+                Animated.timing(inputContainerAnim, {
+                    toValue: 0,
+                    duration: 250,
+                    useNativeDriver: true,
+                }).start();
+            }
+        );
 
         return () => {
-            keyboardDidShowListener?.remove();
-            keyboardDidHideListener?.remove();
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
+    }, [inputContainerAnim]);
+
+    // Configuração dos listeners de voz com verificação de disponibilidade
+    useEffect(() => {
+        if (!Voice) {
+            console.warn('Voice module não está disponível');
+            return;
+        }
+
+        const onSpeechStart = () => {
+            console.log('Reconhecimento de voz iniciado');
+        };
+
+        const onSpeechEnd = () => {
+            console.log('Reconhecimento de voz finalizado');
+            setIsListening(false);
+        };
+
+        const onSpeechResults = (event) => {
+            if (event.value && event.value.length > 0) {
+                setInput(event.value[0]);
+            }
+        };
+
+        const onSpeechError = (error) => {
+            setIsListening(false);
+            Alert.alert('Erro', 'Erro no reconhecimento de voz. Tente novamente.');
+        };
+
+        Voice.onSpeechStart = onSpeechStart;
+        Voice.onSpeechEnd = onSpeechEnd;
+        Voice.onSpeechResults = onSpeechResults;
+        Voice.onSpeechError = onSpeechError;
+
+        return () => {
+            Voice.onSpeechStart = null;
+            Voice.onSpeechEnd = null;
+            Voice.onSpeechResults = null;
+            Voice.onSpeechError = null;
         };
     }, []);
 
-    const loadInitialMessages = useCallback(() => {
-        // Aqui você pode carregar mensagens do storage local se necessário
-        setMessages([]);
-    }, []);
-
-    const onSend = useCallback(async (newMessage) => {
-        if (!newMessage || isLoading) return;
-        
-        setIsLoading(true);
+    // Inicia o reconhecimento de voz
+    const startListening = async () => {
         try {
-            // Adiciona a mensagem do usuário
-            const userMessage = {
-                _id: Math.random().toString(36).substring(7),
-                text: newMessage,
-                createdAt: new Date(),
-                user: { _id: 1 }
-            };
+            if (!Voice || typeof Voice.start !== 'function') {
+                Alert.alert('Erro', 'Reconhecimento de voz não está disponível neste dispositivo.');
+                return;
+            }
 
-            setMessages(previousMessages => 
-                GiftedChat.append(previousMessages, [userMessage])
-            );
-
-            const userID = auth.currentUser?.uid;
-            const response = await axios.post("https://nutria-6uny.onrender.com/question", {
-                "pergunta": newMessage,
-                "id_user": userID
-            });
-
-            // Adiciona a resposta do assistente
-            const assistantMessage = {
-                _id: Math.random().toString(36).substring(7),
-                text: response.data.message.resposta,
-                createdAt: new Date(),
-                user: { _id: 2, name: "Nutria" }
-            };
-
-            setMessages(previousMessages => 
-                GiftedChat.append(previousMessages, [assistantMessage])
-            );
-
+            setIsListening(true);
+            await Voice.start('pt-BR');
         } catch (error) {
-            console.error("Erro ao enviar mensagem:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [isLoading]);
-
-    const enviarMensagem = async () => {
-        if (InputMessage.trim()) {
-            await onSend(InputMessage.trim());
-            setInputMessage("");
+            console.error('Erro ao iniciar reconhecimento de voz:', error);
+            setIsListening(false);
+            Alert.alert('Erro', 'Não foi possível iniciar o reconhecimento de voz.');
         }
     };
 
-    return(
-        <SafeAreaView style={[styles.homeContainer,{backgroundColor: background}]}> 
-            <ImageBackground
-                resizeMode="cover"
-                source={require('../../../assets/Frutas_home.png')}
-                style={styles.homeBackground}
-            >
-                <View style={styles.contentContainer}>
-                    <View style={[
-                        styles.messagesWrapper,
-                        {
-                            paddingBottom: keyboardHeight > 0 ? 120 : 60,
+    // Para o reconhecimento de voz
+    const stopListening = async () => {
+        try {
+            if (Voice && typeof Voice.stop === 'function') {
+                await Voice.stop();
+            }
+            setIsListening(false);
+        } catch (error) {
+            console.error('Erro ao parar reconhecimento de voz:', error);
+            setIsListening(false);
+        }
+    };
+
+    // Função para enviar mensagem
+    const handleSend = useCallback(async () => {
+        if (input.trim() === '') return;
+
+        const newMessage = {
+            id: `${Date.now()}_${Math.random()}`,
+            message: input.trim(),
+            isUser: true,
+            timestamp: new Date().toISOString()
+        };
+
+        setMessages(prev => [...prev, newMessage]);
+        setInput('');
+
+        setIsTyping(true);
+
+        try {
+            const userID = auth.currentUser?.uid;
+            const response = await axios.post("https://nutria-6uny.onrender.com/question", {
+                "pergunta": newMessage.message,
+                "id_user": userID
+            });
+
+            let respostaLimpa = response.data.message.resposta.replace(/\*\*/g, '');
+            respostaLimpa = respostaLimpa.replace(/\*/g, '');
+
+            const botResponse = {
+                id: `bot_${Date.now()}_${Math.random()}`,
+                message: respostaLimpa,
+                isUser: false,
+                timestamp: new Date().toISOString()
+            };
+            setMessages(prev => [...prev, botResponse]);
+        } catch (error) {
+            const botResponse = {
+                id: `bot_${Date.now()}_${Math.random()}`,
+                message: "Desculpe, houve um erro ao buscar a resposta.",
+                isUser: false,
+                timestamp: new Date().toISOString()
+            };
+            setMessages(prev => [...prev, botResponse]);
+        } finally {
+            setIsTyping(false);
+        }
+    }, [input]);
+
+    // Função para limpar mensagens
+    const handleClearMessages = useCallback(() => {
+        Alert.alert(
+            'Apagar chat',
+            'Tem certeza que deseja apagar todas as mensagens?',
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                { 
+                    text: 'Apagar', 
+                    style: 'destructive', 
+                    onPress: () => {
+                        setMessages([]);
+                        setIsTyping(false);
+                    }
+                }
+            ]
+        );
+    }, []);
+
+    // Auto-scroll para a última mensagem
+    useEffect(() => {
+        if (flatListRef.current && (messages.length > 0 || isTyping)) {
+            setTimeout(() => {
+                flatListRef.current?.scrollToEnd({ animated: true });
+            }, 100);
+        }
+    }, [messages, isTyping]);
+
+    // Configuração do botão de apagar no header
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity 
+                        onPress={handleClearMessages} 
+                        style={styles.headerButton}
+                        activeOpacity={0.7}
+                    >
+                        <Ionicons name="trash-outline" size={24} color="#FF3B30" />
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate('Config')}
+                        style={styles.headerGreenButton}
+                        activeOpacity={0.7}
+                    >
+                        <Ionicons name="options" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                </View>
+            ),
+        });
+    }, [navigation, handleClearMessages]);
+
+    const renderMessage = useCallback(({ item, index }) => (
+        <MessageBubble 
+            message={item.message} 
+            isUser={item.isUser} 
+            index={index}
+        />
+    ), []);
+
+    const keyExtractor = useCallback((item) => item.id, []);
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+            
+            <View style={styles.chatContainer}>
+                <FlatList
+                    ref={flatListRef}
+                    data={messages}
+                    renderItem={renderMessage}
+                    keyExtractor={keyExtractor}
+                    contentContainerStyle={[
+                        styles.messagesList,
+                        { 
+                            paddingBottom: keyboardHeight > 0 ? 20 : 120, // igual ao valor acima
+                            minHeight: messages.length === 0 ? SCREEN_HEIGHT * 0.7 : undefined
                         }
-                    ]}>
-                        <GiftedChat 
-                            messages={messages} 
-                            renderInputToolbar={() => null} 
-                            user={{_id:1}}
-                            listViewProps={{
-                                contentContainerStyle: [
-                                    styles.chatContentContainer,
-                                    {
-                                        paddingBottom: keyboardHeight > 0 ? 20 : 10,
-                                    }
-                                ],
-                                keyboardShouldPersistTaps: 'handled',
-                                style: { flex: 1 }
-                            }}
-                            minInputToolbarHeight={0}
-                            inverted={true}
-                            extraData={{ keyboardHeight }}
-                        />
-                    </View>
-                    
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+                    ]}
+                    showsVerticalScrollIndicator={false}
+                    removeClippedSubviews={Platform.OS === 'android'}
+                    maxToRenderPerBatch={10}
+                    windowSize={10}
+                    ListEmptyComponent={() => (
+                        <View style={styles.emptyContainer}>
+                            <Ionicons name="chatbubbles-outline" size={64} color="#C7C7CC" />
+                            <Text style={styles.emptyText}>Nenhuma mensagem ainda</Text>
+                            <Text style={styles.emptySubText}>
+                                Envie uma mensagem ou use o microfone para começar
+                            </Text>
+                        </View>
+                    )}
+                />
+                
+                <TypingIndicator visible={isTyping} />
+            </View>
+            
+            <Animated.View 
+                style={[
+                    styles.inputContainer,
+                    { transform: [{ translateY: inputContainerAnim }] }
+                ]}
+            >
+                <Animated.View style={{ transform: [{ scale: micPulseAnim }] }}>
+                    <TouchableOpacity
+                        onPress={isListening ? stopListening : startListening}
                         style={[
-                            styles.inputContainer,
-                            {
-                                bottom: keyboardHeight > 0 ? keyboardHeight + 10 : TAB_BAR_HEIGHT,
+                            styles.micButton,
+                            { 
+                                backgroundColor: isListening ? '#E8F4FD' : '#F2F2F7',
+                                borderColor: isListening ? '#007AFF' : '#D1D1D6',
+                                borderWidth: isListening ? 2 : 1,
+                                shadowColor: isListening ? '#007AFF' : '#000',
+                                shadowOffset: { width: 0, height: isListening ? 2 : 1 },
+                                shadowOpacity: isListening ? 0.3 : 0.1,
+                                shadowRadius: isListening ? 4 : 2,
+                                elevation: isListening ? 4 : 2,
                             }
                         ]}
+                        activeOpacity={0.7}
                     >
-                        <CustomMessageCamp 
-                            placeholder="Mande sua pergunta" 
-                            message={InputMessage} 
-                            setMessage={setInputMessage} 
-                            onSend={enviarMensagem}
+                        <Ionicons 
+                            name={isListening ? "mic" : "mic-outline"} 
+                            size={24} 
+                            color={isListening ? "#007AFF" : "#8E8E93"} 
                         />
-                    </KeyboardAvoidingView>
-                </View>
-            </ImageBackground>
+                    </TouchableOpacity>
+                </Animated.View>
+                
+                <CustomMessageCamp
+                    message={input}
+                    setMessage={setInput}
+                    onSend={handleSend}
+                    style={styles.messageInput}
+                />
+            </Animated.View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    homeContainer: {
+    container: {
+        flex: 1,
+        backgroundColor: '#F8F9FB',
+    },
+    chatContainer: {
         flex: 1,
     },
-    homeBackground: {
-        flex: 1,
-    },
-    contentContainer: {
-        flex: 1,
-        position: 'relative',
-    },
-    messagesWrapper: {
-        flex: 1,
-        paddingTop: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0,
-    },
-    chatContentContainer: {
+    messagesList: {
+        paddingVertical: 20,
+        paddingHorizontal: 14,
         flexGrow: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        justifyContent: 'flex-end',
+        paddingBottom: 120, // ajuste conforme necessário
+    },
+    messageBubble: {
+        marginVertical: 6,
+        marginHorizontal: 6,
+        paddingHorizontal: 18,
+        paddingVertical: 13,
+        borderRadius: 22,
+        minHeight: 40,
+        maxWidth: SCREEN_WIDTH * 0.75,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.07,
+        shadowRadius: 3,
+        elevation: 2,
+    },
+    messageText: {
+        fontSize: 16,
+        lineHeight: 22,
+        fontWeight: '400',
+        color: '#222',
     },
     inputContainer: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        backgroundColor: 'transparent',
-        paddingHorizontal: 16, // aumentado
-        paddingVertical: 16, // novo espaçamento vertical
-        zIndex: 1000,
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        paddingHorizontal: 50,
+        paddingVertical: 100,
+        backgroundColor: '#FFFFFF',
+        borderTopWidth: 1,
+        borderTopColor: '#E5E5EA',
+    },
+    micButton: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 10,
+        marginBottom: 0,
+        backgroundColor: '#F2F2F7',
+        borderWidth: 1,
+        borderColor: '#E1E1E1',
+    },
+    headerButton: {
+        marginRight: 8,
+        padding: 4,
+        borderRadius: 8,
+        backgroundColor: '#FFF',
+    },
+    headerGreenButton: {
+        marginRight: 12,
+        marginLeft: 4,
+        marginBottom: 8,
+        backgroundColor: '#2E8331',
+        borderRadius: 20,
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#2E8331',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.12,
+        shadowRadius: 2,
+        elevation: 1,
+    },
+    messageInput: {
+        flex: 1,
+        minHeight: 44,
+        maxHeight: 120,
+        backgroundColor: '#F8F9FB',
+        borderRadius: 16,
+        paddingHorizontal: 14,
+        fontSize: 16,
+        marginBottom: 0,
+        borderWidth: 1,
+        borderColor: '#E5E5EA',
+    },
+    typingContainer: {
+        paddingHorizontal: 18,
+        paddingBottom: 8,
+        alignItems: 'flex-start',
+        width: '100%',
+    },
+    typingBubble: {
+        backgroundColor: '#E9F0FB',
+        borderRadius: 18,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        alignSelf: 'flex-start',
+        marginLeft: 8,
+        marginBottom: 8,
+    },
+    dotsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 18,
+    },
+    dot: {
+        width: 7,
+        height: 7,
+        borderRadius: 3.5,
+        backgroundColor: '#8E8E93',
+        marginHorizontal: 2,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 32,
+        marginTop: SCREEN_HEIGHT * 0.18,
+    },
+    emptyText: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#8E8E93',
+        marginTop: 16,
+        textAlign: 'center',
+    },
+    emptySubText: {
+        fontSize: 16,
+        color: '#C7C7CC',
+        marginTop: 8,
+        textAlign: 'center',
+        lineHeight: 22,
     },
 });

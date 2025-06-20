@@ -183,7 +183,6 @@ export default function CreateUser() {
                                     selectedValue={sexo}
                                     onValueChange={(value) => setSexo(value)}
                                     options={[
-                                        { label: "Selecione...", value: "" },
                                         { label: "Masculino", value: "masculino" },
                                         { label: "Feminino", value: "feminino" },
                                         { label: "Outro", value: "outro" }
