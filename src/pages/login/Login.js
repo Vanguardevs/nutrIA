@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton.js";
 import CustomField from "../../components/CustomField";
+import CustomModal from "../../components/CustomModal.js";
 import styles from "../../theme/styles.js";
 
 export default function LoginPag() {
@@ -17,38 +18,71 @@ export default function LoginPag() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
+  const showModal = (title, message, type = 'info') => {
+    setModalConfig({ title, message, type });
+    setModalVisible(true);
+  };
+
+  const hideModal = () => {
+    setModalVisible(false);
+  };
 
   async function logar() {
     if (email.length === 0 || password.length === 0) {
-      alert("Erro", "Alguns dos campos de login estão vazios");
-      console.log("Alguns dos campos de login estão vazios");
+      showModal("Campos Vazios", "Alguns dos campos de login estão vazios. Preencha todos os campos e tente novamente.", "warning");
       return;
     }
-    await signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        if (auth.currentUser.emailVerified == false) {
-          alert("Verifique seu e-mail", "Você não verificou seu e-mail ainda");
-          console.log("Você não verificou seu e-mail ainda");
-          signOut(auth);
-          return;
-        }
-        console.log("Sucesso ao fazer o login!");
-      })
-      .catch((error) => {
-        if (error.code == "auth/invalid-credential") {
-          alert("Inválida", "Senha Inválida!");
-          console.log("Senha inválida");
-          return;
-        }
-        if (error.code == "auth/invalid-email") {
-          alert("Inválido", "Esse email não é válido");
-          console.log("Esse tipo de texto não é email. Isso é inválido");
-          return;
-        }
-        alert("Erro ao fazer login", "Verifique seu email e senha e tente novamente");
-        console.log("Erro ao fazer login:", error);
-      });
+    
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      if (auth.currentUser.emailVerified == false) {
+        showModal(
+          "Email Não Verificado", 
+          "Você ainda não verificou seu email. Verifique sua caixa de entrada e clique no link de confirmação antes de fazer login.", 
+          "warning"
+        );
+        await signOut(auth);
+        return;
+      }
+      
+      showModal("Login Realizado!", "Bem-vindo de volta! Você foi logado com sucesso.", "success");
+      console.log("Sucesso ao fazer o login!");
+      
+    } catch (error) {
+      console.log("Erro ao fazer login:", error);
+      
+      if (error.code == "auth/invalid-credential") {
+        showModal("Credenciais Inválidas", "Email ou senha incorretos. Verifique suas credenciais e tente novamente.", "error");
+        return;
+      }
+      
+      if (error.code == "auth/invalid-email") {
+        showModal("Email Inválido", "O formato do email não é válido. Digite um email válido.", "error");
+        return;
+      }
+      
+      if (error.code == "auth/user-not-found") {
+        showModal("Usuário Não Encontrado", "Não existe uma conta com este email. Verifique o email ou crie uma nova conta.", "error");
+        return;
+      }
+      
+      if (error.code == "auth/too-many-requests") {
+        showModal("Muitas Tentativas", "Muitas tentativas de login. Aguarde alguns minutos antes de tentar novamente.", "warning");
+        return;
+      }
+      
+      showModal("Erro no Login", "Ocorreu um erro ao fazer login. Verifique sua conexão e tente novamente.", "error");
+    }
   }
+
   return (
     <SafeAreaView style={[styles.loginSafeArea, { backgroundColor: background }]}>
       <ImageBackground
@@ -99,6 +133,14 @@ export default function LoginPag() {
           </TouchableOpacity>
         </View>
       </ImageBackground>
+
+      <CustomModal
+        visible={modalVisible}
+        onClose={hideModal}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        type={modalConfig.type}
+      />
     </SafeAreaView>
   );
 }

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator} from "react-native";
+import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, useColorScheme, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomField from "../../../components/CustomField"; 
 import CustomButton from "../../../components/CustomButton.js";
 import CustomPicker from "../../../components/CustomPicker";
-
+import CustomModal from "../../../components/CustomModal.js";
 
 export default function CreateUser() {
     const colorScheme = useColorScheme();
@@ -23,6 +23,21 @@ export default function CreateUser() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalConfig, setModalConfig] = useState({
+        title: '',
+        message: '',
+        type: 'info'
+    });
+
+    const showModal = (title, message, type = 'info') => {
+        setModalConfig({ title, message, type });
+        setModalVisible(true);
+    };
+
+    const hideModal = () => {
+        setModalVisible(false);
+    };
 
     const handleDateChange = (text) => {
         let formattedText = text.replace(/\D/g, ''); 
@@ -93,36 +108,39 @@ export default function CreateUser() {
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
-            Alert.alert("Atenção", "Por favor, preencha todos os campos.");
+            showModal("Campos Obrigatórios", "Por favor, preencha todos os campos para continuar.", "warning");
             return;
         }
 
         if (!validateEmail(email)) {
             setFieldErrors({ email: true });
-            Alert.alert("E-mail inválido", "Digite um e-mail válido.");
+            showModal("Email Inválido", "Digite um email válido no formato exemplo@email.com", "error");
             return;
         }
 
         if (!validatePassword(password)) {
             setFieldErrors({ password: true });
-            Alert.alert("Senha fraca", "A senha deve ter no mínimo 8 caracteres, incluindo maiúscula, minúscula e número.");
+            showModal("Senha Fraca", "A senha deve ter no mínimo 8 caracteres, incluindo pelo menos uma letra maiúscula, uma minúscula e um número.", "error");
             return;
         }
 
         const idadeResultante = calcularIdade(dataNascimento);
         if (idadeResultante === null || isNaN(idadeResultante) || idadeResultante < 12) {
             setFieldErrors({ dataNascimento: true });
-            Alert.alert("Idade Inválida", "Você deve ter no mínimo 12 anos para usar o aplicativo e a data de nascimento deve estar no formato DD/MM/AAAA.");
+            showModal("Idade Inválida", "Você deve ter no mínimo 12 anos para usar o aplicativo. Verifique se a data de nascimento está no formato DD/MM/AAAA.", "error");
             return;
         }
 
         setLoading(true);
         setFieldErrors({});
+        
         // Simulação de verificação de e-mail duplicado (ideal: fazer no backend)
-        // await ...
         setTimeout(() => {
             setLoading(false);
-            navigation.navigate("HealthRegister", { nome, email, password, idade: idadeResultante, sexo });
+            showModal("Dados Válidos!", "Todos os dados foram validados com sucesso. Vamos para a próxima etapa!", "success");
+            setTimeout(() => {
+                navigation.navigate("HealthRegister", { nome, email, password, idade: idadeResultante, sexo });
+            }, 1500);
         }, 1000);
     }
 
@@ -219,6 +237,11 @@ export default function CreateUser() {
                     </ScrollView>
                 </KeyboardAvoidingView>
             </ImageBackground>
+            <CustomModal
+                visible={modalVisible}
+                onClose={hideModal}
+                config={modalConfig}
+            />
         </SafeAreaView>
     );
 }
