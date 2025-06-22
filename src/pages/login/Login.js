@@ -41,17 +41,28 @@ export default function LoginPag() {
     }
     
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // Tentar fazer login
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       
-      if (auth.currentUser.emailVerified == false) {
+      console.log("Login bem-sucedido para:", user.email);
+      console.log("Email verificado:", user.emailVerified);
+      
+      // Verificar se o email foi verificado
+      if (!user.emailVerified) {
+        console.log("Email não verificado - fazendo logout");
         showModal(
           "Email Não Verificado", 
-          "Você ainda não verificou seu email. Verifique sua caixa de entrada e clique no link de confirmação antes de fazer login.", 
+          `Você ainda não verificou seu email.\n\n📧 Email: ${user.email}\n\n⚠️ IMPORTANTE: Verifique sua caixa de entrada (e pasta de spam) e clique no link de confirmação antes de fazer login.\n\n🔄 Após verificar o email, tente fazer login novamente.`, 
           "warning"
         );
+        
+        // Fazer logout para não manter o usuário logado
         await signOut(auth);
         return;
       }
+      
+      console.log("Email verificado - login permitido");
       
       // Mostrar modal de sucesso
       showModal("Login Realizado!", "Bem-vindo de volta! Você foi logado com sucesso.", "success");
@@ -67,6 +78,7 @@ export default function LoginPag() {
       
     } catch (error) {
       console.log("Erro ao fazer login:", error);
+      console.log("Código do erro:", error.code);
       
       if (error.code == "auth/invalid-credential") {
         showModal("Credenciais Inválidas", "Email ou senha incorretos. Verifique suas credenciais e tente novamente.", "error");
