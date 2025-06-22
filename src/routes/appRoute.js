@@ -19,6 +19,7 @@ import HealthData from '../pages/main/Config/HealthData.js';
 import Settings from '../pages/main/Config/Config.js';
 import ResumoDiario from '../pages/main/Progress/ResumoDiario.js';
 import EditHealth from '../pages/main/Config/EditHealth.js';
+import Map from '../pages/main/Map/Map.js';
 
 // Componente de ícone animado para a tab bar
 const AnimatedTabIcon = ({ focused, iconActive, icon, colorBasic, colorHover, iconSize, keyboardVisible }) => {
@@ -60,7 +61,7 @@ const AnimatedTabIcon = ({ focused, iconActive, icon, colorBasic, colorHover, ic
 };
 
 // Componente de botão animado para o header
-const AnimatedHeaderButton = ({ onPress, navigation }) => {
+export const AnimatedHeaderButton = ({ onPress, navigation }) => {
     const scaleValue = React.useRef(new Animated.Value(1)).current;
     const rotateValue = React.useRef(new Animated.Value(0)).current;
 
@@ -142,6 +143,7 @@ const StackItems =[
     {"route":"DataUser", "label": DataUser, "headerTitle": "Dados Pessoais"},
     {"route":"ResumoDiario", "label": ResumoDiario, "headerTitle": "Resumo Diário"},
     {"route":"EditHealth", "label": EditHealth, "headerTitle": "Editar Condições médicas"},
+    {"route":"Map", "label": Map, "headerTitle": "Clínicas Próximas"},
 ]
 
 export default function AppTabs() {
@@ -260,9 +262,11 @@ export default function AppTabs() {
                             headerShown: true,
                             headerTitle: item.title,
                             headerStyle: {
-                                height: Platform.OS === 'ios' ? 90 : 60,
+                                height: Platform.OS === 'ios' ? 120 : 90,
                                 justifyContent: 'center',
                                 alignItems: 'center',
+                                paddingTop: 30,
+                                paddingBottom: 20,
                             },
                             headerStatusBarHeight: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,
                             keyboardHidesTabBar: item.route === 'Nutria',
@@ -347,9 +351,9 @@ export default function AppTabs() {
                     component={item.label}
                     options={{
                         headerTitle: item.headerTitle, 
-                        headerStyle:{backgroundColor: tabBarBackgroundColor}, 
-                        headerTintColor: textColor, 
-                        headerTitleStyle:{fontWeight: 'bold', fontSize: 24},
+                        headerStyle:{backgroundColor: '#2E8331', height: 90, paddingTop: 24, paddingBottom: 16},
+                        headerTintColor: '#FFFFFF', 
+                        headerTitleStyle:{fontWeight: 'bold', fontSize: 24, color: '#FFFFFF'},
                         // Animação específica para telas de configuração
                         animation: item.route === 'Config' ? 'slide_from_bottom' : 'slide_from_right',
                         presentation: item.route === 'Config' ? 'modal' : 'card',

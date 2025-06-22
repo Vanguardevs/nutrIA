@@ -7,6 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import { auth } from '../../../database/firebase';
 import { getDatabase, ref, onValue } from 'firebase/database';
 
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
+
 export default function Progress() {
     const colorScheme = useColorScheme();
 
@@ -80,7 +83,13 @@ export default function Progress() {
                 style={styles.homeBackground}
                 resizeMode="cover"
             >
-                <ScrollView contentContainerStyle={styles.scrollContent}>
+                <ScrollView contentContainerStyle={[
+                  styles.scrollContent,
+                  {
+                    paddingBottom: TAB_BAR_HEIGHT + 16,
+                    minHeight: (comidos.length + naoComidos.length) === 0 ? SCREEN_HEIGHT * 0.7 : undefined
+                  }
+                ]}>
                     <Text style={[styles.title, { color: textColor }]}>📊 Gráfico Nutricional</Text>
 
                     <View style={[styles.chartSection, styles.card, { backgroundColor: cardBackground }]}>
@@ -162,7 +171,6 @@ const styles = StyleSheet.create({
     scrollContent: {
         alignItems: 'center',
         padding: 20,
-        height: 'auto',
     },
     title: {
         fontSize: 26,

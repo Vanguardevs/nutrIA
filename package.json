@@ -25,6 +25,7 @@
     "expo": "~52.0.46",
     "expo-font": "^13.0.1",
     "expo-linear-gradient": "~14.0.2",
+    "expo-location": "~18.0.10",
     "expo-notifications": "~0.29.14",
     "expo-status-bar": "~2.0.1",
     "firebase": "^11.0.2",
@@ -37,6 +38,7 @@
     "react-native-get-random-values": "^1.11.0",
     "react-native-gifted-chat": "2.6.3",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-maps": "^1.18.0",
     "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-paper": "4.9.2",
     "react-native-picker-select": "^9.3.1",
@@ -50,6 +52,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@react-native-community/cli": "latest",
     "@types/react": "~18.3.12",
     "typescript": "^5.3.3"
   },

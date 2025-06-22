@@ -1,5 +1,8 @@
 import React, { useLayoutEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
 
 export default function ResumoDiario({ route, navigation }) {
     const { comidos = [], naoComidos = [] } = route.params || {};
@@ -8,9 +11,9 @@ export default function ResumoDiario({ route, navigation }) {
         navigation.setOptions({
             headerTitle: 'Resumo Diário',
             headerTitleStyle: {
-                color: '#2E8331',
+                color: '#FFFFFF',
                 fontWeight: 'bold',
-                fontSize: 28,
+                fontSize: 24,
                 alignSelf: 'center',
             },
         });
@@ -48,7 +51,13 @@ export default function ResumoDiario({ route, navigation }) {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={[
+          styles.container,
+          {
+            paddingBottom: TAB_BAR_HEIGHT + 16,
+            minHeight: (comidos.length + naoComidos.length) === 0 ? SCREEN_HEIGHT * 0.7 : undefined
+          }
+        ]}>
             <Text style={styles.title}>🍽️ Refeições Realizadas</Text>
             {comidos.length ? renderAlimentos(comidos) : <Text style={styles.vazio}>Nenhuma refeição realizada.</Text>}
 
@@ -67,10 +76,10 @@ export default function ResumoDiario({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         padding: 20,
-        backgroundColor: '#E9FBEA',
+        backgroundColor: '#fff',
     },
     title: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: '600',
         marginVertical: 12,
         color: '#2E8331',
@@ -88,13 +97,13 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     nome: {
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: '500',
         color: '#2E8331',
         marginBottom: 4,
     },
     detalhe: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#1C1C1E',
     },
     totalContainer: {
@@ -106,13 +115,13 @@ const styles = StyleSheet.create({
         borderLeftColor: '#14591A',
     },
     totalTitle: {
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: '600',
         marginBottom: 8,
         color: '#D0F5D8',
     },
     totalText: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: '500',
         color: '#D0F5D8',
     },

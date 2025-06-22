@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -51,7 +54,13 @@ export default function ResumoSemanal() {
   const totalNaoComidos = dadosSemana.reduce((acc, curr) => acc + curr.naoComidos, 0);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[
+      styles.container,
+      {
+        paddingBottom: TAB_BAR_HEIGHT + 16,
+        minHeight: dadosSemana.length === 0 ? SCREEN_HEIGHT * 0.7 : undefined
+      }
+    ]}>
       <Text style={styles.title}>Resumo Semanal</Text>
 
       {dadosSemana.map((diaData, index) => (
@@ -79,10 +88,9 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: '#fff',
-    paddingBottom: 40,
   },
   title: {
-    fontSize: 28,
+    fontSize: 34,
     fontWeight: 'bold',
     marginBottom: 20,
     alignSelf: 'center',
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
   },
   diaNome: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 22,
     marginBottom: 8,
   },
   totalContainer: {
@@ -106,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalTitle: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
   },

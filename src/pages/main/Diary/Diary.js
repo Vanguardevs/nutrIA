@@ -1,11 +1,14 @@
-import React,{useState, useEffect} from 'react';
-import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme, ScrollView } from 'react-native';
+import React,{useState, useEffect, useRef} from 'react';
+import { SafeAreaView ,View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert, useColorScheme, ScrollView, Dimensions } from 'react-native';
 import CardCustomCalendar from '../../../components/CustomCardCalendar';
 import { useNavigation } from '@react-navigation/native';
-import {ref, onValue, getDatabase, push, update} from "firebase/database"
+import {ref, onValue, getDatabase, push, update, off} from "firebase/database"
 import {auth} from "../../../database/firebase";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Notifications from 'expo-notifications';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
 
 export default function Diary() {
 
@@ -27,6 +30,9 @@ export default function Diary() {
   const [agendas, setAgendas] = useState([])
   const [concluido, setConcluido] = useState(false);
   
+  // Ref para controlar a inscrição do Firebase
+  const unsubscribeRef = useRef(null);
+  const lastAgendasData = useRef(null); // Para detectar mudanças
 
   async function verificarTodasAgendas(){
 
@@ -35,19 +41,38 @@ export default function Diary() {
       if(!userID){
         console.log("Usuário não encontrado")
         Alert.alert("Erro", "Não foi possível encontrar o usuário no banco. Tente Novamente!");
+        return;
       }
 
       const db = getDatabase();
-
       const agenaRef = ref(db, `users/${userID}/diaries`);
 
-      await onValue(agenaRef, (res)=>{
+      // Remove inscrição anterior se existir
+      if (unsubscribeRef.current) {
+        console.log('[DIARY] Removendo inscrição anterior do Firebase');
+        off(agenaRef, 'value', unsubscribeRef.current);
+        unsubscribeRef.current = null;
+      }
+
+      // Cria nova inscrição
+      console.log('[DIARY] Criando nova inscrição no Firebase');
+      const unsubscribe = onValue(agenaRef, (res)=>{
         const data = res.val();
+        console.log('[DIARY] Dados recebidos do Firebase:', data ? Object.keys(data).length : 0, 'agendas');
+        
         if(data){
           const listaAgendas = Object.entries(data).map(([key,value])=>({
             id: key,
             ...value,
           }));
+
+          console.log('[DIARY] Lista completa de agendas:', listaAgendas.map(a => ({
+            id: a.id,
+            refeicao: a.refeicao,
+            horario: a.horario,
+            saveId: a.saveId,
+            debugTimestamp: a.debugTimestamp
+          })));
 
           const hoje = new Date().getDay();
 
@@ -55,18 +80,39 @@ export default function Diary() {
             return agenda.progress[hoje] === false;
           })
 
-          setAgendas(agendasHoje);
+          console.log('[DIARY] Agendas para hoje:', agendasHoje.length, 'agendas');
+          console.log('[DIARY] Detalhes das agendas de hoje:', agendasHoje.map(a => ({
+            id: a.id,
+            refeicao: a.refeicao,
+            horario: a.horario,
+            saveId: a.saveId,
+            debugTimestamp: a.debugTimestamp
+          })));
+
+          // Verifica se os dados realmente mudaram
+          const currentData = JSON.stringify(agendasHoje);
+          if (lastAgendasData.current !== currentData) {
+            console.log('[DIARY] Dados mudaram, atualizando estado...');
+            lastAgendasData.current = currentData;
+            setAgendas(agendasHoje);
+          } else {
+            console.log('[DIARY] Dados não mudaram, ignorando atualização');
+          }
         }
         else{
+          console.log('[DIARY] Nenhuma agenda encontrada');
           setAgendas([])
         }
-      })
+      }, (error) => {
+        console.error('[DIARY] Erro ao carregar agendas:', error);
+      });
+
+      // Salva a referência para limpeza posterior
+      unsubscribeRef.current = unsubscribe;
 
     }catch(e){
-      console.log(e)
-      
+      console.log('[DIARY] Erro em verificarTodasAgendas:', e)
     }
-
   }
 
   async function verificarNotificacao() {
@@ -96,37 +142,40 @@ export default function Diary() {
   async function createNotification() {
     for (const agenda of agendas) {
       
-        if (!agenda.horario) {
-            console.error("Propriedade 'horario' não existe no objeto agenda:", agenda);
-            continue;
-        }
+      // Verifica se existe 'horario' ou 'hora' e usa o que estiver disponível
+      const horarioValue = agenda.horario || agenda.hora;
+      
+      if (!horarioValue) {
+          console.error("Propriedade 'horario' ou 'hora' não existe no objeto agenda:", agenda);
+          continue;
+      }
 
-        const hora = horaFormatada(agenda.horario);
-        if (!hora) {
-            console.error("Erro ao formatar o horário:", agenda.horario);
-            continue;
-        }
+      const hora = horaFormatada(horarioValue);
+      if (!hora) {
+          console.error("Erro ao formatar o horário:", horarioValue);
+          continue;
+      }
 
-        const now = new Date();
-        const triggerDate = new Date();
-        triggerDate.setHours(hora.horas);
-        triggerDate.setMinutes(hora.minutos);
-        triggerDate.setSeconds(0);
+      const now = new Date();
+      const triggerDate = new Date();
+      triggerDate.setHours(hora.horas);
+      triggerDate.setMinutes(hora.minutos);
+      triggerDate.setSeconds(0);
 
-        if (triggerDate <= now) {
-            triggerDate.setDate(triggerDate.getDate() + 1);
-        }
+      if (triggerDate <= now) {
+          triggerDate.setDate(triggerDate.getDate() + 1);
+      }
 
-        await Notifications.scheduleNotificationAsync({
-            content: {
-                title: `Hora de se alimentar! (${agenda.refeicao})`,
-                body: "Este é o horário de se alimentar de " + agenda.refeicao,
-                data: { data: 'goes here' },
-            },
-            trigger: {
-                date: triggerDate,
-            },
-        });
+      await Notifications.scheduleNotificationAsync({
+          content: {
+              title: `Hora de se alimentar! (${agenda.refeicao})`,
+              body: "Este é o horário de se alimentar de " + agenda.refeicao,
+              data: { data: 'goes here' },
+          },
+          trigger: {
+              date: triggerDate,
+          },
+      });
     }
   }
 
@@ -142,10 +191,26 @@ export default function Diary() {
     })
   }
 
+  // Cleanup function para limpar inscrições
+  const cleanup = () => {
+    if (unsubscribeRef.current) {
+      const db = getDatabase();
+      const userID = auth.currentUser?.uid;
+      if (userID) {
+        const agenaRef = ref(db, `users/${userID}/diaries`);
+        off(agenaRef, 'value', unsubscribeRef.current);
+        unsubscribeRef.current = null;
+      }
+    }
+  };
 
   useEffect(()=>{
+    console.log('[DIARY] Componente montado, iniciando...');
     verificarTodasAgendas()
     verificarNotificacao()
+    
+    // Cleanup quando o componente for desmontado
+    return cleanup;
   },[])
 
   useEffect(() => {
@@ -154,83 +219,86 @@ export default function Diary() {
     }
   }, [agendas]);
 
+  // Log quando agendas mudam
+  useEffect(() => {
+    console.log('[DIARY] Estado de agendas mudou:', agendas.length, 'agendas');
+  }, [agendas]);
+
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.fabTopContainer}>
-        <TouchableOpacity
-          style={styles.fabTop}
-          onPress={() => navigate.navigate('Create-Diary')}
-        >
-          <Ionicons name="add" size={32} color="#fff" />
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={[styles.container, { backgroundColor: backgoundH }]}>
+      <ImageBackground 
+        source={require('../../../../assets/Frutas_home.png')} 
+        style={styles.homeBackground}
+        resizeMode="cover"
+      >
+        {/* Botão de criar agenda dentro do plano de fundo */}
+        <View style={styles.fabTopContainer}>
+          <TouchableOpacity
+            style={styles.fabTop}
+            onPress={() => navigate.navigate('Create-Diary')}
+          >
+            <Ionicons name="add" size={32} color="#fff" />
+          </TouchableOpacity>
+        </View>
 
-      <ScrollView style={[styles.container,{backgroundColor: backgoundH}]} contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
-        
-        <ImageBackground source={require('../../../../assets/Frutas_home.png')} style={styles.homeBackground}>
-
-          {agendas.map((agenda)=>(
-            <CardCustomCalendar
-              key={agenda.id}
-              horario={agenda.horario}
-              alimentacao={agenda.refeicao}
-              onPressEdit={()=>{navigate.navigate("Edit-Diary", {id: agenda.id, refeicao: agenda.refeicao, hora: agenda.horario})}}
-              onPressConcluido={()=>AgendaConcluida(agenda.id)}
-            />
-          ))}
-
-          <View style={{alignItems: 'center', marginTop:20}}>
-
-          </View>
-
-          <View/>
-        </ImageBackground>
-      </ScrollView>
-    </View>
+        {/* Container principal com ScrollView */}
+        <View style={styles.contentContainer}>
+          <ScrollView 
+            style={styles.scrollView}
+            contentContainerStyle={[
+              styles.scrollContent,
+              {
+                paddingBottom: TAB_BAR_HEIGHT + 16,
+                minHeight: agendas.length === 0 ? SCREEN_HEIGHT * 0.7 : undefined
+              }
+            ]}
+            showsVerticalScrollIndicator={false}
+          >
+            {agendas.length > 0 ? (
+              agendas.map((agenda) => (
+                <CardCustomCalendar
+                  key={agenda.id}
+                  horario={agenda.horario || agenda.hora}
+                  alimentacao={agenda.refeicao}
+                  onPressEdit={() => {
+                    navigate.navigate("Edit-Diary", {
+                      id: agenda.id, 
+                      refeicao: agenda.refeicao, 
+                      hora: agenda.horario || agenda.hora
+                    })
+                  }}
+                  onPressConcluido={() => AgendaConcluida(agenda.id)}
+                />
+              ))
+            ) : (
+              <View style={styles.emptyContainer}>
+                <Ionicons name="calendar-outline" size={64} color="#C7C7CC" />
+                <Text style={styles.emptyText}>Nenhuma agenda para hoje</Text>
+                <Text style={styles.emptySubText}>
+                  Crie uma nova agenda para começar
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+        </View>
+      </ImageBackground>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
   },
   homeBackground: {
     flex: 1,
-    justifyContent: 'align-center',
-    alignItems: 'center',
-    height: '120%',
     width: '100%',
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 50, 
-    height: 70,
-    width: 70,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'static',  
-    bottom: 110,
-    right: 30,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 40, 
-    fontWeight: 'bold', 
-    textAlign: 'center',
   },
   fabTopContainer: {
     width: '100%',
     alignItems: 'center',
-    marginTop: 24,
-    marginBottom: 16,
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   fabTop: {
     backgroundColor: '#2E8331',
@@ -245,10 +313,35 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
   },
-  fabText: {
-    color: '#fff',
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginTop: -2,
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+    marginTop: 100,
+  },
+  emptyText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#8E8E93',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  emptySubText: {
+    fontSize: 16,
+    color: '#C7C7CC',
+    marginTop: 8,
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });

@@ -13,7 +13,9 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Precisamos do microfone para reconhecimento de voz."
+        "NSMicrophoneUsageDescription": "Precisamos do microfone para reconhecimento de voz.",
+        "NSLocationWhenInUseUsageDescription": "Precisamos da sua localização para mostrar clínicas próximas.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Precisamos da sua localização para mostrar clínicas próximas."
       }
     },
     "android": {
@@ -25,7 +27,9 @@
       "newArchEnabled": true,
       "permissions": [
         "RECORD_AUDIO",
-        "INTERNET"
+        "INTERNET",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
       ]
     },
     "web": {
