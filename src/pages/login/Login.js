@@ -53,8 +53,17 @@ export default function LoginPag() {
         return;
       }
       
+      // Mostrar modal de sucesso
       showModal("Login Realizado!", "Bem-vindo de volta! Você foi logado com sucesso.", "success");
       console.log("Sucesso ao fazer o login!");
+      
+      // Aguardar 3 segundos para o usuário ver o modal antes da navegação automática
+      setTimeout(() => {
+        // Limpar campos após o login
+        setEmail("");
+        setPassword("");
+        // O App.js detectará automaticamente o usuário logado e navegará para AppTabs
+      }, 3000);
       
     } catch (error) {
       console.log("Erro ao fazer login:", error);
