@@ -2,6 +2,7 @@ import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, 
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
 import CustomButton from '../../../components/CustomButton.js';
+import CustomModal from '../../../components/CustomModal.tsx';
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getDatabase, ref, push } from 'firebase/database';
@@ -20,6 +21,8 @@ export default function CreateDiary() {
     const [alimentos, setAlimentos] = useState([]);
     const [isLoadingFoods, setIsLoadingFoods] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [agendaData, setAgendaData] = useState(null);
 
     const colorSheme = useColorScheme();
     const backgoundH = colorSheme === 'dark' ? "#1C1C1E" : "#F2F2F2";
@@ -161,23 +164,13 @@ export default function CreateDiary() {
 
             console.log(`[SAVE ${saveId}] Firebase salvo com sucesso! Key:`, pushResult.key);
 
-            Alert.alert("Sucesso", "Agenda cadastrada com sucesso!");
-            
-            // Limpa os campos
-            setRefeicao('');
-            setHora('');
-            setTipoRefeicao('');
-            setSugestoes([]);
-            
-            // Navega após um delay
-            setTimeout(() => {
-                console.log(`[SAVE ${saveId}] Navegando de volta...`);
-                if (navigation.canGoBack()) {
-                    navigation.goBack();
-                } else {
-                    navigation.navigate('Nutria');
-                }
-            }, 1000); // Aumentei o delay para debug
+            // Mostra modal de sucesso com os dados da agenda
+            showSuccessModal({
+                tipoRefeicao,
+                refeicao,
+                horario: hora,
+                id: pushResult.key
+            });
             
         } catch (error) {
             console.error(`[SAVE ${saveId}] ERRO ao salvar agenda:`, error);
@@ -204,6 +197,36 @@ export default function CreateDiary() {
             <Text style={{ color: '#222', fontSize: 15 }}>{item.descricao}</Text>
         </TouchableOpacity>
     ), [sugestoes.length, handleSugestaoPress]);
+
+    const showSuccessModal = useCallback((data) => {
+        setAgendaData(data);
+        setShowModal(true);
+    }, []);
+
+    const hideSuccessModal = useCallback(() => {
+        console.log('[MODAL] Botão pressionado - hideSuccessModal chamado!');
+        console.log('[MODAL] Fechando modal de sucesso...');
+        setShowModal(false);
+        setAgendaData(null);
+        
+        // Limpa os campos
+        setRefeicao('');
+        setHora('');
+        setTipoRefeicao('');
+        setSugestoes([]);
+        
+        // Navega para a tab Diary
+        console.log('[MODAL] Navegando para tab Diary...');
+        navigation.navigate('MainTabs', { screen: 'Diary' });
+    }, [navigation]);
+
+    const cancelModal = useCallback(() => {
+        console.log('[MODAL] Botão cancelar pressionado!');
+        console.log('[MODAL] Fechando modal sem navegar...');
+        setShowModal(false);
+        setAgendaData(null);
+        // Não limpa os campos e não navega - usuário pode continuar editando
+    }, []);
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: backgoundH }]}>
@@ -281,6 +304,29 @@ export default function CreateDiary() {
                     />
                 </View>
             </ImageBackground>
+            
+            {/* Modal de Sucesso */}
+            <CustomModal
+                visible={showModal}
+                title="Agenda Criada com Sucesso!"
+                message={
+                    agendaData ? 
+                    `Sua agenda de ${agendaData.tipoRefeicao} foi criada com sucesso!\n\n` +
+                    `📝 Refeição: ${agendaData.refeicao}\n` +
+                    `⏰ Horário: ${agendaData.horario}\n\n` +
+                    `Você receberá notificações diárias neste horário para lembrar de se alimentar.` :
+                    "Agenda criada com sucesso!"
+                }
+                onClose={hideSuccessModal}
+                icon="checkmark-circle"
+                iconColor="#28A745"
+                iconBgColor="#D4EDDA"
+                primaryButtonText="Entendi"
+                secondaryButtonText="Cancelar"
+                onPrimaryPress={hideSuccessModal}
+                onSecondaryPress={cancelModal}
+                showButtons={true}
+            />
         </SafeAreaView>
     );
 }

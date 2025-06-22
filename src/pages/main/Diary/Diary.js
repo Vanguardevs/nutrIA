@@ -12,14 +12,6 @@ const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao
 
 export default function Diary() {
 
-  Notifications.setNotificationHandler({
-    handleNotification: async()=>({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false
-    })
-  })
-
   const colorSheme = useColorScheme();
 
   const backgoundH = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
@@ -116,18 +108,26 @@ export default function Diary() {
   }
 
   async function verificarNotificacao() {
+    console.log('[NOTIFICATIONS] Verificando permissões...');
     const { status } = await Notifications.getPermissionsAsync();
+    console.log('[NOTIFICATIONS] Status atual das permissões:', status);
+    
     if (status !== 'granted') {
+      console.log('[NOTIFICATIONS] Permissões não concedidas, solicitando...');
       Alert.alert(
         "Permissão de notificação",
         "Para receber notificações, ative as permissões de notificação nas configurações do aplicativo."
       );
       const { status: newStatus } = await Notifications.requestPermissionsAsync();
+      console.log('[NOTIFICATIONS] Novo status após solicitação:', newStatus);
       if (newStatus !== 'granted') {
-        console.log("Permissões de notificação não concedidas.");
-        return;
+        console.log("[NOTIFICATIONS] Permissões de notificação não concedidas.");
+        return false;
       }
     }
+    
+    console.log('[NOTIFICATIONS] Permissões concedidas com sucesso!');
+    return true;
   }
 
   function horaFormatada(hora) {
@@ -140,43 +140,62 @@ export default function Diary() {
   }
 
   async function createNotification() {
+    console.log('[NOTIFICATIONS] Iniciando criação de notificações...');
+    console.log('[NOTIFICATIONS] Agendas disponíveis:', agendas.length);
+    
+    // Limpar notificações anteriores para evitar duplicatas
+    await Notifications.cancelAllScheduledNotificationsAsync();
+    console.log('[NOTIFICATIONS] Notificações anteriores canceladas');
+    
     for (const agenda of agendas) {
+      console.log('[NOTIFICATIONS] Processando agenda:', agenda);
       
       // Verifica se existe 'horario' ou 'hora' e usa o que estiver disponível
       const horarioValue = agenda.horario || agenda.hora;
       
       if (!horarioValue) {
-          console.error("Propriedade 'horario' ou 'hora' não existe no objeto agenda:", agenda);
+          console.error("[NOTIFICATIONS] Propriedade 'horario' ou 'hora' não existe no objeto agenda:", agenda);
           continue;
       }
 
       const hora = horaFormatada(horarioValue);
       if (!hora) {
-          console.error("Erro ao formatar o horário:", horarioValue);
+          console.error("[NOTIFICATIONS] Erro ao formatar o horário:", horarioValue);
           continue;
       }
 
-      const now = new Date();
-      const triggerDate = new Date();
-      triggerDate.setHours(hora.horas);
-      triggerDate.setMinutes(hora.minutos);
-      triggerDate.setSeconds(0);
-
-      if (triggerDate <= now) {
-          triggerDate.setDate(triggerDate.getDate() + 1);
+      // Criar notificação recorrente diária
+      try {
+        const notificationId = await Notifications.scheduleNotificationAsync({
+            content: {
+                title: `Hora de se alimentar! (${agenda.refeicao})`,
+                body: "Este é o horário de se alimentar de " + agenda.refeicao,
+                data: { agendaId: agenda.id, refeicao: agenda.refeicao },
+            },
+            trigger: {
+                hour: hora.horas,
+                minute: hora.minutos,
+                repeats: true, // Repete diariamente
+            },
+        });
+        
+        console.log('[NOTIFICATIONS] Notificação recorrente agendada com sucesso! ID:', notificationId);
+        console.log('[NOTIFICATIONS] Horário diário:', `${hora.horas.toString().padStart(2, '0')}:${hora.minutos.toString().padStart(2, '0')}`);
+      } catch (error) {
+        console.error('[NOTIFICATIONS] Erro ao agendar notificação recorrente:', error);
       }
-
-      await Notifications.scheduleNotificationAsync({
-          content: {
-              title: `Hora de se alimentar! (${agenda.refeicao})`,
-              body: "Este é o horário de se alimentar de " + agenda.refeicao,
-              data: { data: 'goes here' },
-          },
-          trigger: {
-              date: triggerDate,
-          },
-      });
     }
+    
+    // Verificar notificações agendadas
+    const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    console.log('[NOTIFICATIONS] Total de notificações agendadas:', scheduledNotifications.length);
+    scheduledNotifications.forEach((notification, index) => {
+      console.log(`[NOTIFICATIONS] Notificação ${index + 1}:`, {
+        id: notification.identifier,
+        title: notification.content.title,
+        trigger: notification.trigger
+      });
+    });
   }
 
   async function AgendaConcluida(id){
@@ -215,7 +234,7 @@ export default function Diary() {
 
   useEffect(() => {
     if (agendas.length > 0) {
-      createNotification();
+      recriarNotificacoes();
     }
   }, [agendas]);
 
@@ -223,6 +242,27 @@ export default function Diary() {
   useEffect(() => {
     console.log('[DIARY] Estado de agendas mudou:', agendas.length, 'agendas');
   }, [agendas]);
+
+  // Função para recriar notificações quando agendas mudam
+  async function recriarNotificacoes() {
+    console.log('[NOTIFICATIONS] Recriando notificações...');
+    await createNotification();
+  }
+
+  // Função para limpar notificações de uma agenda específica
+  async function limparNotificacaoAgenda(agendaId) {
+    try {
+      const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+      for (const notification of scheduledNotifications) {
+        if (notification.content.data?.agendaId === agendaId) {
+          await Notifications.cancelScheduledNotificationAsync(notification.identifier);
+          console.log('[NOTIFICATIONS] Notificação cancelada para agenda:', agendaId);
+        }
+      }
+    } catch (error) {
+      console.error('[NOTIFICATIONS] Erro ao limpar notificação:', error);
+    }
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: backgoundH }]}>
@@ -299,6 +339,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
     paddingBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
   },
   fabTop: {
     backgroundColor: '#2E8331',

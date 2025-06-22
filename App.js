@@ -6,6 +6,16 @@ import { onAuthStateChanged } from 'firebase/auth';
 import AppTabs from './src/routes/appRoute.js';
 import AuthTabs from './src/routes/authRoute.js';
 import AnimatedSplash from './src/components/AnimatedSplash.js';
+import * as Notifications from 'expo-notifications';
+
+// Configuração global de notificações
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -13,12 +23,25 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
+    // Configurar listener de notificações
+    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log('[APP] Notificação recebida:', notification);
+    });
+
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('[APP] Resposta da notificação:', response);
+    });
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setIsLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener);
+      Notifications.removeNotificationSubscription(responseListener);
+      unsubscribe();
+    };
   }, []);
 
   const handleSplashFinish = () => {
