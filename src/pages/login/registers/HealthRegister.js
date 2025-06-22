@@ -49,13 +49,10 @@ export default function HealthRegister() {
             
             createUserWithEmailAndPassword(auth, email, password)
             
-            .then((userCredential) => {
-
-                sendEmailVerification(auth.currentUser)
-                showModal("Verifique seu Email", "Um email de verificação foi enviado para sua caixa de entrada. Verifique e clique no link de confirmação para ativar sua conta.", "info");
-
+            .then(async (userCredential) => {
                 console.log("Usuário cadastrado com sucesso!");
 
+                // Salvar dados do usuário no Firebase
                 const db = getDatabase(app);
                 const userRef = ref(db, `users/${userCredential.user.uid}`);
 
@@ -66,38 +63,84 @@ export default function HealthRegister() {
                     sexo,
                     altura,
                     peso,
-                    objetivo
+                    objetivo,
+                    createdAt: new Date().toISOString(),
+                    emailVerified: false
                 }
 
-                set(userRef, userData)
-                .then(() => {
+                try {
+                    await set(userRef, userData);
                     console.log("Dados do usuário salvos com sucesso!");
-                    showModal("Cadastro Realizado!", "Parabéns! Sua conta foi criada com sucesso. Verifique seu email para ativar a conta.", "success");
+                    
+                    // Enviar email de verificação
+                    await sendEmailVerification(auth.currentUser);
+                    
+                    // Mostrar modal de sucesso com informações sobre verificação
+                    showModal(
+                        "Cadastro Realizado com Sucesso! 🎉", 
+                        `Parabéns, ${nome}! Sua conta foi criada com sucesso.\n\n📧 Um email de verificação foi enviado para:\n${email}\n\n⚠️ IMPORTANTE: Verifique sua caixa de entrada (e spam) e clique no link de confirmação para ativar sua conta antes de fazer login.\n\nApós verificar o email, você poderá fazer login normalmente.`, 
+                        "success"
+                    );
+                    
+                    // Navegar para login após 5 segundos
                     setTimeout(() => {
                         signOut(auth);
                         navigation.navigate("Login");
-                    }, 2000);
-                })
-                .catch((error) => {
-                    showModal("Erro ao Salvar", "Erro ao salvar dados do usuário. Tente novamente mais tarde.", "error");
+                    }, 5000);
+                    
+                } catch (error) {
                     console.log("Erro ao salvar dados do usuário:", error);
-                });
+                    showModal(
+                        "Conta Criada, Mas...", 
+                        "Sua conta foi criada, mas houve um problema ao salvar seus dados. Entre em contato com o suporte.", 
+                        "warning"
+                    );
+                }
 
             })
             .catch((error)=>{
-                if (error.code === "auth/email-already-in-use") {
-                    showModal("Email Já Cadastrado", "Este email já está sendo usado por outra conta. Tente fazer login ou use um email diferente.", "error");
-                } else if (error.code === "auth/weak-password") {
-                    showModal("Senha Fraca", "A senha escolhida é muito fraca. Escolha uma senha mais forte.", "error");
-                } else {
-                    showModal("Erro no Cadastro", "Ocorreu um erro ao criar sua conta. Tente novamente mais tarde.", "error");
-                }
                 console.log("Erro ao cadastrar usuário:", error);
+                
+                if (error.code === "auth/email-already-in-use") {
+                    showModal(
+                        "Email Já Cadastrado", 
+                        "Este email já está sendo usado por outra conta. Tente fazer login ou use um email diferente.", 
+                        "error"
+                    );
+                } else if (error.code === "auth/weak-password") {
+                    showModal(
+                        "Senha Fraca", 
+                        "A senha escolhida é muito fraca. Escolha uma senha com pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas e números.", 
+                        "error"
+                    );
+                } else if (error.code === "auth/invalid-email") {
+                    showModal(
+                        "Email Inválido", 
+                        "O formato do email não é válido. Digite um email válido.", 
+                        "error"
+                    );
+                } else if (error.code === "auth/operation-not-allowed") {
+                    showModal(
+                        "Cadastro Desabilitado", 
+                        "O cadastro de novos usuários está temporariamente desabilitado. Tente novamente mais tarde.", 
+                        "error"
+                    );
+                } else {
+                    showModal(
+                        "Erro no Cadastro", 
+                        "Ocorreu um erro ao criar sua conta. Verifique sua conexão e tente novamente.", 
+                        "error"
+                    );
+                }
             });
 
         } catch (error) { 
-            showModal("Erro Inesperado", "Ocorreu um erro inesperado. Tente novamente.", "error");
-            console.log(error);
+            console.log("Erro inesperado:", error);
+            showModal(
+                "Erro Inesperado", 
+                "Ocorreu um erro inesperado. Tente novamente ou entre em contato com o suporte.", 
+                "error"
+            );
         }
     }
 

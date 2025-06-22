@@ -104,7 +104,12 @@ const CustomModal = ({
             
             {message && (
               <Text style={[styles.message, { color: colors.textSecondary }]}>
-                {message}
+                {message.split('\n').map((line, index) => (
+                  <Text key={index}>
+                    {line}
+                    {index < message.split('\n').length - 1 && '\n'}
+                  </Text>
+                ))}
               </Text>
             )}
           </View>
@@ -183,6 +188,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
     paddingHorizontal: 8,
+    marginTop: 4,
   },
   buttonContainer: {
     flexDirection: 'row',
