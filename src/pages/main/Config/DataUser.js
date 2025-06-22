@@ -17,8 +17,6 @@ export default function DataUser() {
   const navigation = useNavigation();
 
   const [nome, setNome] = useState('');
-  const [altura, setAltura] = useState('');
-  const [peso, setPeso] = useState('');
   const [idade, setIdade] = useState('');
   const [objetivo, setObjetivo] = useState('');
 
@@ -30,11 +28,10 @@ export default function DataUser() {
     onValue(userRef, (resp) => {
       const data = resp.val();
       if (data) {
-        setNome(data.nome);
-        setAltura(data.altura);
-        setPeso(data.peso);
-        setIdade(data.idade);
-        setObjetivo(data.objetivo);
+        setNome(data.nome || '');
+        setIdade(data.idade ? data.idade.toString() : '');
+        setObjetivo(data.objetivo || '');
+        console.log('Dados carregados:', { nome: data.nome, idade: data.idade, objetivo: data.objetivo });
       }
     });
   }, []);
@@ -47,25 +44,28 @@ export default function DataUser() {
     if (
       nome.length === 0 ||
       idade.length === 0 ||
-      objetivo.length === 0 ||
-      peso.length === 0 ||
-      altura.length === 0
+      objetivo.length === 0
     ) {
-      Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios");
-      console.log("Campos vazios");
+      Alert.alert("Campos Vazios", "Por favor, preencha todos os campos obrigatórios.");
+      console.log("Campos vazios detectados");
+      return;
+    }
+
+    // Validar se a idade é um número válido
+    const idadeNum = parseInt(idade);
+    if (isNaN(idadeNum) || idadeNum < 12 || idadeNum > 120) {
+      Alert.alert("Idade Inválida", "Por favor, insira uma idade válida entre 12 e 120 anos.");
       return;
     }
 
     update(userRef, {
       nome: nome,
-      altura: altura,
-      peso: peso,
-      idade: idade,
+      idade: idadeNum,
       objetivo: objetivo
     })
       .then(() => {
         console.log('Dados atualizados com sucesso!');
-        Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
+        Alert.alert('Sucesso', 'Dados pessoais atualizados com sucesso!');
         navigation.goBack();
       })
       .catch((error) => {
@@ -82,10 +82,25 @@ export default function DataUser() {
         imageStyle={{ opacity: 0.5 }}
       >
         <View style={[styles.container, { backgroundColor: cardBackground }]}>
-          <Text style={[styles.title, { color: textColor }]}>Atualizar Dados</Text>
+          <Text style={[styles.title, { color: textColor }]}>Dados Pessoais</Text>
+          <Text style={[styles.subtitle, { color: colorScheme === 'dark' ? '#8E8E93' : '#6C757D' }]}>
+            Atualize suas informações pessoais
+          </Text>
 
-          <CustomField title='Nome atual' placeholder="Seu nome atual" value={nome} setValue={setNome} />
-          <CustomField title='Idade atual' placeholder="Sua idade atual" value={idade} setValue={setIdade} />
+          <CustomField 
+            title='Nome Completo' 
+            placeholder="Seu nome completo" 
+            value={nome} 
+            setValue={setNome} 
+          />
+          
+          <CustomField 
+            title='Idade' 
+            placeholder="Sua idade em anos" 
+            value={idade} 
+            setValue={setIdade}
+            keyboardType="numeric"
+          />
 
           <View style={styles.centered}>
             <CustomPicker
@@ -100,11 +115,8 @@ export default function DataUser() {
             />
           </View>
 
-          <CustomField title='Peso atual' placeholder="Seu peso atual" value={peso} setValue={setPeso} />
-          <CustomField title='Altura atual' placeholder="Sua altura atual" value={altura} setValue={setAltura} />
-
           <View style={styles.centered}>
-            <CustomButton title='Salvar dado' modeButton={true} onPress={AtualizarDados} />
+            <CustomButton title='Salvar Dados' modeButton={true} onPress={AtualizarDados} />
           </View>
         </View>
       </ImageBackground>
@@ -136,6 +148,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '700',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: '400',
     marginBottom: 20,
     textAlign: 'center',
   },
