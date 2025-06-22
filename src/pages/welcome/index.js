@@ -4,8 +4,6 @@ import styles from "../../theme/styles";
 import CustomButton from "../../components/CustomButton.js";
 import { useEffect } from "react";
 
-
-
 export default function Welcome() {
 
     const colorSheme = useColorScheme();
@@ -13,15 +11,6 @@ export default function Welcome() {
     const background = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2";
     
     const navigation = useNavigation();
-
-    useEffect(() => {
-        async function ligarRender(){
-            const resp = await axios.get("https://nutria-6uny.onrender.com/on")
-            return resp.data;
-        }
-
-        ligarRender();
-    },[])
 
     return (
 

@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useColorScheme, Platform, StatusBar } from "react-native";
 
 //Páginas de navegação do aplicativo não logado
+import Welcome from '../pages/welcome/index.js';
 import Login from '../pages/login/Login.js';
 import Register from '../pages/login/registers/Register.js';
 import ForgetPassword from '../pages/login/ForgetPassword.js';
@@ -14,6 +15,7 @@ export default function AuthTabs() {
 
     return (
         <Stack.Navigator
+            initialRouteName="Welcome"
             screenOptions={{
                 // Animações de transição para o Stack Navigator
                 animation: 'slide_from_right',
@@ -40,6 +42,14 @@ export default function AuthTabs() {
                 },
             }}
         >
+            <Stack.Screen
+                name="Welcome"
+                component={Welcome}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
             <Stack.Screen
                 name="Login"
                 component={Login}
