@@ -43,6 +43,15 @@ export default function HealthData() {
         setAltura(alturaFormatada2);
     }
 
+    function validarAltura(altura) {
+        if (!altura || altura.length === 0) return false;
+        
+        const alturaNum = parseFloat(altura.replace(',', '.'));
+        if (isNaN(alturaNum)) return false;
+        
+        return alturaNum >= 1.30 && alturaNum <= 2.10;
+    }
+
     function handlePeso(input) {
         let pesoFormatado = input.replace(/[^0-9]/g, '').slice(0, 3);
         let pesoFormatado2 = pesoFormatado;
@@ -55,6 +64,12 @@ export default function HealthData() {
     function salvarDados() {
         if (altura.length === 0 || peso.length === 0) {
             Alert.alert("Campos Vazios", "Por favor, preencha altura e peso.");
+            return;
+        }
+
+        // Validar altura
+        if (!validarAltura(altura)) {
+            Alert.alert("Altura Inválida", "A altura deve estar entre 1,30 e 2,10 metros. Exemplo: 1,75");
             return;
         }
 
@@ -101,7 +116,7 @@ export default function HealthData() {
 
                     <CustomField
                         title="Altura (metros)"
-                        placeholder="Ex: 1.75"
+                        placeholder="Ex: 1,75 (1,30 - 2,10)"
                         value={altura}
                         setValue={handleAltura}
                         keyboardType="numeric"

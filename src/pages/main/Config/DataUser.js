@@ -53,8 +53,8 @@ export default function DataUser() {
 
     // Validar se a idade é um número válido
     const idadeNum = parseInt(idade);
-    if (isNaN(idadeNum) || idadeNum < 12 || idadeNum > 120) {
-      Alert.alert("Idade Inválida", "Por favor, insira uma idade válida entre 12 e 120 anos.");
+    if (isNaN(idadeNum) || idadeNum < 16 || idadeNum > 100) {
+      Alert.alert("Idade Inválida", "Por favor, insira uma idade válida entre 16 e 100 anos.");
       return;
     }
 

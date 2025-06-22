@@ -125,9 +125,9 @@ export default function CreateUser() {
         }
 
         const idadeResultante = calcularIdade(dataNascimento);
-        if (idadeResultante === null || isNaN(idadeResultante) || idadeResultante < 12) {
+        if (idadeResultante === null || isNaN(idadeResultante) || idadeResultante < 16 || idadeResultante > 100) {
             setFieldErrors({ dataNascimento: true });
-            showModal("Idade Inválida", "Você deve ter no mínimo 12 anos para usar o aplicativo. Verifique se a data de nascimento está no formato DD/MM/AAAA.", "error");
+            showModal("Idade Inválida", "Você deve ter entre 16 e 100 anos para usar o aplicativo. Verifique se a data de nascimento está no formato DD/MM/AAAA.", "error");
             return;
         }
 

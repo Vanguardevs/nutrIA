@@ -40,10 +40,43 @@ export default function HealthRegister() {
         setModalVisible(false);
     };
 
+    function handleAltura(input) {
+        let alturaFormatada = input.replace(/[^0-9]/g, '').slice(0, 3);
+        let alturaFormatada2 = alturaFormatada;
+        if (alturaFormatada.length > 1) {
+            alturaFormatada2 = `${alturaFormatada.slice(0, 1)}.${alturaFormatada.slice(1, 3)}`;
+        }
+        setAltura(alturaFormatada2);
+    }
+
+    function validarAltura(altura) {
+        if (!altura || altura.length === 0) return false;
+        
+        const alturaNum = parseFloat(altura.replace(',', '.'));
+        if (isNaN(alturaNum)) return false;
+        
+        return alturaNum >= 1.30 && alturaNum <= 2.10;
+    }
+
+    function handlePeso(input) {
+        let pesoFormatado = input.replace(/[^0-9]/g, '').slice(0, 3);
+        let pesoFormatado2 = pesoFormatado;
+        if (pesoFormatado.length > 1) {
+            pesoFormatado2 = `${pesoFormatado.slice(0, 2)},${pesoFormatado.slice(2, 3) || '0'}`;
+        }
+        setPeso(pesoFormatado2);
+    }
+
     function cadastro(){
         try {
             if(altura == 0 || peso == 0 || objetivo.length === 0){
                 showModal("Campos Vazios", "Alguns dos campos de cadastro estão vazios. Preencha todos os campos para continuar.", "warning");
+                return;
+            }
+
+            // Validar altura
+            if (!validarAltura(altura)) {
+                showModal("Altura Inválida", "A altura deve estar entre 1,30 e 2,10 metros. Exemplo: 1,75", "error");
                 return;
             }
             
@@ -144,24 +177,6 @@ export default function HealthRegister() {
         }
     }
 
-    function handleAltura(input) {
-        let alturaFormatada = input.replace(/[^0-9]/g, '').slice(0, 3);
-        let alturaFormatada2 = alturaFormatada;
-        if (alturaFormatada.length > 1) {
-            alturaFormatada2 = `${alturaFormatada.slice(0, 1)}.${alturaFormatada.slice(1, 3)}`;
-        }
-        setAltura(alturaFormatada2);
-    }
-
-    function handlePeso(input) {
-        let pesoFormatado = input.replace(/[^0-9]/g, '').slice(0, 3);
-        let pesoFormatado2 = pesoFormatado;
-        if (pesoFormatado.length > 1) {
-            pesoFormatado2 = `${pesoFormatado.slice(0, 2)},${pesoFormatado.slice(2, 3) || '0'}`;
-        }
-        setPeso(pesoFormatado2);
-    }
-
     return (
         <SafeAreaView style={[styles.hrContainer,{backgroundColor: background}]}>
 
@@ -171,7 +186,13 @@ export default function HealthRegister() {
             >
 
             <View style={styles.hrForm}>
-                <CustomField title="Altura" placeholder="Insira sua altura" value={altura} setValue={handleAltura} keyboardType='numeric'/>
+                <CustomField 
+                    title="Altura (metros)" 
+                    placeholder="Ex: 1,75 (1,30 - 2,10)" 
+                    value={altura} 
+                    setValue={handleAltura} 
+                    keyboardType='numeric'
+                />
                 <CustomField title="Peso" placeholder="Insira seu peso" value={peso} setValue={handlePeso} keyboardType='numeric'/>
 
                     <CustomPicker
