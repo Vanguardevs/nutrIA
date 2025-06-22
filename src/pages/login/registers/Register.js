@@ -240,7 +240,9 @@ export default function CreateUser() {
             <CustomModal
                 visible={modalVisible}
                 onClose={hideModal}
-                config={modalConfig}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                type={modalConfig.type}
             />
         </SafeAreaView>
     );
