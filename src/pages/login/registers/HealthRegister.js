@@ -82,10 +82,10 @@ export default function HealthRegister() {
                         "success"
                     );
                     
-                    // Navegar para login após 5 segundos
+                    // Fazer logout após 5 segundos - o App.js navegará automaticamente para AuthTabs
                     setTimeout(() => {
                         signOut(auth);
-                        navigation.navigate("Login");
+                        // Não é necessário navegar manualmente - o App.js detecta o logout e navega automaticamente
                     }, 5000);
                     
                 } catch (error) {
