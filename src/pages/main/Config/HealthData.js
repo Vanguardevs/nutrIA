@@ -53,12 +53,32 @@ export default function HealthData() {
     }
 
     function handlePeso(input) {
+        // Remover caracteres não numéricos e limitar a 3 dígitos
         let pesoFormatado = input.replace(/[^0-9]/g, '').slice(0, 3);
-        let pesoFormatado2 = pesoFormatado;
-        if (pesoFormatado.length > 1) {
-            pesoFormatado2 = `${pesoFormatado.slice(0, 2)},${pesoFormatado.slice(2, 3) || '0'}`;
+        
+        // Se tem 3 dígitos, formatar como XX,X
+        if (pesoFormatado.length === 3) {
+            pesoFormatado = `${pesoFormatado.slice(0, 2)},${pesoFormatado.slice(2)}`;
         }
-        setPeso(pesoFormatado2);
+        // Se tem 2 dígitos, manter como está
+        else if (pesoFormatado.length === 2) {
+            pesoFormatado = pesoFormatado;
+        }
+        // Se tem 1 dígito, manter como está
+        else if (pesoFormatado.length === 1) {
+            pesoFormatado = pesoFormatado;
+        }
+        
+        setPeso(pesoFormatado);
+    }
+
+    function validarPeso(peso) {
+        if (!peso || peso.length === 0) return false;
+        
+        const pesoNum = parseFloat(peso.replace(',', '.'));
+        if (isNaN(pesoNum)) return false;
+        
+        return pesoNum >= 20 && pesoNum <= 400;
     }
 
     function salvarDados() {
@@ -70,6 +90,12 @@ export default function HealthData() {
         // Validar altura
         if (!validarAltura(altura)) {
             Alert.alert("Altura Inválida", "A altura deve estar entre 1,30 e 2,10 metros. Exemplo: 1,75");
+            return;
+        }
+
+        // Validar peso
+        if (!validarPeso(peso)) {
+            Alert.alert("Peso Inválido", "O peso deve estar entre 20 e 400 kg. Exemplo: 70,5");
             return;
         }
 
@@ -124,7 +150,7 @@ export default function HealthData() {
                     
                     <CustomField
                         title="Peso (kg)"
-                        placeholder="Ex: 70,5"
+                        placeholder="Ex: 70,5 (20 - 400 kg)"
                         value={peso}
                         setValue={handlePeso}
                         keyboardType="numeric"

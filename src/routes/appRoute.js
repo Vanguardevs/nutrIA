@@ -510,21 +510,10 @@ export default function AppTabs() {
             <Stack.Screen
                 name="HealthData"
                 component={HealthData}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Dados de Saúde",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Dados de Saúde" navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen
