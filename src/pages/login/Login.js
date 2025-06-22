@@ -89,7 +89,7 @@ export default function LoginPag() {
             modeButton={true}
             style={styles.loginButton}
           />
-          <TouchableOpacity onPress={() => navegacao.push("Registro")} style={styles.loginRegisterContainer}>
+          <TouchableOpacity onPress={() => navegacao.push("Register")} style={styles.loginRegisterContainer}>
             <Text style={{ fontSize: 15, color: texts }}>
               Não possui conta?{' '}
               <Text style={{ color: "green", fontWeight: "bold", fontSize: 17 }}>
