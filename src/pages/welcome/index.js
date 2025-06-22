@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useColorScheme, ImageBackground, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Image } from "react-native";
 import styles from "../../theme/styles";
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/CustomButton.js";
 import { useEffect } from "react";
 
 

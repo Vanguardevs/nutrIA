@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomField from "../../../components/CustomField"; 
-import CustomButton from "../../../components/CustomButton";
+import CustomButton from "../../../components/CustomButton.js";
 import CustomPicker from "../../../components/CustomPicker";
 
 

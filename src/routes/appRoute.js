@@ -1,16 +1,16 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useColorScheme, Platform, StatusBar, Keyboard } from "react-native";
+import { useColorScheme, Platform, StatusBar, Keyboard, View, Text } from "react-native";
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { Animated, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 //Páginas de navegação do aplicativo já logado
 import Progress from "../pages/main//Progress/Progress.js";
 import CreateDiary from '../pages/main/Diary/CreateDiary.js';
 import EditDiary from '../pages/main/Diary/EditDiary.js';
 import Diary from "../pages/main/Diary/Diary.js";
-import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
 import Header from "../pages/cabecalho/header.js";
 import Home from '../pages/main/Home.js';
 import AccountUser from '../pages/main/Config/Account.js';
@@ -20,6 +20,30 @@ import Settings from '../pages/main/Config/Config.js';
 import ResumoDiario from '../pages/main/Progress/ResumoDiario.js';
 import EditHealth from '../pages/main/Config/EditHealth.js';
 import Map from '../pages/main/Map/Map.js';
+import HeaderMapButton from '../components/HeaderMapButton.tsx';
+
+// Componente de header com gradiente verde
+const GradientHeader = ({ title, navigation }) => {
+    return (
+        <LinearGradient
+            colors={['#1B5E20', '#2E8331']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientHeader}
+        >
+            <View style={styles.headerContent}>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={styles.backButton}
+                >
+                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>{title}</Text>
+                <View style={styles.placeholder} />
+            </View>
+        </LinearGradient>
+    );
+};
 
 // Componente de ícone animado para a tab bar
 const AnimatedTabIcon = ({ focused, iconActive, icon, colorBasic, colorHover, iconSize, keyboardVisible }) => {
@@ -128,23 +152,83 @@ export const AnimatedHeaderButton = ({ onPress, navigation }) => {
     );
 };
 
-const TabArr = [
-    {"route":'Nutria', "label": Home, "icon_active": 'leaf-outline', "icon": 'leaf', 'color_basic': 'gray', "color_hover": "green", "title": "Nutria"},
-    {"route":'Agendas', "label": Diary, "icon_active": 'calendar-outline', "icon": 'calendar', 'color_basic': 'gray', "color_hover": "green", "title": "Agendas"},
-    {"route":'Progresso', "label": Progress, "icon_active": 'analytics-outline', "icon": 'analytics', 'color_basic': 'gray', "color_hover": "green", "title": "Progresso"},
-];
+// Componente de botão de lixeira animado
+export const AnimatedTrashButton = ({ onPress }) => {
+    const scaleValue = React.useRef(new Animated.Value(1)).current;
+    const shakeValue = React.useRef(new Animated.Value(0)).current;
 
-const StackItems =[
-    {"route":"Config", "label": Settings, "headerTitle": "Configurações"},
-    {"route":"Create-Diary", "label": CreateDiary, "headerTitle": "Criar Agenda"},
-    {"route":"Edit-Diary", "label": EditDiary, "headerTitle": "Editar Agenda"},
-    {"route":"HealthData", "label": HealthData, "headerTitle": "Dados de Saúde"},
-    {"route":"AccountUser", "label": AccountUser, "headerTitle": "Conta"},
-    {"route":"DataUser", "label": DataUser, "headerTitle": "Dados Pessoais"},
-    {"route":"ResumoDiario", "label": ResumoDiario, "headerTitle": "Resumo Diário"},
-    {"route":"EditHealth", "label": EditHealth, "headerTitle": "Editar Condições médicas"},
-    {"route":"Map", "label": Map, "headerTitle": "Clínicas Próximas"},
-]
+    const handlePress = () => {
+        // Animação de pressionar
+        Animated.sequence([
+            Animated.timing(scaleValue, {
+                toValue: 0.9,
+                duration: 100,
+                useNativeDriver: true,
+            }),
+            Animated.timing(scaleValue, {
+                toValue: 1,
+                duration: 100,
+                useNativeDriver: true,
+            })
+        ]).start();
+
+        // Animação de shake
+        Animated.sequence([
+            Animated.timing(shakeValue, {
+                toValue: 1,
+                duration: 100,
+                useNativeDriver: true,
+            }),
+            Animated.timing(shakeValue, {
+                toValue: -1,
+                duration: 100,
+                useNativeDriver: true,
+            }),
+            Animated.timing(shakeValue, {
+                toValue: 0,
+                duration: 100,
+                useNativeDriver: true,
+            })
+        ]).start();
+
+        onPress();
+    };
+
+    const shake = shakeValue.interpolate({
+        inputRange: [-1, 0, 1],
+        outputRange: ['-5deg', '0deg', '5deg'],
+    });
+
+    return (
+        <TouchableOpacity onPress={handlePress}>
+            <Animated.View
+                style={[
+                    {
+                        marginRight: 8,
+                        marginLeft: 4,
+                        marginBottom: 8,
+                        backgroundColor: '#FF3B30',
+                        borderRadius: 20,
+                        width: 40,
+                        height: 40,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        shadowColor: '#FF3B30',
+                        shadowOffset: { width: 0, height: 1 },
+                        shadowOpacity: 0.12,
+                        shadowRadius: 2,
+                        elevation: 1,
+                    },
+                    {
+                        transform: [{ scale: scaleValue }, { rotate: shake }]
+                    }
+                ]}
+            >
+                <Ionicons name="trash-outline" size={24} color="#FFF" />
+            </Animated.View>
+        </TouchableOpacity>
+    );
+};
 
 export default function AppTabs() {
 
@@ -229,10 +313,10 @@ export default function AppTabs() {
                         {
                             swipeEnabled: false,
                             display: 'flex',
-                            position: 'absolute',
-                            bottom: '2%',
-                            right: '0.5%',
-                            left: '0.5%',
+                            position: 'relative',
+                            bottom: 0,
+                            right: 0,
+                            left: 0,
                             height: tabBarHeight,
                             elevation: 3,
                             backgroundColor: tabBarBackgroundColor,
@@ -245,6 +329,8 @@ export default function AppTabs() {
                             shadowOpacity: 0.25,
                             shadowRadius: 3.5,
                             borderTopWidth: 0,
+                            marginHorizontal: '0.5%',
+                            marginBottom: '2%',
                         },
                         {
                             opacity: tabBarOpacity,
@@ -263,10 +349,7 @@ export default function AppTabs() {
                             headerTitle: item.title,
                             headerStyle: {
                                 height: Platform.OS === 'ios' ? 120 : 90,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                paddingTop: 30,
-                                paddingBottom: 20,
+                                backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
                             },
                             headerStatusBarHeight: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,
                             keyboardHidesTabBar: item.route === 'Nutria',
@@ -285,12 +368,13 @@ export default function AppTabs() {
                                 fontSize: keyboardVisible ? 0 : 12,
                                 marginTop: keyboardVisible ? -8 : 0,
                                 opacity: keyboardVisible ? 0 : 1,
+                                color: textColor,
                             },
                             tabBarShowLabel: !keyboardVisible,
                             tabBarActiveTintColor: 'green',
                             headerTitleStyle: {
                                 fontWeight: 'bold',
-                                color: 'green',
+                                color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
                                 fontSize: 28,
                                 alignSelf: 'center',
                                 textAlign: 'center',
@@ -298,10 +382,32 @@ export default function AppTabs() {
                                 marginTop: Platform.OS === 'ios' ? 20 : 0,
                             },
                             headerRight: () => (
-                                <AnimatedHeaderButton
-                                    onPress={() => navigation.navigate('Config')}
-                                    navigation={navigation}
-                                />
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    {/* Botão de lixeira - apenas na tela Home */}
+                                    {item.route === 'Nutria' && (
+                                        <AnimatedTrashButton
+                                            onPress={() => {
+                                                // Usa uma referência global para acessar a função clearMessages
+                                                if (global.clearMessagesFunction) {
+                                                    global.clearMessagesFunction();
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                    
+                                    {/* Botão de mapa - apenas na tela Home */}
+                                    {item.route === 'Nutria' && (
+                                        <HeaderMapButton
+                                            onPress={() => navigation.navigate('Map')}
+                                        />
+                                    )}
+                                    
+                                    {/* Botão de configurações */}
+                                    <AnimatedHeaderButton
+                                        onPress={() => navigation.navigate('Config')}
+                                        navigation={navigation}
+                                    />
+                                </View>
                             ),
                         })}
                     />
@@ -344,22 +450,199 @@ export default function AppTabs() {
                 options={{ headerShown: false }}
             />
 
-            {StackItems.map((item,index)=>(
-                <Stack.Screen
-                    key={index}
-                    name={item.route}
-                    component={item.label}
-                    options={{
-                        headerTitle: item.headerTitle, 
-                        headerStyle:{backgroundColor: '#2E8331', height: 90, paddingTop: 24, paddingBottom: 16},
-                        headerTintColor: '#FFFFFF', 
-                        headerTitleStyle:{fontWeight: 'bold', fontSize: 24, color: '#FFFFFF'},
-                        // Animação específica para telas de configuração
-                        animation: item.route === 'Config' ? 'slide_from_bottom' : 'slide_from_right',
-                        presentation: item.route === 'Config' ? 'modal' : 'card',
-                    }}
-                />
-            ))}
+            <Stack.Screen
+                name="Map"
+                component={Map}
+                options={{
+                    header: ({ navigation }) => <GradientHeader title="Mapa" navigation={navigation} />,
+                }}
+            />
+
+            <Stack.Screen
+                name="Config"
+                component={Settings}
+                options={({ navigation }) => ({
+                    headerShown: true,
+                    header: () => <GradientHeader title="Configurações" navigation={navigation} />,
+                })}
+            />
+
+            <Stack.Screen
+                name="AccountUser"
+                component={AccountUser}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Conta do Usuário",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
+
+            <Stack.Screen
+                name="DataUser"
+                component={DataUser}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Dados do Usuário",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
+
+            <Stack.Screen
+                name="HealthData"
+                component={HealthData}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Dados de Saúde",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
+
+            <Stack.Screen
+                name="EditHealth"
+                component={EditHealth}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Editar Dados de Saúde",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
+
+            <Stack.Screen
+                name="CreateDiary"
+                component={CreateDiary}
+                options={({ navigation }) => ({
+                    headerShown: true,
+                    header: () => <GradientHeader title="Criar Agenda Alimentar" navigation={navigation} />,
+                })}
+            />
+
+            <Stack.Screen
+                name="EditDiary"
+                component={EditDiary}
+                options={({ navigation }) => ({
+                    headerShown: true,
+                    header: () => <GradientHeader title="Editar Agenda Alimentar" navigation={navigation} />,
+                })}
+            />
+
+            <Stack.Screen
+                name="ResumoDiario"
+                component={ResumoDiario}
+                options={({ navigation }) => ({
+                    headerShown: true,
+                    header: () => <GradientHeader title="Resumo do Progresso" navigation={navigation} />,
+                })}
+            />
         </Stack.Navigator>
     );
 }
+
+const TabArr = [
+    {
+        route: 'Nutria',
+        label: Home,
+        title: 'NutrIA',
+        icon: 'leaf-outline',
+        icon_active: 'leaf',
+        color_basic: 'gray',
+        color_hover: 'green',
+    },
+    {
+        route: 'Diary',
+        label: Diary,
+        title: 'Diário',
+        icon: 'calendar-outline',
+        icon_active: 'calendar',
+        color_basic: 'gray',
+        color_hover: 'green',
+    },
+    {
+        route: 'Progress',
+        label: Progress,
+        title: 'Progresso',
+        icon: 'bar-chart-outline',
+        icon_active: 'bar-chart',
+        color_basic: 'gray',
+        color_hover: 'green',
+    },
+];
+
+const styles = StyleSheet.create({
+    gradientHeader: {
+        height: Platform.OS === 'ios' ? 120 : 90,
+        paddingTop: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 4,
+    },
+    headerContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingHorizontal: 16,
+        height: 56,
+    },
+    backButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    headerTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        textAlign: 'center',
+        flex: 1,
+    },
+    placeholder: {
+        width: 40,
+    },
+});

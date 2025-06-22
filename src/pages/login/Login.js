@@ -3,7 +3,7 @@ import { useState } from "react";
 import { auth } from "../../database/firebase.js";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/CustomButton.js";
 import CustomField from "../../components/CustomField";
 import styles from "../../theme/styles.js";
 

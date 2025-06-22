@@ -3,7 +3,7 @@ import CustomField from "../../../components/CustomField";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import CustomPicker from "../../../components/CustomPicker";
-import CustomButton from "../../../components/CustomButton";
+import CustomButton from "../../../components/CustomButton.js";
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
 import { auth, app } from "../../../database/firebase";
 import {getDatabase, ref, set} from "firebase/database";

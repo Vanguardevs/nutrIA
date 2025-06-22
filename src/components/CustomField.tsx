@@ -1,5 +1,5 @@
 import {TouchableOpacity, View, Text, Button, TextInput, StyleSheet, Modal, useColorScheme } from "react-native";
-import Theme from "../theme/theme";
+import { useTheme } from '../theme/theme';
 
 interface CustomFieldProps extends TextInput { //Extende pra tudo que seja textinput
   title: string;

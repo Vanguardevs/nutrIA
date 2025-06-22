@@ -75,6 +75,27 @@ const saveCacheSafely = async (key, data) => {
     }
 };
 
+// Carregamento lazy do foods.json - só carrega quando necessário
+const loadFoodsJsonLazy = async () => {
+    try {
+        console.log('Carregando dados de alimentos do arquivo JSON...');
+        // Usa dynamic import para carregar apenas quando necessário
+        const foodsData = await import('../pages/main/foods.json');
+        
+        // Otimiza os dados para busca
+        const alimentosOtimizados = foodsData.default.map(item => ({
+            ...item,
+            descricaoNormalizada: (item.descricao || '').normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+        }));
+
+        console.log(`Dados de alimentos carregados: ${alimentosOtimizados.length} itens`);
+        return alimentosOtimizados;
+    } catch (error) {
+        console.error('Erro ao carregar dados de alimentos:', error);
+        throw error;
+    }
+};
+
 export const loadFoodsData = async () => {
     // Se já está carregando, retorna a promise existente
     if (isLoading && loadPromise) {
@@ -104,25 +125,16 @@ export const loadFoodsData = async () => {
         }
     }
 
-    // Carrega do arquivo JSON
+    // Carrega do arquivo JSON usando lazy loading
     isLoading = true;
     loadPromise = new Promise(async (resolve, reject) => {
         try {
-            console.log('Carregando dados de alimentos do arquivo JSON...');
-            const foodsData = require('../pages/main/foods.json');
-            
-            // Otimiza os dados para busca
-            const alimentosOtimizados = foodsData.map(item => ({
-                ...item,
-                descricaoNormalizada: (item.descricao || '').normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-            }));
-
+            const alimentosOtimizados = await loadFoodsJsonLazy();
             foodsCache = alimentosOtimizados;
 
             // Salva no cache com tratamento de erro robusto
             await saveCacheSafely('foods_data_cache', alimentosOtimizados);
 
-            console.log(`Dados de alimentos carregados: ${alimentosOtimizados.length} itens`);
             resolve(alimentosOtimizados);
         } catch (error) {
             console.error('Erro ao carregar dados de alimentos:', error);

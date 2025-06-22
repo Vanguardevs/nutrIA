@@ -1,7 +1,7 @@
 import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text, ScrollView} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
-import CustomButton from '../../../components/CustomButton';
+import CustomButton from '../../../components/CustomButton.js';
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getDatabase, ref, push } from 'firebase/database';
@@ -276,6 +276,8 @@ export default function CreateDiary() {
                         onPress={salvarAgenda}
                         modeButton={true}
                         isLoading={loading || isLoadingFoods || isSaving}
+                        size="large"
+                        style={styles.saveButton}
                     />
                 </View>
             </ImageBackground>
@@ -301,5 +303,9 @@ const styles = StyleSheet.create({
     imgBackgound: {
         height: '100%',
         width: '100%',
+    },
+    saveButton: {
+        width: '100%',
+        marginTop: 20,
     },
 });

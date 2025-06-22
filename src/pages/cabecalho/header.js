@@ -27,7 +27,8 @@ export default function Header(props) {
         <SafeAreaView style={[styles.safeArea, {backgroundColor: backgoundH}]}> 
             <View style={styles.container}>
                 <Text style={getTitleStyle(props.options && props.options.title ? props.options.title : "Nutria")}> 
-                    {props.options && props.options.title ? 
+                    {props.options && props.options.title === 'Mapa' ? 'Mapa' :
+                        props.options && props.options.title ? 
                         (props.options.title === "Nutria" ? "NutrIA" : 
                          props.options.title === "Agendas" ? "Agenda" : 
                          props.options.title) : "NutrIA"}

@@ -1,7 +1,7 @@
 import { SafeAreaView, View, useColorScheme } from "react-native";
 import CustomField from "../../../components/CustomField";
 import React, { useState } from "react";
-import CustomButton from "../../../components/CustomButton";
+import CustomButton from "../../../components/CustomButton.js";
 import { useNavigation } from "@react-navigation/native";
 import CustomMultiPicker from "../../../components/CustomMultiPicker";
 import styles from "../../../theme/styles";

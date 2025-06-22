@@ -235,7 +235,7 @@ export default function Diary() {
         <View style={styles.fabTopContainer}>
           <TouchableOpacity
             style={styles.fabTop}
-            onPress={() => navigate.navigate('Create-Diary')}
+            onPress={() => navigate.navigate('CreateDiary')}
           >
             <Ionicons name="add" size={32} color="#fff" />
           </TouchableOpacity>
@@ -261,7 +261,7 @@ export default function Diary() {
                   horario={agenda.horario || agenda.hora}
                   alimentacao={agenda.refeicao}
                   onPressEdit={() => {
-                    navigate.navigate("Edit-Diary", {
+                    navigate.navigate("EditDiary", {
                       id: agenda.id, 
                       refeicao: agenda.refeicao, 
                       hora: agenda.horario || agenda.hora

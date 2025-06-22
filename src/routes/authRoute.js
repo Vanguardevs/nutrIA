@@ -1,46 +1,132 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useColorScheme } from "react-native";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useColorScheme, Platform, StatusBar } from "react-native";
 
-//Páginas do aplicativo para fazer loggin
-import HealthRegister from "../pages/login/registers/HealthRegister.js";
-import Wellcome from '../pages/welcome/index.js';
-import LoginPag from '../pages/login/Login.js';
-import Restricoes from "../pages/login/registers/Restrições.js";
-import CreateUser from "../pages/login/registers/Register.js";
-import ForgetPassword from "../pages/login/ForgetPassword.js";
-import React from "react";
-import AppTabs from "./appRoute.js";
+//Páginas de navegação do aplicativo não logado
+import Login from '../pages/login/Login.js';
+import Register from '../pages/login/registers/Register.js';
+import ForgetPassword from '../pages/login/ForgetPassword.js';
+import HealthRegister from '../pages/login/registers/HealthRegister.js';
+import Restrições from '../pages/login/registers/Restrições.js';
 
+export default function AuthTabs() {
+    const colorScheme = useColorScheme();
+    const Stack = createNativeStackNavigator();
 
-export default function RoutePag() {
-  const Stack = createNativeStackNavigator();
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                // Animações de transição para o Stack Navigator
+                animation: 'slide_from_right',
+                animationDuration: 300,
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+                cardStyleInterpolator: ({ current, layouts }) => {
+                    return {
+                        cardStyle: {
+                            transform: [
+                                {
+                                    translateX: current.progress.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [layouts.screen.width, 0],
+                                    }),
+                                },
+                            ],
+                            opacity: current.progress.interpolate({
+                                inputRange: [0, 0.5, 1],
+                                outputRange: [0, 0.5, 1],
+                            }),
+                        },
+                    };
+                },
+            }}
+        >
+            <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{
+                    headerShown: false,
+                }}
+            />
 
-  const colorScheme = useColorScheme();
+            <Stack.Screen
+                name="Register"
+                component={Register}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Cadastro",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
 
-  const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
-  const texts = colorScheme === 'dark'? "#F2F2F2" : "#1C1C1E";
+            <Stack.Screen
+                name="ForgetPassword"
+                component={ForgetPassword}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Esqueci a Senha",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
 
-  const StackItems = [
-    {"name":"Bem_Vindo", "component": Wellcome, "options": {headerShown: false}},
-    {"name":"Login", "component": LoginPag, "options": {headerShown: false}},
-    {"name":"Registro", "component": CreateUser, "options": {headerTitleAlign: 'center', headerTitle: 'Cadastro', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
-    {"name":"HealthRegister", "component": HealthRegister, "options":{headerTitleAlign: 'center', headerTitle: 'Cadastro de Saúde', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
-    {"name":"Restricoes", "component": Restricoes, "options": {headerTitleAlign: 'center', headerTitle: 'Cadastro de Saúde', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
-    {"name": "ForgetPassword", "component": ForgetPassword, "options": {headerTitleAlign: 'center', headerTitle: 'Esqueci minha senha', headerStyle:{backgroundColor: background}, headerTintColor: texts}},
-  ]
+            <Stack.Screen
+                name="HealthRegister"
+                component={HealthRegister}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Dados de Saúde",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
 
-  return (
-    <Stack.Navigator>
-
-      {StackItems.map((item, index)=>(
-        <Stack.Screen
-          key={index}
-          name={item.name}
-          component={item.component}
-          options={item.options}
-        />
-      ))}
-
-    </Stack.Navigator>
-  )
+            <Stack.Screen
+                name="Restrições"
+                component={Restrições}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Restrições Alimentares",
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                        fontSize: 20,
+                    },
+                    headerStyle: {
+                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
+                }}
+            />
+        </Stack.Navigator>
+    );
 }

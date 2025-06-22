@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CustomButton from '../../../components/CustomButton';
+import CustomButton from '../../../components/CustomButton.js';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
 import { View, SafeAreaView, Text, Alert, useColorScheme, StyleSheet, ImageBackground } from 'react-native';

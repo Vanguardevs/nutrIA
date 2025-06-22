@@ -1,6 +1,30 @@
 import axios from 'axios';
 import { API_CONFIG, validateApiConfig } from '../config/apiKeys';
-import realClinicsData from './realClinicsData.json';
+
+// Carregamento lazy do realClinicsData.json
+let realClinicsDataCache = null;
+
+const loadRealClinicsData = async () => {
+    if (realClinicsDataCache) {
+        console.log('Retornando dados do cache');
+        return realClinicsDataCache;
+    }
+    
+    try {
+        console.log('Carregando dados de clínicas do arquivo JSON...');
+        const data = await import('./realClinicsData.json');
+        console.log('Arquivo JSON importado com sucesso');
+        console.log('Estrutura dos dados:', Object.keys(data.default));
+        console.log('Número de clínicas:', data.default.clinics.length);
+        console.log('Primeira clínica:', data.default.clinics[0]);
+        realClinicsDataCache = data.default;
+        console.log('Dados de clínicas carregados com sucesso');
+        return realClinicsDataCache;
+    } catch (error) {
+        console.error('Erro ao carregar dados de clínicas:', error);
+        throw error;
+    }
+};
 
 /**
  * Busca clínicas próximas usando dados reais do OpenStreetMap
@@ -68,7 +92,7 @@ export const searchNearbyClinics = async (latitude, longitude, radius = API_CONF
 
     // Se ainda não tem dados suficientes, adiciona dados de fallback
     if (sortedClinics.length < 3) {
-      const fallbackData = getFallbackClinics();
+      const fallbackData = await getFallbackClinics();
       const fallbackWithDistance = fallbackData.map(clinic => ({
         ...clinic,
         distance: calculateDistance(latitude, longitude, clinic.coordinate.latitude, clinic.coordinate.longitude)
@@ -87,7 +111,7 @@ export const searchNearbyClinics = async (latitude, longitude, radius = API_CONF
     console.error('Erro ao buscar clínicas reais:', error);
     
     // Em caso de erro, usa dados de fallback
-    const fallbackData = getFallbackClinics();
+    const fallbackData = await getFallbackClinics();
     const fallbackWithDistance = fallbackData.map(clinic => ({
       ...clinic,
       distance: calculateDistance(latitude, longitude, clinic.coordinate.latitude, clinic.coordinate.longitude)
@@ -380,15 +404,43 @@ const generateDescription = (clinic, type) => {
   return typeDescriptions[Math.floor(Math.random() * typeDescriptions.length)];
 };
 
+// Função para separar palavras em caixa alta (ex: RUAALMIRANTELUISPENIDOBURNIER -> RUA ALMIRANTE LUIS PENIDO BURNIER)
+function splitUppercaseWords(str) {
+  if (!str) return '';
+  // Separa por números e insere espaço antes de cada palavra com 2+ letras maiúsculas seguidas
+  return str.replace(/([A-Z]{2,})/g, ' $1')
+    .replace(/([0-9]+)/g, ' $1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /**
- * Retorna dados de fallback de clínicas
- * @returns {Array} Lista de clínicas de exemplo
+ * Função para buscar nutricionistas do arquivo CNES
+ * @returns {Promise<Array>} Lista de clínicas de nutricionistas
  */
-export const getFallbackClinics = () => {
-  // Usa dados reais do arquivo JSON
-  return realClinicsData.clinics.map(clinic => ({
-    ...clinic,
-    photos: [], // Adiciona array de fotos vazio
-    distance: 0 // Será calculado dinamicamente
-  }));
-}; 
+export async function getFallbackClinics() {
+  try {
+    const data = require('./nutricionistas_sao_paulo.json');
+    // O arquivo é um array, não um objeto com .clinics
+    return data.map((item, idx) => ({
+      id: item.CO_CNES || `nutri_${idx}`,
+      name: splitUppercaseWords(item.NO_FANTASIA) || splitUppercaseWords(item.NO_RAZAO_SOCIAL) || 'Nutricionista',
+      type: 'Nutricionista',
+      address: `${splitUppercaseWords(item.NO_LOGRADOURO)}, ${item.NU_ENDERECO || ''} - ${splitUppercaseWords(item.NO_BAIRRO)}, São Paulo - SP, ${item.CO_CEP || ''}`.replace(/\s+/g, ' ').trim(),
+      phone: item.NU_TELEFONE || '',
+      website: '',
+      rating: 0,
+      totalRatings: 0,
+      coordinate: {
+        latitude: parseFloat(item.NU_LATITUDE),
+        longitude: parseFloat(item.NU_LONGITUDE),
+      },
+      description: '',
+      openingHours: item.DS_TURNO_ATENDIMENTO || '',
+      isRealData: true,
+    }));
+  } catch (e) {
+    console.error('Erro ao carregar nutricionistas:', e);
+    return [];
+  }
+} 

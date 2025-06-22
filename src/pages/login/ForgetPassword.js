@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, useColorScheme, ImageBackground, StyleSheet, Alert, Text } from 'react-native';
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../../components/CustomButton.js';
 import CustomField from '../../components/CustomField';
 import { auth } from '../../database/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';

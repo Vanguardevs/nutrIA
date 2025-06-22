@@ -1,6 +1,6 @@
 import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text} from 'react-native';
 import CustomField from '../../../components/CustomField';
-import CustomButton from '../../../components/CustomButton';
+import CustomButton from '../../../components/CustomButton.js';
 import React, { useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';

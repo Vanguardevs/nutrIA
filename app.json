@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",    "splash": {
+    "userInterfaceStyle": "light",
+    "splash": {
       "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
@@ -40,6 +41,11 @@
         "projectId": "e02f7476-de94-4d3f-b571-f429ee9c38c0"
       }
     },
-    "owner": "vanguard-nutria"
+    "owner": "vanguard-nutria",
+    "plugins": [
+      "expo-font",
+      "expo-location",
+      "expo-notifications"
+    ]
   }
 }

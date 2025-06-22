@@ -1,24 +1,26 @@
 import { StyleSheet } from 'react-native';
-import Theme from './theme.js'
+// import Theme from './theme.js' // Removido para evitar dependência fixa de tema
 
 const styles = StyleSheet.create({
 
      // WELCOME === INDEX.JS
   welcomeContainer: {
     flex: 1,
-    backgroundColor: Theme.colors.secondary,
+    // backgroundColor: Theme.colors.secondary, // Remover dependência direta
     justifyContent: 'space-between',
     alignItems: 'center',
+    // Use a cor de fundo via props/contexto
   },
   welcomeCurtain: {
     backgroundColor: 'white',
     justifyContent: 'space-evenly',
     height: 250,
     width: '100%',
-    borderTopRightRadius: Theme.borderRadius,
-    borderTopLeftRadius: Theme.borderRadius,
+    // borderTopRightRadius: Theme.borderRadius, // Remover dependência direta
+    // borderTopLeftRadius: Theme.borderRadius, // Remover dependência direta
     marginTop: '40%',
     alignItems: 'center'
+    // Use borderRadius via props/contexto se necessário
   },
   welcomeButton: {
     height: 70,
@@ -90,10 +92,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 5,
+    shadowRadius: 8,
+    elevation: 3,
     alignItems: "center",
 
   },  
@@ -153,8 +155,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     color:"#333",
     shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
     shadowRadius: 4,
   },
   registerBackground: {
