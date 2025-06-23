@@ -131,6 +131,8 @@ export default function Progress() {
                             title="Ver Resumo Diário"
                             onPress={() => navigate.navigate('ResumoDiario', { comidos, naoComidos })}
                             modeButton={true}
+                            size="large"
+                            style={{width: '100%'}}
                         />
                     </View>
 

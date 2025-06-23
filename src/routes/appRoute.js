@@ -347,6 +347,7 @@ export default function AppTabs() {
                         options={({ navigation }) => ({
                             headerShown: true,
                             headerTitle: item.title,
+                            tabBarLabel: item.route === 'Diary' ? 'Diário' : item.route === 'Progress' ? 'Progresso' : item.title,
                             headerStyle: {
                                 height: Platform.OS === 'ios' ? 120 : 90,
                                 backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',

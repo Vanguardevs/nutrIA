@@ -136,7 +136,7 @@ export default function EditDiary(){
 
                     <CustomField title="Alimento" placeholder='Alimento' value={editRefeicao} setValue={setEditRefeicao}/>
 
-                    <CustomButton title="Data" onPress={showDatePicker} modeButton={true} style={{marginBottom: 8}}/>
+                    <CustomButton title="Data" onPress={showDatePicker} modeButton={true} size="large" style={{width: '100%', marginBottom: 8}}/>
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
                         mode="date"
@@ -144,7 +144,7 @@ export default function EditDiary(){
                         onCancel={hideDatePicker}
                     />
 
-                    <CustomButton title="Horário" onPress={showTimePicker} modeButton={true} style={{marginBottom: 8}}/>
+                    <CustomButton title="Horário" onPress={showTimePicker} modeButton={true} size="large" style={{width: '100%', marginBottom: 8}}/>
                     <DateTimePickerModal
                         isVisible={isTimePickerVisible}
                         mode="time"
@@ -152,8 +152,8 @@ export default function EditDiary(){
                         onCancel={hideTimePicker}
                     />
 
-                    <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true} style={{marginTop: 16}}/>
-                    <CustomButton title="Excluir" onPress={excluirAgenda} modeButton={false} style={{marginTop: 8}}/>
+                    <CustomButton title="Salvar" onPress={salvarAgenda} modeButton={true} size="large" style={{width: '100%', marginTop: 16}}/>
+                    <CustomButton title="Excluir" onPress={excluirAgenda} modeButton={false} size="large" variant="danger" style={{width: '100%', marginTop: 8}}/>
 
                 </View>
 

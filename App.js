@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { auth } from './src/database/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import AppTabs from './src/routes/appRoute.js';
 import AuthTabs from './src/routes/authRoute.js';
 import AnimatedSplash from './src/components/AnimatedSplash.js';
@@ -56,10 +56,29 @@ export default function App() {
     return null;
   }
 
-  return (
-    <NavigationContainer>
-      <StatusBar style="dark" backgroundColor="#FFFFFF" />
-      {user ? <AppTabs /> : <AuthTabs />}
-    </NavigationContainer>
-  );
+  // Permitir acesso apenas se o email estiver verificado
+  if (user && user.emailVerified) {
+    return (
+      <NavigationContainer>
+        <StatusBar style="dark" backgroundColor="#FFFFFF" />
+        <AppTabs />
+      </NavigationContainer>
+    );
+  } else if (user && !user.emailVerified) {
+    // Se o usuário não for verificado, faz logout e mostra AuthTabs
+    signOut(auth);
+    return (
+      <NavigationContainer>
+        <StatusBar style="dark" backgroundColor="#FFFFFF" />
+        <AuthTabs />
+      </NavigationContainer>
+    );
+  } else {
+    return (
+      <NavigationContainer>
+        <StatusBar style="dark" backgroundColor="#FFFFFF" />
+        <AuthTabs />
+      </NavigationContainer>
+    );
+  }
 }

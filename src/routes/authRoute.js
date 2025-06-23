@@ -1,5 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useColorScheme, Platform, StatusBar } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 //Páginas de navegação do aplicativo não logado
 import Welcome from '../pages/welcome/index.js';
@@ -8,6 +11,24 @@ import Register from '../pages/login/registers/Register.js';
 import ForgetPassword from '../pages/login/ForgetPassword.js';
 import HealthRegister from '../pages/login/registers/HealthRegister.js';
 import Restrições from '../pages/login/registers/Restrições.js';
+
+// Header gradiente igual ao do Map
+const GradientHeader = ({ title, navigation }) => (
+    <LinearGradient
+        colors={['#1B5E20', '#2E8331']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ height: 90, justifyContent: 'flex-end', paddingBottom: 8 }}
+    >
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
+                <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={{ flex: 1, color: '#FFF', fontWeight: 'bold', fontSize: 22, textAlign: 'center' }}>{title}</Text>
+            <View style={{ width: 40 }} />
+        </View>
+    </LinearGradient>
+);
 
 export default function AuthTabs() {
     const colorScheme = useColorScheme();
@@ -53,29 +74,19 @@ export default function AuthTabs() {
             <Stack.Screen
                 name="Login"
                 component={Login}
-                options={{
-                    headerShown: false,
-                }}
+                options={({ navigation }) => ({
+                    headerShown: true,
+                    header: () => <GradientHeader title="Login" navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen
                 name="Register"
                 component={Register}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Cadastro",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Cadastro" navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen
@@ -101,41 +112,19 @@ export default function AuthTabs() {
             <Stack.Screen
                 name="HealthRegister"
                 component={HealthRegister}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Dados de Saúde",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Dados de Saúde" navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen
                 name="Restrições"
                 component={Restrições}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Restrições Alimentares",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Restrições Alimentares" navigation={navigation} />,
+                })}
             />
         </Stack.Navigator>
     );

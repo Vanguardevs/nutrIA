@@ -119,7 +119,8 @@ export default function AccountUser() {
               title="Salvar alterações"
               onPress={updateEmailAddress}
               modeButton={true}
-              style={styles.button}
+              size="large"
+              style={{width: '100%'}}
             />
           </View>
         </View>

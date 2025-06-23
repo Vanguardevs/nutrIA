@@ -211,35 +211,19 @@ const CustomMessageCamp = forwardRef<CustomMessageCampRef, PropsCutomMessageCamp
                     contextMenuHidden={false}
                     selectionColor={themeColors.focusBorderColor}
                 />
-                <View style={styles.rightButtonsRow}>
-                    <Animated.View style={{ transform: [{ scale: micPulseAnim || 1 }] }}>
-                        <TouchableOpacity
-                            onPress={handleMicPress}
-                            style={micButtonStyle}
-                            activeOpacity={0.7}
-                            disabled={isTyping}
-                        >
-                            <Ionicons 
-                                name={isListening ? "mic" : "mic-outline"} 
-                                size={20} 
-                                color={isListening ? "#007AFF" : isTyping ? "#C7C7CC" : "#8E8E93"} 
-                            />
-                        </TouchableOpacity>
-                    </Animated.View>
-                    <View style={styles.sendButtonContainer}>
-                        <TouchableOpacity
-                            style={sendButtonStyle}
-                            onPress={handleSend}
-                            activeOpacity={0.7}
-                            disabled={!value || !value.trim() || isTyping}
-                        >
-                            <Ionicons 
-                                name={isTyping ? "time-outline" : "send"} 
-                                size={20} 
-                                color="white" 
-                            />
-                        </TouchableOpacity>
-                    </View>
+                <View style={styles.sendButtonContainer}>
+                    <TouchableOpacity
+                        style={sendButtonStyle}
+                        onPress={handleSend}
+                        activeOpacity={0.7}
+                        disabled={!value || !value.trim() || isTyping}
+                    >
+                        <Ionicons 
+                            name={isTyping ? "time-outline" : "send"} 
+                            size={20} 
+                            color="white" 
+                        />
+                    </TouchableOpacity>
                 </View>
             </Animated.View>
             

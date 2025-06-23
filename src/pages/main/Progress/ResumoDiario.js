@@ -1,5 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import CustomButton from '../../../components/CustomButton.js';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
@@ -51,25 +52,27 @@ export default function ResumoDiario({ route, navigation }) {
     };
 
     return (
-        <ScrollView contentContainerStyle={[
-          styles.container,
-          {
-            paddingBottom: TAB_BAR_HEIGHT + 16,
-            minHeight: (comidos.length + naoComidos.length) === 0 ? SCREEN_HEIGHT * 0.7 : undefined
-          }
-        ]}>
-            <Text style={styles.title}>🍽️ Refeições Realizadas</Text>
-            {comidos.length ? renderAlimentos(comidos) : <Text style={styles.vazio}>Nenhuma refeição realizada.</Text>}
+        <View style={{flex: 1, backgroundColor: '#fff'}}>
+            <ScrollView contentContainerStyle={[
+              styles.container,
+              {
+                paddingBottom: TAB_BAR_HEIGHT + 16,
+                minHeight: (comidos.length + naoComidos.length) === 0 ? SCREEN_HEIGHT * 0.7 : undefined
+              }
+            ]}>
+                <Text style={styles.title}>🍽️ Refeições Realizadas</Text>
+                {comidos.length ? renderAlimentos(comidos) : <Text style={styles.vazio}>Nenhuma refeição realizada.</Text>}
 
-            <Text style={styles.title}>🍃 Refeições Não Realizadas</Text>
-            {naoComidos.length ? renderAlimentos(naoComidos) : <Text style={styles.vazio}>Nenhuma refeição não realizada.</Text>}
+                <Text style={styles.title}>🍃 Refeições Não Realizadas</Text>
+                {naoComidos.length ? renderAlimentos(naoComidos) : <Text style={styles.vazio}>Nenhuma refeição não realizada.</Text>}
 
-            <View style={styles.totalContainer}>
-                <Text style={styles.totalTitle}>Resumo Nutricional</Text>
-                <Text style={styles.totalText}>🔥 Calorias Totais: {totalCalorias} kcal</Text>
-                <Text style={styles.totalText}>⚡ Valor Energético Total: {totalValorEnergetico} kJ</Text>
-            </View>
-        </ScrollView>
+                <View style={styles.totalContainer}>
+                    <Text style={styles.totalTitle}>Resumo Nutricional</Text>
+                    <Text style={styles.totalText}>🔥 Calorias Totais: {totalCalorias} kcal</Text>
+                    <Text style={styles.totalText}>⚡ Valor Energético Total: {totalValorEnergetico} kJ</Text>
+                </View>
+            </ScrollView>
+        </View>
     );
 }
 

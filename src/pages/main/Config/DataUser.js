@@ -116,7 +116,7 @@ export default function DataUser() {
           </View>
 
           <View style={styles.centered}>
-            <CustomButton title='Salvar Dados' modeButton={true} onPress={AtualizarDados} />
+            <CustomButton title='Salvar Dados' modeButton={true} onPress={AtualizarDados} size="large" style={{width: '100%'}} />
           </View>
         </View>
       </ImageBackground>

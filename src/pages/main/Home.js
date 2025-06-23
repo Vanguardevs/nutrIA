@@ -17,7 +17,6 @@ import {
     Alert,
     Modal
 } from 'react-native';
-import Voice from '@react-native-voice/voice';
 import { Ionicons } from '@expo/vector-icons';
 import CustomMessageCamp from "../../components/CustomMessageCamp";
 import HeaderMapButton from "../../components/HeaderMapButton";

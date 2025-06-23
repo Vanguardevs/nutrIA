@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, useColorScheme, ImageBackground } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, useColorScheme, ImageBackground, ActivityIndicator } from "react-native";
 import CustomField from "../../../components/CustomField";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -25,6 +25,7 @@ export default function HealthRegister() {
     const [peso, setPeso] = useState();
     const [objetivo, setObjetivo] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [modalConfig, setModalConfig] = useState({
         title: '',
         message: '',
@@ -38,6 +39,11 @@ export default function HealthRegister() {
 
     const hideModal = () => {
         setModalVisible(false);
+        // Se o modal for de sucesso de cadastro, faz logout ao fechar e redireciona para o login
+        if (modalConfig.type === 'success' && modalConfig.title.includes('Cadastro Realizado')) {
+            signOut(auth);
+            navigation.navigate('Login');
+        }
     };
 
     function handleAltura(input) {
@@ -59,22 +65,15 @@ export default function HealthRegister() {
     }
 
     function handlePeso(input) {
-        // Remover caracteres não numéricos e limitar a 3 dígitos
-        let pesoFormatado = input.replace(/[^0-9]/g, '').slice(0, 3);
-        
-        // Se tem 3 dígitos, formatar como XX,X
-        if (pesoFormatado.length === 3) {
-            pesoFormatado = `${pesoFormatado.slice(0, 2)},${pesoFormatado.slice(2)}`;
+        // Permitir apenas números
+        let pesoNumeros = input.replace(/[^0-9]/g, '');
+        let pesoFormatado = pesoNumeros;
+        // Só inserir vírgula após 3 dígitos
+        if (pesoNumeros.length > 3) {
+            pesoFormatado = pesoNumeros.slice(0, 3) + ',' + pesoNumeros.slice(3, 6);
         }
-        // Se tem 2 dígitos, manter como está
-        else if (pesoFormatado.length === 2) {
-            pesoFormatado = pesoFormatado;
-        }
-        // Se tem 1 dígito, manter como está
-        else if (pesoFormatado.length === 1) {
-            pesoFormatado = pesoFormatado;
-        }
-        
+        // Limitar a 6 caracteres totais (incluindo vírgula)
+        if (pesoFormatado.length > 6) pesoFormatado = pesoFormatado.slice(0, 6);
         setPeso(pesoFormatado);
     }
 
@@ -88,20 +87,24 @@ export default function HealthRegister() {
     }
 
     function cadastro(){
+        setLoading(true);
         try {
             if(altura == 0 || peso == 0 || objetivo.length === 0){
+                setLoading(false);
                 showModal("Campos Vazios", "Alguns dos campos de cadastro estão vazios. Preencha todos os campos para continuar.", "warning");
                 return;
             }
 
             // Validar altura
             if (!validarAltura(altura)) {
+                setLoading(false);
                 showModal("Altura Inválida", "A altura deve estar entre 1,30 e 2,10 metros. Exemplo: 1,75", "error");
                 return;
             }
             
             // Validar peso
             if (!validarPeso(peso)) {
+                setLoading(false);
                 showModal("Peso Inválido", "O peso deve estar entre 20 e 400 kg. Exemplo: 70,5", "error");
                 return;
             }
@@ -132,8 +135,9 @@ export default function HealthRegister() {
                     console.log("Dados do usuário salvos com sucesso!");
                     
                     // Enviar email de verificação
-                    await sendEmailVerification(auth.currentUser);
+                    await sendEmailVerification(userCredential.user);
                     
+                    setLoading(false);
                     // Mostrar modal de sucesso com informações sobre verificação
                     showModal(
                         "Cadastro Realizado com Sucesso! 🎉", 
@@ -141,13 +145,8 @@ export default function HealthRegister() {
                         "success"
                     );
                     
-                    // Fazer logout após 5 segundos - o App.js navegará automaticamente para AuthTabs
-                    setTimeout(() => {
-                        signOut(auth);
-                        // Não é necessário navegar manualmente - o App.js detecta o logout e navega automaticamente
-                    }, 5000);
-                    
                 } catch (error) {
+                    setLoading(false);
                     console.log("Erro ao salvar dados do usuário:", error);
                     showModal(
                         "Conta Criada, Mas...", 
@@ -158,6 +157,7 @@ export default function HealthRegister() {
 
             })
             .catch((error)=>{
+                setLoading(false);
                 console.log("Erro ao cadastrar usuário:", error);
                 
                 if (error.code === "auth/email-already-in-use") {
@@ -194,6 +194,7 @@ export default function HealthRegister() {
             });
 
         } catch (error) { 
+            setLoading(false);
             console.log("Erro inesperado:", error);
             showModal(
                 "Erro Inesperado", 
@@ -207,45 +208,49 @@ export default function HealthRegister() {
         <SafeAreaView style={[styles.hrContainer,{backgroundColor: background}]}>
 
             <ImageBackground
-                source={require('../../../../assets/Frutas_home.png')} 
-                style={styles.hrBackgroundImage}
+                source={require('../../../../assets/Frutas_home.png')}
+                style={{flex: 1}}
+                resizeMode="cover"
             >
-
-            <View style={styles.hrForm}>
-                <CustomField 
-                    title="Altura (metros)" 
-                    placeholder="Ex: 1,75 (1,30 - 2,10)" 
-                    value={altura} 
-                    setValue={handleAltura} 
-                    keyboardType='numeric'
-                />
-                <CustomField
-                    title="Peso (kg)"
-                    placeholder="Ex: 70,5 (20 - 400 kg)"
-                    value={peso}
-                    setValue={handlePeso}
-                />
-
+                <View style={styles.hrForm}>
+                    <CustomField 
+                        title="Altura (metros)" 
+                        placeholder="Ex: 1,75 (1,30 - 2,10)" 
+                        value={altura} 
+                        setValue={handleAltura} 
+                        keyboardType='numeric'
+                    />
+                    <CustomField
+                        title="Peso (kg)"
+                        placeholder="Ex: 70,5 (20 - 400 kg)"
+                        value={peso}
+                        setValue={handlePeso}
+                        keyboardType='numeric'
+                    />
                     <CustomPicker
                         label="Meta"
                         selectedValue={objetivo}
                         onValueChange={(value)=> setObjetivo(value)}
                         options={[
-                        { label: "Emagrecimento", value: "Emagrecimento" },
-                        { label: "Saúde", value: "Saúde" },
-                        { label: "Musculo", value: "Musculo" }
+                            { label: "Emagrecimento", value: "Emagrecimento" },
+                            { label: "Saúde", value: "Saúde" },
+                            { label: "Musculo", value: "Musculo" }
                         ]}
                     />
-                
-                <TouchableOpacity onPress={() => navigation.navigate("Restricoes")} style={styles.hrLink}>
-                    <Text style={styles.hrLinkText}>Restrições Alimentares</Text>
-                </TouchableOpacity>
-
-                
-                <View style={styles.hrBottom}>
-                <CustomButton title="Cadastrar" modeButton={true} onPress={cadastro}/>
+                    <TouchableOpacity onPress={() => navigation.navigate("Restrições")} style={styles.hrLink}>
+                        <Text style={styles.hrLinkText}>Restrições Alimentares</Text>
+                    </TouchableOpacity>
+                    <View style={{width: '100%', alignItems: 'center'}}>
+                        {loading ? (
+                            <View style={{width: '100%', alignItems: 'center', marginTop: 20}}>
+                                <ActivityIndicator size="large" color="#2E8331" />
+                                <Text style={{marginTop: 10, color: '#2E8331', fontSize: 16}}>Cadastrando...</Text>
+                            </View>
+                        ) : (
+                            <CustomButton title="Cadastrar" modeButton={true} onPress={() => setTimeout(cadastro, 100)} size="large" style={{width: '100%', marginTop: 20}}/>
+                        )}
+                    </View>
                 </View>
-            </View>
             </ImageBackground>
 
             <CustomModal

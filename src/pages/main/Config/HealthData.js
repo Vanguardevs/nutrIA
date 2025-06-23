@@ -35,12 +35,13 @@ export default function HealthData() {
     }, []);
 
     function handleAltura(input) {
-        let alturaFormatada = input.replace(/[^0-9]/g, '').slice(0, 3);
-        let alturaFormatada2 = alturaFormatada;
-        if (alturaFormatada.length > 1) {
-            alturaFormatada2 = `${alturaFormatada.slice(0, 1)}.${alturaFormatada.slice(1, 3)}`;
-        }
-        setAltura(alturaFormatada2);
+        // Permitir apenas números e vírgula/ponto, limitar a 4 caracteres (ex: 1,75)
+        let alturaFormatada = input.replace(/[^0-9.,]/g, '');
+        // Substituir vírgula por ponto para padronizar
+        alturaFormatada = alturaFormatada.replace(',', '.');
+        // Limitar a 4 caracteres (ex: 1.75)
+        if (alturaFormatada.length > 4) alturaFormatada = alturaFormatada.slice(0, 4);
+        setAltura(alturaFormatada);
     }
 
     function validarAltura(altura) {
@@ -53,22 +54,15 @@ export default function HealthData() {
     }
 
     function handlePeso(input) {
-        // Remover caracteres não numéricos e limitar a 3 dígitos
-        let pesoFormatado = input.replace(/[^0-9]/g, '').slice(0, 3);
-        
-        // Se tem 3 dígitos, formatar como XX,X
-        if (pesoFormatado.length === 3) {
-            pesoFormatado = `${pesoFormatado.slice(0, 2)},${pesoFormatado.slice(2)}`;
+        // Permitir apenas números
+        let pesoNumeros = input.replace(/[^0-9]/g, '');
+        let pesoFormatado = pesoNumeros;
+        // Só inserir vírgula após 3 dígitos
+        if (pesoNumeros.length > 3) {
+            pesoFormatado = pesoNumeros.slice(0, 3) + ',' + pesoNumeros.slice(3, 6);
         }
-        // Se tem 2 dígitos, manter como está
-        else if (pesoFormatado.length === 2) {
-            pesoFormatado = pesoFormatado;
-        }
-        // Se tem 1 dígito, manter como está
-        else if (pesoFormatado.length === 1) {
-            pesoFormatado = pesoFormatado;
-        }
-        
+        // Limitar a 6 caracteres totais (incluindo vírgula)
+        if (pesoFormatado.length > 6) pesoFormatado = pesoFormatado.slice(0, 6);
         setPeso(pesoFormatado);
     }
 
@@ -140,21 +134,21 @@ export default function HealthData() {
                         Atualize suas medidas corporais
                     </Text>
 
-                    <CustomField
+                <CustomField
                         title="Altura (metros)"
                         placeholder="Ex: 1,75 (1,30 - 2,10)"
                         value={altura}
                         setValue={handleAltura}
-                        keyboardType="numeric"
-                    />
+                        keyboardType="decimal-pad"
+                />
                     
-                    <CustomField
+                <CustomField
                         title="Peso (kg)"
                         placeholder="Ex: 70,5 (20 - 400 kg)"
                         value={peso}
                         setValue={handlePeso}
-                        keyboardType="numeric"
-                    />
+                        keyboardType="decimal-pad"
+                />
 
                     <TouchableOpacity 
                         onPress={() => navigation.navigate("EditHealth")} 
@@ -163,15 +157,17 @@ export default function HealthData() {
                         <Text style={[styles.medicalButtonText, { color: '#FFFFFF' }]}>
                             📋 Condições Médicas
                         </Text>
-                    </TouchableOpacity>
+                </TouchableOpacity>
 
                     <View style={styles.buttonContainer}>
-                        <CustomButton
+                <CustomButton
                             title="Salvar Dados"
                             modeButton={true}
                             onPress={salvarDados}
-                        />
-                    </View>
+                            size="large"
+                            style={{width: '100%'}}
+                />
+            </View>
                 </View>
             </ImageBackground>
         </SafeAreaView>

@@ -167,17 +167,17 @@ export default function Diary() {
       // Criar notificação recorrente diária
       try {
         const notificationId = await Notifications.scheduleNotificationAsync({
-            content: {
-                title: `Hora de se alimentar! (${agenda.refeicao})`,
-                body: "Este é o horário de se alimentar de " + agenda.refeicao,
+          content: {
+              title: `Hora de se alimentar! (${agenda.refeicao})`,
+              body: "Este é o horário de se alimentar de " + agenda.refeicao,
                 data: { agendaId: agenda.id, refeicao: agenda.refeicao },
-            },
-            trigger: {
+          },
+          trigger: {
                 hour: hora.horas,
                 minute: hora.minutos,
                 repeats: true, // Repete diariamente
-            },
-        });
+          },
+      });
         
         console.log('[NOTIFICATIONS] Notificação recorrente agendada com sucesso! ID:', notificationId);
         console.log('[NOTIFICATIONS] Horário diário:', `${hora.horas.toString().padStart(2, '0')}:${hora.minutos.toString().padStart(2, '0')}`);
