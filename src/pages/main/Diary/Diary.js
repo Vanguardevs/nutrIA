@@ -299,11 +299,11 @@ export default function Diary() {
                 <CardCustomCalendar
                   key={agenda.id}
                   horario={agenda.horario || agenda.hora}
-                  alimentacao={agenda.refeicao}
+                  alimentos={Array.isArray(agenda.alimentos) ? agenda.alimentos : (agenda.refeicao ? [agenda.refeicao] : [])}
                   onPressEdit={() => {
                     navigate.navigate("EditDiary", {
                       id: agenda.id, 
-                      refeicao: agenda.refeicao, 
+                      alimentos: Array.isArray(agenda.alimentos) ? agenda.alimentos : (agenda.refeicao ? [agenda.refeicao] : []),
                       hora: agenda.horario || agenda.hora
                     })
                   }}

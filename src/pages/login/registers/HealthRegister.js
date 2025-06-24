@@ -113,11 +113,9 @@ export default function HealthRegister() {
             
             .then(async (userCredential) => {
                 console.log("Usuário cadastrado com sucesso!");
-
-                // Salvar dados do usuário no Firebase
+                // Salvar dados temporários em pendingUsers
                 const db = getDatabase(app);
-                const userRef = ref(db, `users/${userCredential.user.uid}`);
-
+                const pendingRef = ref(db, `pendingUsers/${userCredential.user.uid}`);
                 const userData = {
                     nome,
                     email,
@@ -128,33 +126,22 @@ export default function HealthRegister() {
                     objetivo,
                     createdAt: new Date().toISOString(),
                     emailVerified: false
-                }
-
+                };
                 try {
-                    await set(userRef, userData);
-                    console.log("Dados do usuário salvos com sucesso!");
-                    
-                    // Enviar email de verificação
-                    await sendEmailVerification(userCredential.user);
-                    
-                    setLoading(false);
-                    // Mostrar modal de sucesso com informações sobre verificação
-                    showModal(
-                        "Cadastro Realizado com Sucesso! 🎉", 
-                        `Parabéns, ${nome}! Sua conta foi criada com sucesso.\n\n📧 Um email de verificação foi enviado para:\n${email}\n\n⚠️ IMPORTANTE: Verifique sua caixa de entrada (e spam) e clique no link de confirmação para ativar sua conta antes de fazer login.\n\nApós verificar o email, você poderá fazer login normalmente.`, 
-                        "success"
-                    );
-                    
+                    await set(pendingRef, userData);
+                    console.log("Dados temporários salvos em pendingUsers!");
                 } catch (error) {
-                    setLoading(false);
-                    console.log("Erro ao salvar dados do usuário:", error);
-                    showModal(
-                        "Conta Criada, Mas...", 
-                        "Sua conta foi criada, mas houve um problema ao salvar seus dados. Entre em contato com o suporte.", 
-                        "warning"
-                    );
+                    console.log("Erro ao salvar dados temporários:", error);
                 }
-
+                // Enviar email de verificação
+                await sendEmailVerification(userCredential.user);
+                setLoading(false);
+                // Mostrar modal de sucesso com informações sobre verificação
+                showModal(
+                    "Cadastro Realizado com Sucesso! 🎉", 
+                    `Parabéns, ${nome}! Sua conta foi criada com sucesso.\n\n📧 Um email de verificação foi enviado para:\n${email}\n\n⚠️ IMPORTANTE: Verifique sua caixa de entrada (e spam) e clique no link de confirmação para ativar sua conta antes de fazer login.\n\nApós verificar o email, você poderá fazer login normalmente.`, 
+                    "success"
+                );
             })
             .catch((error)=>{
                 setLoading(false);

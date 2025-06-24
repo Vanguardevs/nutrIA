@@ -7,6 +7,8 @@ import CustomButton from "../../components/CustomButton.js";
 import CustomField from "../../components/CustomField";
 import CustomModal from "../../components/CustomModal.js";
 import styles from "../../theme/styles.js";
+import { getDatabase, ref, set, get } from "firebase/database";
+import { app } from "../../database/firebase.js";
 
 export default function LoginPag() {
   const colorScheme = useColorScheme();

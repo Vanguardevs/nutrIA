@@ -53,10 +53,11 @@ export default function Progress() {
                             }
                         });
 
+                        const alimentos = Array.isArray(agenda.alimentos) ? agenda.alimentos : (agenda.refeicao ? [agenda.refeicao] : []);
                         if (agenda.progress[diaHoje] === true) {
-                            comidosTemp.push(agenda.refeicao);
+                            comidosTemp.push(...alimentos);
                         } else {
-                            naoComidosTemp.push(agenda.refeicao);
+                            naoComidosTemp.push(...alimentos);
                         }
                     }
                 });

@@ -115,13 +115,6 @@ export default function Settings(){
                             subtitle="Configurações da conta e privacidade"
                             onPress={() => navigation.navigate("AccountUser")}
                         />
-                        <View style={[styles.separator, { backgroundColor: colors.border }]} />
-                        <ConfigItem
-                            icon={<Feather name="shield" size={24} color={colors.primary} />}
-                            title="Privacidade e Segurança"
-                            subtitle="Configurações de segurança"
-                            onPress={() => {}}
-                        />
                     </View>
                 </View>
 

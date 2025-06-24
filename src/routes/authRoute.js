@@ -13,7 +13,7 @@ import HealthRegister from '../pages/login/registers/HealthRegister.js';
 import Restrições from '../pages/login/registers/Restrições.js';
 
 // Header gradiente igual ao do Map
-const GradientHeader = ({ title, navigation }) => (
+const GradientHeader = ({ title, showBack, navigation }) => (
     <LinearGradient
         colors={['#1B5E20', '#2E8331']}
         start={{ x: 0, y: 0 }}
@@ -21,9 +21,13 @@ const GradientHeader = ({ title, navigation }) => (
         style={{ height: 90, justifyContent: 'flex-end', paddingBottom: 8 }}
     >
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
-                <Ionicons name="arrow-back" size={24} color="#FFF" />
-            </TouchableOpacity>
+            {showBack ? (
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
+                    <Ionicons name="arrow-back" size={24} color="#FFF" />
+                </TouchableOpacity>
+            ) : (
+                <View style={{ width: 40 }} />
+            )}
             <Text style={{ flex: 1, color: '#FFF', fontWeight: 'bold', fontSize: 22, textAlign: 'center' }}>{title}</Text>
             <View style={{ width: 40 }} />
         </View>
@@ -76,7 +80,7 @@ export default function AuthTabs() {
                 component={Login}
                 options={({ navigation }) => ({
                     headerShown: true,
-                    header: () => <GradientHeader title="Login" navigation={navigation} />,
+                    header: () => <GradientHeader title="Login" showBack={false} navigation={navigation} />,
                 })}
             />
 
@@ -85,28 +89,17 @@ export default function AuthTabs() {
                 component={Register}
                 options={({ navigation }) => ({
                     headerShown: true,
-                    header: () => <GradientHeader title="Cadastro" navigation={navigation} />,
+                    header: () => <GradientHeader title="Cadastro" showBack={true} navigation={navigation} />,
                 })}
             />
 
             <Stack.Screen
                 name="ForgetPassword"
                 component={ForgetPassword}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Esqueci a Senha",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Redefinir Senha" showBack={true} navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen
@@ -114,7 +107,7 @@ export default function AuthTabs() {
                 component={HealthRegister}
                 options={({ navigation }) => ({
                     headerShown: true,
-                    header: () => <GradientHeader title="Dados de Saúde" navigation={navigation} />,
+                    header: () => <GradientHeader title="Dados de Saúde" showBack={true} navigation={navigation} />,
                 })}
             />
 
@@ -123,7 +116,7 @@ export default function AuthTabs() {
                 component={Restrições}
                 options={({ navigation }) => ({
                     headerShown: true,
-                    header: () => <GradientHeader title="Restrições Alimentares" navigation={navigation} />,
+                    header: () => <GradientHeader title="Restrições Alimentares" showBack={true} navigation={navigation} />,
                 })}
             />
         </Stack.Navigator>

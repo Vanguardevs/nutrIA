@@ -15,7 +15,9 @@ import {
     Image,
     KeyboardAvoidingView,
     Alert,
-    Modal
+    Modal,
+    TouchableWithoutFeedback,
+    ScrollView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CustomMessageCamp from "../../components/CustomMessageCamp";
@@ -328,9 +330,23 @@ export default function Home({ navigation }) {
     const [isTyping, setIsTyping] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [keyboardVisible, setKeyboardVisible] = useState(false);
+    const [showSuggestions, setShowSuggestions] = useState(false);
     
     const flatListRef = useRef(null);
     const inputRef = useRef(null);
+
+    const nutritionSuggestions = [
+        "Me informe os valores nutricionais:",
+        "Quais alimentos são ricos em proteína?",
+        "Sugira um cardápio saudável para o café da manhã.",
+        "Quais alimentos devo evitar para emagrecer?",
+        "Como montar uma dieta balanceada?",
+        "Quais são os benefícios da fibra alimentar?",
+        "Como consumir mais vitaminas no dia a dia?",
+        "Quais alimentos ajudam a controlar o colesterol?",
+        "Me explique a diferença entre carboidrato simples e complexo.",
+        "Quais alimentos são fontes de ferro?"
+    ];
 
     // Monitora o teclado
     useEffect(() => {
@@ -425,6 +441,8 @@ export default function Home({ navigation }) {
                 scrollToBottom();
             }, 100);
             
+            setIsTyping(false);
+            
         } catch (error) {
             console.error('❌ Erro ao enviar mensagem:', error);
             
@@ -436,33 +454,24 @@ export default function Home({ navigation }) {
             };
             
             setMessages(prev => [...prev, errorMessage]);
-        } finally {
-            setIsTyping(false);
         }
     }, [scrollToBottom]);
 
     // Função para enviar mensagem do input manual
     const handleSend = useCallback(async () => {
         if (!input || input.trim() === '') return;
-
+        setIsTyping(true);
         const newMessage = {
             id: `${Date.now()}_${Math.random()}`,
             message: input.trim(),
             isUser: true,
             timestamp: new Date().toISOString()
         };
-
         setMessages(prev => [...prev, newMessage]);
         setInput('');
-
-        // Força scroll para baixo
         setTimeout(() => {
             scrollToBottom();
         }, 50);
-
-        setIsTyping(true);
-        console.log('🔄 Iniciando requisição para IA...');
-
         // Chama a API
         sendMessageToAPI(newMessage.message);
     }, [input, scrollToBottom, sendMessageToAPI]);
@@ -541,6 +550,17 @@ export default function Home({ navigation }) {
         </View>
     ), []);
 
+    const handleOpenSuggestions = useCallback(() => {
+        setShowSuggestions(true);
+    }, []);
+    const handleCloseSuggestions = useCallback(() => {
+        setShowSuggestions(false);
+    }, []);
+    const handleSuggestionSelect = useCallback((text) => {
+        setInput(text);
+        setShowSuggestions(false);
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
@@ -587,11 +607,36 @@ export default function Home({ navigation }) {
                         value={input}
                         onChangeText={setInput}
                         onSend={handleSend}
+                        onOpenSuggestions={handleOpenSuggestions}
                         placeholder="Digite sua pergunta..."
                         isTyping={isTyping}
-                        ref={inputRef}
                     />
                 </View>
+
+                {/* Modal de sugestões de perguntas */}
+                <Modal
+                    visible={showSuggestions}
+                    transparent
+                    animationType="fade"
+                    onRequestClose={handleCloseSuggestions}
+                >
+                    <TouchableWithoutFeedback onPress={handleCloseSuggestions}>
+                        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'flex-end' }}>
+                            <TouchableWithoutFeedback>
+                                <View style={{ backgroundColor: '#fff', borderTopLeftRadius: 18, borderTopRightRadius: 18, padding: 20, maxHeight: 350 }}>
+                                    <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 12, color: '#2E8331' }}>Sugestões de Perguntas</Text>
+                                    <ScrollView>
+                                        {nutritionSuggestions.map((s, idx) => (
+                                            <TouchableOpacity key={idx} style={{ paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee' }} onPress={() => handleSuggestionSelect(s)}>
+                                                <Text style={{ fontSize: 16, color: '#1C1C1E' }}>{s}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </ScrollView>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
             </KeyboardAvoidingView>
 
             {/* Modal de confirmação para excluir */}
@@ -802,7 +847,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 4,
     },
     cancelButton: {
-        backgroundColor: '#FF3B30',
+        backgroundColor: '#C7C7CC',
     },
     cancelButtonText: {
         fontSize: 16,
@@ -811,7 +856,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     confirmButton: {
-        backgroundColor: '#2E8331',
+        backgroundColor: '#FF3B30',
     },
     confirmButtonText: {
         fontSize: 16,

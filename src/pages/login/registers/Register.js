@@ -5,6 +5,7 @@ import CustomField from "../../../components/CustomField";
 import CustomButton from "../../../components/CustomButton.js";
 import CustomPicker from "../../../components/CustomPicker";
 import CustomModal from "../../../components/CustomModal.js";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default function CreateUser() {
     const colorScheme = useColorScheme();
@@ -29,6 +30,7 @@ export default function CreateUser() {
         message: '',
         type: 'info'
     });
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     const showModal = (title, message, type = 'info') => {
         setModalConfig({ title, message, type });
@@ -144,6 +146,16 @@ export default function CreateUser() {
         }, 1000);
     }
 
+    const openDatePicker = () => setShowDatePicker(true);
+    const closeDatePicker = () => setShowDatePicker(false);
+    const handleConfirmDate = (date) => {
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const ano = date.getFullYear();
+        setDataNascimento(`${dia}/${mes}/${ano}`);
+        setShowDatePicker(false);
+    };
+
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: background }]}>
             <ImageBackground
@@ -208,15 +220,24 @@ export default function CreateUser() {
                                 />
                             </View>
                             
-                            <CustomField 
-                                title="Data de Nascimento" 
-                                value={dataNascimento} 
-                                setValue={handleDateChange}
-                                placeholder="DD/MM/AAAA" 
-                                keyboardType="numeric"
-                                maxLength={10}
-                                autoComplete="birthdate"
-                                textContentType="none"
+                            <TouchableOpacity
+                                style={[styles.dateField, { borderColor: colorScheme === 'dark' ? '#333' : '#2E8331' }]}
+                                onPress={openDatePicker}
+                                activeOpacity={0.7}
+                            >
+                                <Text style={{ color: dataNascimento ? textColor : '#aaa', fontSize: 16, textAlign: 'center' }}>
+                                    {dataNascimento ? dataNascimento : 'DD/MM/AAAA'}
+                                </Text>
+                            </TouchableOpacity>
+                            <DateTimePickerModal
+                                isVisible={showDatePicker}
+                                mode="date"
+                                onConfirm={handleConfirmDate}
+                                onCancel={closeDatePicker}
+                                maximumDate={new Date()}
+                                headerTextIOS="Selecione sua data de nascimento"
+                                cancelTextIOS="Cancelar"
+                                confirmTextIOS="Confirmar"
                             />
 
                             <View style={styles.buttonContainer}>
@@ -293,5 +314,17 @@ const styles = StyleSheet.create({
     loginText: {
         textAlign: 'center',
         fontSize: 14,
-    }
+    },
+    dateField: {
+        height: 44,
+        borderRadius: 18,
+        paddingHorizontal: 16,
+        borderWidth: 1.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '95%',
+        marginBottom: 10,
+        backgroundColor: '#fff',
+        alignSelf: 'center',
+    },
 });

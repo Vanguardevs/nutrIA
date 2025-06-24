@@ -8,6 +8,7 @@ import { getDatabase, ref, remove, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomPicker from '../../../components/CustomPicker';
+import { Ionicons } from 'react-native-vector-icons';
 
 
 export default function EditDiary(){
@@ -19,12 +20,23 @@ export default function EditDiary(){
 
     const route = useRoute();
     const navigation = useNavigation();
-    const {id, refeicao, hora} = route.params;
+    const {id, alimentos: alimentosParam, hora, refeicao, tipo_refeicao} = route.params;
 
     const [editRefeicao, setEditRefeicao] = useState(refeicao);
     const [editHora, setEditHora] = useState(hora);
     const [tipoRefeicao, setTipoRefeicao] = useState('');
 
+    const [alimentoInput, setAlimentoInput] = useState('');
+    const alimentosIniciais = Array.isArray(alimentosParam) && alimentosParam.length > 0
+        ? alimentosParam
+        : (Array.isArray(refeicao) && refeicao.length > 0
+            ? refeicao
+            : (Array.isArray(tipo_refeicao) && tipo_refeicao.length > 0
+                ? tipo_refeicao
+                : (typeof refeicao === 'string' && refeicao ? [refeicao] : [])));
+
+    const [alimentosAgenda, setAlimentosAgenda] = useState(alimentosIniciais);
+    const [showAll, setShowAll] = useState(false);
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false); 
     const showDatePicker = () => {
@@ -64,8 +76,17 @@ export default function EditDiary(){
     setEditHora(horaFormatada);
 }
 
+    const adicionarAlimento = () => {
+        const valor = alimentoInput.trim();
+        if (valor.length > 0 && !alimentosAgenda.includes(valor)) {
+            setAlimentosAgenda(prev => [...prev, valor]);
+            setAlimentoInput('');
+        }
+    };
 
-
+    const removerAlimento = (alimento) => {
+        setAlimentosAgenda(prev => prev.filter(a => a !== alimento));
+    };
 
     async function excluirAgenda(){
         try{
@@ -101,8 +122,9 @@ export default function EditDiary(){
             const agendaRef = ref(db, `users/${userID}/diaries/${id}`)
 
             await update(agendaRef,{
-                refeicao: editRefeicao,
-                hora: editHora
+                alimentos: alimentosAgenda,
+                hora: editHora,
+                tipo_refeicao: tipoRefeicao
             })
             .then(()=>{
                 console.log("Atualizado com sucesso!")
@@ -134,21 +156,62 @@ export default function EditDiary(){
                         ]}
                     />
 
-                    <CustomField title="Alimento" placeholder='Alimento' value={editRefeicao} setValue={setEditRefeicao}/>
+                    {Array.isArray(alimentosAgenda) && alimentosAgenda.length > 0 && (
+                        <View style={{ width: '100%', marginVertical: 8 }}>
+                            {alimentosAgenda.filter(Boolean).map((alimento, idx) => (
+                                <View key={idx} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#E5E5EA', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 8 }}>
+                                    <Text style={{ color: '#222', fontSize: 16, fontWeight: 'bold', marginRight: 8 }}>{idx + 1}.</Text>
+                                    <CustomField
+                                        title={''}
+                                        placeholder='Alimento'
+                                        value={alimento}
+                                        setValue={novo => {
+                                            setAlimentosAgenda(prev => prev.map((a, i) => i === idx ? novo : a));
+                                        }}
+                                        style={{ flex: 1, marginRight: 8 }}
+                                    />
+                                    <TouchableOpacity onPress={() => removerAlimento(alimento)} style={{ marginLeft: 6 }}>
+                                        <Ionicons name="close-circle" size={20} color="#FF3B30" />
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </View>
+                    )}
 
-                    <CustomButton title="Data" onPress={showDatePicker} modeButton={true} size="large" style={{width: '100%', marginBottom: 8}}/>
-                    <DateTimePickerModal
-                        isVisible={isDatePickerVisible}
-                        mode="date"
-                        onConfirm={handleConfirm}
-                        onCancel={hideDatePicker}
-                    />
-
-                    <CustomButton title="Horário" onPress={showTimePicker} modeButton={true} size="large" style={{width: '100%', marginBottom: 8}}/>
+                    <View style={{ width: '100%', marginBottom: 8 }}>
+                        <TouchableOpacity
+                            onPress={showTimePicker}
+                            activeOpacity={0.8}
+                            style={{ width: '100%' }}
+                        >
+                            <View style={{ position: 'relative', width: '100%' }}>
+                                <Ionicons name="time-outline" size={22} color="#2E8331" style={{ position: 'absolute', left: 18, top: 32, zIndex: 2 }} />
+                                <CustomField
+                                    title="Horário"
+                                    placeholder="00:00"
+                                    value={editHora}
+                                    setValue={text => {
+                                        let val = text.replace(/[^0-9:]/g, '');
+                                        if (val.length === 2 && editHora.length === 1) val += ':';
+                                        setEditHora(val);
+                                    }}
+                                    maxLength={5}
+                                    keyboardType="numeric"
+                                    editable={true}
+                                    style={{ paddingLeft: 40, backgroundColor: '#fff', borderColor: '#2E8331', borderWidth: 2, borderRadius: 8, color: '#222' }}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <DateTimePickerModal
                         isVisible={isTimePickerVisible}
                         mode="time"
-                        onConfirm={handleTimeConfirm}
+                        onConfirm={(time) => {
+                            const hours = time.getHours().toString().padStart(2, '0');
+                            const minutes = time.getMinutes().toString().padStart(2, '0');
+                            setEditHora(`${hours}:${minutes}`);
+                            hideTimePicker();
+                        }}
                         onCancel={hideTimePicker}
                     />
 

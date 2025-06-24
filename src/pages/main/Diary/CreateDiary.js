@@ -1,4 +1,4 @@
-import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text, ScrollView} from 'react-native';
+import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text, ScrollView, FlatList} from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
 import CustomButton from '../../../components/CustomButton.js';
@@ -10,6 +10,7 @@ import { auth } from '../../../database/firebase';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { loadFoodsData } from '../../../utils/foodsLoader';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CreateDiary() {
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -23,6 +24,8 @@ export default function CreateDiary() {
     const [isSaving, setIsSaving] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [agendaData, setAgendaData] = useState(null);
+    const [alimentoInput, setAlimentoInput] = useState('');
+    const [alimentosAgenda, setAlimentosAgenda] = useState([]);
 
     const colorSheme = useColorScheme();
     const backgoundH = colorSheme === 'dark' ? "#1C1C1E" : "#F2F2F2";
@@ -75,39 +78,43 @@ export default function CreateDiary() {
         hideTimePicker();
     }, [hideTimePicker]);
 
-    const filtrarSugestoes = useCallback((texto) => {
-        if (ignoreNextInput.current) {
-            ignoreNextInput.current = false;
-            setRefeicao(texto);
+    const adicionarAlimento = useCallback(() => {
+        const valor = alimentoInput.trim();
+        if (valor.length > 0 && !alimentosAgenda.includes(valor)) {
+            setAlimentosAgenda(prev => [...prev, valor]);
+            setAlimentoInput('');
             setSugestoes([]);
-            return;
         }
-        setRefeicao(texto);
+    }, [alimentoInput, alimentosAgenda]);
+
+    const removerAlimento = useCallback((alimento) => {
+        setAlimentosAgenda(prev => prev.filter(a => a !== alimento));
+    }, []);
+
+    const filtrarSugestoes = useCallback((texto) => {
+        setAlimentoInput(texto);
         if (texto.length < 2) {
             setSugestoes([]);
             return;
         }
-        const textoNormalizado = texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const textoNormalizado = texto.normalize('NFD').replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
         const filtrados = alimentosOtimizados.filter(item =>
-            item.descricaoNormalizada.includes(textoNormalizado)
+            item.descricaoNormalizada && item.descricaoNormalizada.includes(textoNormalizado)
         ).slice(0, 6);
         setSugestoes(filtrados);
     }, [alimentosOtimizados]);
 
     const handleSugestaoPress = useCallback((item) => {
-        ignoreNextInput.current = true;
-        setRefeicao(item.descricao);
+        setAlimentoInput(item.descricao);
         setSugestoes([]);
     }, []);
 
-    // Função simplificada de salvamento para debug
     const salvarAgenda = useCallback(async () => {
         const saveId = ++saveCount.current;
         console.log(`[SAVE ${saveId}] Iniciando tentativa de salvamento`);
         
         const now = Date.now();
         
-        // Verificações de proteção
         if (saveInProgress.current) {
             console.log(`[SAVE ${saveId}] Salvamento já em progresso, ignorando...`);
             return;
@@ -118,7 +125,7 @@ export default function CreateDiary() {
             return;
         }
 
-        if (refeicao === '' || hora === '' || tipoRefeicao === '') {
+        if (alimentosAgenda.length === 0 || hora === '' || tipoRefeicao === '') {
             console.log(`[SAVE ${saveId}] Campos vazios, ignorando...`);
             Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios");
             return;
@@ -126,7 +133,6 @@ export default function CreateDiary() {
 
         console.log(`[SAVE ${saveId}] Passou por todas as verificações, iniciando salvamento...`);
         
-        // Marca como salvando
         lastSaveTime.current = now;
         saveInProgress.current = true;
         isSavingRef.current = true;
@@ -136,38 +142,34 @@ export default function CreateDiary() {
         try {
             const data = {
                 "tipo_refeicao": tipoRefeicao,
-                "refeicao": refeicao,
-                "horario": hora,
+                "alimentos": alimentosAgenda,
+                "hora": hora,
                 "id_user": auth.currentUser.uid,
-                "saveId": saveId, // Para debug
+                "saveId": saveId,
                 "timestamp": new Date().toISOString()
             };
 
             console.log(`[SAVE ${saveId}] Dados para salvar:`, data);
 
-            // SALVAMENTO APENAS NO FIREBASE (removendo API externa temporariamente)
-            console.log(`[SAVE ${saveId}] Salvando apenas no Firebase...`);
-            
             const db = getDatabase();
             const userId = auth.currentUser.uid;
             const diariesRef = ref(db, `users/${userId}/diaries`);
             
             const pushResult = await push(diariesRef, {
                 tipo_refeicao: tipoRefeicao,
-                refeicao: refeicao,
-                horario: hora,
+                alimentos: alimentosAgenda,
+                hora: hora,
                 progress: [false, false, false, false, false, false, false],
                 createdAt: new Date().toISOString(),
-                saveId: saveId, // Para debug
+                saveId: saveId,
                 debugTimestamp: Date.now()
             });
 
             console.log(`[SAVE ${saveId}] Firebase salvo com sucesso! Key:`, pushResult.key);
 
-            // Mostra modal de sucesso com os dados da agenda
             showSuccessModal({
                 tipoRefeicao,
-                refeicao,
+                alimentos: alimentosAgenda,
                 horario: hora,
                 id: pushResult.key
             });
@@ -182,7 +184,7 @@ export default function CreateDiary() {
             isSavingRef.current = false;
             saveInProgress.current = false;
         }
-    }, [refeicao, hora, tipoRefeicao, navigation, isSaving, loading]);
+    }, [alimentosAgenda, hora, tipoRefeicao, navigation, isSaving, loading]);
 
     const renderSugestao = useCallback(({ item, index }) => (
         <TouchableOpacity 
@@ -209,13 +211,13 @@ export default function CreateDiary() {
         setShowModal(false);
         setAgendaData(null);
         
-        // Limpa os campos
         setRefeicao('');
         setHora('');
         setTipoRefeicao('');
         setSugestoes([]);
+        setAlimentosAgenda([]);
+        setAlimentoInput('');
         
-        // Navega para a tab Diary
         console.log('[MODAL] Navegando para tab Diary...');
         navigation.navigate('MainTabs', { screen: 'Diary' });
     }, [navigation]);
@@ -225,7 +227,6 @@ export default function CreateDiary() {
         console.log('[MODAL] Fechando modal sem navegar...');
         setShowModal(false);
         setAgendaData(null);
-        // Não limpa os campos e não navega - usuário pode continuar editando
     }, []);
 
     return (
@@ -244,11 +245,28 @@ export default function CreateDiary() {
                         ]}
                     />
                     <CustomField
-                        title="Refeição"
+                        title="Alimento"
                         placeholder='Ex: Omelete, Salada...'
-                        value={refeicao}
+                        value={alimentoInput}
                         setValue={filtrarSugestoes}
+                        onSubmitEditing={adicionarAlimento}
                     />
+                    <TouchableOpacity onPress={adicionarAlimento} style={{ backgroundColor: '#2E8331', borderRadius: 8, paddingVertical: 12, alignItems: 'center', marginTop: 6, marginBottom: 8, width: '100%' }}>
+                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Adicionar</Text>
+                    </TouchableOpacity>
+                    {alimentosAgenda.length > 0 && (
+                        <View style={{ width: '100%', marginVertical: 8 }}>
+                            {alimentosAgenda.map((alimento, idx) => (
+                                <View key={idx} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#E5E5EA', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 8 }}>
+                                    <Text style={{ color: '#222', fontSize: 16, fontWeight: 'bold', marginRight: 8 }}>{idx + 1}.</Text>
+                                    <Text style={{ color: '#222', fontSize: 16, flex: 1 }}>{alimento}</Text>
+                                    <TouchableOpacity onPress={() => removerAlimento(alimento)} style={{ marginLeft: 6 }}>
+                                        <Ionicons name="close-circle" size={20} color="#FF3B30" />
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </View>
+                    )}
                     {sugestoes.length > 0 && (
                         <View style={{ 
                             width: '100%', 
@@ -276,24 +294,38 @@ export default function CreateDiary() {
                             </ScrollView>
                         </View>
                     )}
-                    <TouchableOpacity onPress={showTimePicker} style={{ width: '100%' }}>
-                        <CustomField
-                            title="Horário"
-                            placeholder='00:00'
-                            value={hora}
-                            setValue={() => {}}
-                            editable={false}
-                        />
-                    </TouchableOpacity>
-
+                    <View style={{ width: '100%', marginBottom: 8 }}>
+                        <TouchableOpacity
+                            onPress={showTimePicker}
+                            activeOpacity={0.8}
+                            style={{ width: '100%' }}
+                        >
+                            <View style={{ position: 'relative', width: '100%' }}>
+                                <Ionicons name="time-outline" size={22} color="#2E8331" style={{ position: 'absolute', left: 18, top: 32, zIndex: 2 }} />
+                                <CustomField
+                                    title="Horário"
+                                    placeholder="00:00"
+                                    value={hora}
+                                    setValue={text => {
+                                        let val = text.replace(/[^0-9:]/g, '');
+                                        if (val.length === 2 && hora.length === 1) val += ':';
+                                        setHora(val);
+                                    }}
+                                    maxLength={5}
+                                    keyboardType="numeric"
+                                    editable={true}
+                                    style={{ paddingLeft: 40, backgroundColor: '#fff', borderColor: '#2E8331', borderWidth: 2, borderRadius: 8, color: '#222' }}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <DateTimePickerModal
                         isVisible={isTimePickerVisible}
                         mode="time"
                         onConfirm={handleTimeConfirm}
                         onCancel={hideTimePicker}
-                        locale="pt-BR"
-                        headerTextIOS="Escolha o horário"
                     />
+
                     <CustomButton
                         title={loading ? "Salvando..." : "Salvar"}
                         onPress={salvarAgenda}
@@ -305,14 +337,13 @@ export default function CreateDiary() {
                 </View>
             </ImageBackground>
             
-            {/* Modal de Sucesso */}
             <CustomModal
                 visible={showModal}
                 title="Agenda Criada com Sucesso!"
                 message={
                     agendaData ? 
                     `Sua agenda de ${agendaData.tipoRefeicao} foi criada com sucesso!\n\n` +
-                    `📝 Refeição: ${agendaData.refeicao}\n` +
+                    `📝 Refeição: ${agendaData.alimentos.join(', ')}\n` +
                     `⏰ Horário: ${agendaData.horario}\n\n` +
                     `Você receberá notificações diárias neste horário para lembrar de se alimentar.` :
                     "Agenda criada com sucesso!"

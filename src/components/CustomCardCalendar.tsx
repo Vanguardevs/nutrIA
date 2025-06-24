@@ -1,32 +1,36 @@
 import {View, StyleSheet, Text, TouchableOpacity, useColorScheme} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { useState } from 'react';
 
 interface CustomCard {
     horario: string;
-    alimentacao: string;
+    alimentos: string[];
     onPressEdit: () => void;
     onPressConcluido: () => void;
 }
 
-const CardCustomCalendar = ({horario, alimentacao, onPressEdit, onPressConcluido}: CustomCard) => {
+const CardCustomCalendar = ({horario, alimentos, onPressEdit, onPressConcluido}: CustomCard) => {
 
     const colorSheme = useColorScheme();
 
     const backgoundH = colorSheme === 'dark'? "#2C2C2E" : "#F5F5F5"
     const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
     const textColor = colorSheme === 'dark'? "#FFFFFF" : "#333333"
+    const [expandido, setExpandido] = useState(false);
+    const mostrarAlimentos = expandido ? alimentos : alimentos.slice(0, 4);
 
     return (
         <View style={[styles.container,{backgroundColor: backgoundH}]}>
             <View style={styles.header}>
                 <View style={styles.alimentacaoContainer}>
-                    <Text 
-                        style={[styles.alimentacaoText,{color: textColor}]}
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
-                    >
-                        {alimentacao}
-                    </Text>
+                    {mostrarAlimentos.map((alimento, idx) => (
+                        <Text key={idx} style={[styles.alimentacaoText,{color: textColor}]}> {idx + 1}. {alimento} </Text>
+                    ))}
+                    {alimentos.length > 4 && (
+                        <TouchableOpacity onPress={() => setExpandido(e => !e)} style={{ marginTop: 4 }}>
+                            <Text style={{ color: '#2E8331', fontWeight: 'bold', fontSize: 14 }}>{expandido ? 'Ver menos' : `Ver mais (${alimentos.length - 4})`}</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
                 <TouchableOpacity 
                     style={styles.editButton}

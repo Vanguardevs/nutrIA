@@ -14,6 +14,7 @@ interface PropsCutomMessageCamp {
     micPulseAnim?: any;
     style?: any;
     isTyping?: boolean;
+    onOpenSuggestions?: () => void;
 }
 
 interface CustomMessageCampRef {
@@ -33,7 +34,8 @@ const CustomMessageCamp = forwardRef<CustomMessageCampRef, PropsCutomMessageCamp
     stopListening, 
     micPulseAnim, 
     style,
-    isTyping = false
+    isTyping = false,
+    onOpenSuggestions
 }, ref) => {
     const colorScheme = useColorScheme();
     const textInputRef = useRef<TextInput>(null);
@@ -199,32 +201,28 @@ const CustomMessageCamp = forwardRef<CustomMessageCampRef, PropsCutomMessageCamp
                         onFocus?.();
                     }}
                     onBlur={() => setIsFocused(false)}
-                    blurOnSubmit={false}
-                    textAlignVertical="top"
-                    enablesReturnKeyAutomatically={true}
-                    scrollEnabled={true}
                     onContentSizeChange={handleContentSizeChange}
                     onKeyPress={handleKeyPress}
-                    autoCapitalize="sentences"
-                    autoCorrect={true}
-                    spellCheck={true}
-                    contextMenuHidden={false}
-                    selectionColor={themeColors.focusBorderColor}
                 />
-                <View style={styles.sendButtonContainer}>
-                    <TouchableOpacity
-                        style={sendButtonStyle}
-                        onPress={handleSend}
-                        activeOpacity={0.7}
-                        disabled={!value || !value.trim() || isTyping}
-                    >
-                        <Ionicons 
-                            name={isTyping ? "time-outline" : "send"} 
-                            size={20} 
-                            color="white" 
-                        />
+                {isTyping ? (
+                    <View style={styles.iconButton}>
+                        <View style={styles.waitIconBg}>
+                            <Ionicons name="time-outline" size={22} color="#fff" />
+                        </View>
+                    </View>
+                ) : (!value || value.trim().length === 0) ? (
+                    <TouchableOpacity onPress={onOpenSuggestions} style={styles.iconButton}>
+                        <View style={styles.iconBg}>
+                            <Ionicons name="add" size={24} color="#fff" />
+                        </View>
                     </TouchableOpacity>
-                </View>
+                ) : (
+                    <TouchableOpacity onPress={handleSend} style={styles.iconButton} disabled={!value || !value.trim()}>
+                        <View style={styles.iconBg}>
+                            <Ionicons name="send" size={22} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
+                )}
             </Animated.View>
             
             {/* Indicador de caracteres */}
@@ -334,6 +332,29 @@ const styles = StyleSheet.create({
     charCounterText: {
         fontSize: 12,
         fontWeight: '600',
+    },
+    iconButton: {
+        padding: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 44,
+        width: 44,
+    },
+    iconBg: {
+        backgroundColor: '#2E8331',
+        borderRadius: 22,
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    waitIconBg: {
+        backgroundColor: 'rgba(229,229,234,0.85)', // cinza claro meio transparente
+        borderRadius: 22,
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 

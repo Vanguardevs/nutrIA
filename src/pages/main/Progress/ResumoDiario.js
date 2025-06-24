@@ -41,11 +41,11 @@ export default function ResumoDiario({ route, navigation }) {
             return (
                 <View key={index} style={styles.itemCard}>
                     <Text style={styles.nome}>{item}</Text>
-                    {detalhe && (
+                    {detalhe ? (
                         <Text style={styles.detalhe}>
                             Calorias: {detalhe.calorias} kcal | Valor energético: {detalhe.valorEnergetico} kJ
                         </Text>
-                    )}
+                    ) : null}
                 </View>
             );
         });
