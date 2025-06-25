@@ -5,10 +5,14 @@ import { View, SafeAreaView, Text, StyleSheet, useColorScheme, Alert, ImageBackg
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import { sendPasswordResetEmail, updateEmail } from 'firebase/auth';
+import { Ionicons } from '@expo/vector-icons';
+import CustomModal from '../../../components/CustomModal';
 
 export default function AccountUser() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmType, setConfirmType] = useState('');
 
   const colorScheme = useColorScheme();
   const background = colorScheme === 'dark' ? "#1C1C1E" : "#F2F2F2";
@@ -34,6 +38,16 @@ export default function AccountUser() {
 
     return () => unsubscribe();
   }, [user]);
+
+  function handleRedefine() {
+    setConfirmType('redefine');
+    setShowConfirm(true);
+  }
+
+  function handleSave() {
+    setConfirmType('save');
+    setShowConfirm(true);
+  }
 
   function RedefinePassword() {
     if (email === '') {
@@ -98,8 +112,6 @@ export default function AccountUser() {
         imageStyle={{ opacity: 0.5 }}
       >
         <View style={[styles.container, { backgroundColor: cardColor }]}>
-          <Text style={[styles.title, { color: textColor }]}>Minha Conta</Text>
-
           <CustomField
             title="Email atual"
             placeholder="Seu email"
@@ -110,14 +122,14 @@ export default function AccountUser() {
           <View style={styles.buttonsContainer}>
             <CustomButton
               title="Redefinir senha"
-              onPress={RedefinePassword}
+              onPress={handleRedefine}
               modeButton={false}
               style={styles.button}
             />
 
             <CustomButton
               title="Salvar alterações"
-              onPress={updateEmailAddress}
+              onPress={handleSave}
               modeButton={true}
               size="large"
               style={{width: '100%'}}
@@ -125,6 +137,29 @@ export default function AccountUser() {
           </View>
         </View>
       </ImageBackground>
+      <CustomModal
+        visible={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        title={confirmType === 'save' ? 'Confirmar alterações' : 'Redefinir senha'}
+        message={confirmType === 'save' ? 'Tem certeza que deseja salvar as alterações?' : 'Tem certeza que deseja redefinir sua senha?'}
+        type="warning"
+        buttons={[
+          {
+            text: 'Cancelar',
+            onPress: () => setShowConfirm(false),
+            style: 'secondary'
+          },
+          {
+            text: 'Confirmar',
+            onPress: () => {
+              setShowConfirm(false);
+              if (confirmType === 'save') updateEmailAddress();
+              if (confirmType === 'redefine') RedefinePassword();
+            },
+            style: 'primary'
+          }
+        ]}
+      />
     </SafeAreaView>
   );
 }
@@ -148,12 +183,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
   },
   buttonsContainer: {
     alignItems: 'center',

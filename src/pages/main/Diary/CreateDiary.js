@@ -295,27 +295,63 @@ export default function CreateDiary() {
                         </View>
                     )}
                     <View style={{ width: '100%', marginBottom: 8 }}>
+                        <Text style={{
+                            color: '#222',
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            marginBottom: 4,
+                            marginLeft: 2,
+                            textAlign: 'center',
+                            width: '100%',
+                        }}>
+                            Horário
+                        </Text>
                         <TouchableOpacity
                             onPress={showTimePicker}
                             activeOpacity={0.8}
-                            style={{ width: '100%' }}
+                            style={{
+                                width: '100%',
+                                backgroundColor: '#fff',
+                                borderColor: '#2E8331',
+                                borderWidth: 2,
+                                borderRadius: 8,
+                                height: 48,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                paddingLeft: 40,
+                                marginBottom: 0,
+                            }}
                         >
-                            <View style={{ position: 'relative', width: '100%' }}>
-                                <Ionicons name="time-outline" size={22} color="#2E8331" style={{ position: 'absolute', left: 18, top: 32, zIndex: 2 }} />
-                                <CustomField
-                                    title="Horário"
-                                    placeholder="00:00"
-                                    value={hora}
-                                    setValue={text => {
-                                        let val = text.replace(/[^0-9:]/g, '');
-                                        if (val.length === 2 && hora.length === 1) val += ':';
-                                        setHora(val);
+                            <Ionicons
+                                name="time-outline"
+                                size={30}
+                                color="#2E8331"
+                                style={{
+                                    position: 'absolute',
+                                    left: 14,
+                                    top: '50%',
+                                    marginTop: -15,
+                                    zIndex: 2
+                                }}
+                            />
+                            <View style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: 48
+                            }}>
+                                <Text
+                                    style={{
+                                        color: '#222',
+                                        fontSize: 18,
+                                        height: 48,
+                                        lineHeight: 48,
+                                        textAlign: 'center',
+                                        textAlignVertical: 'center',
                                     }}
-                                    maxLength={5}
-                                    keyboardType="numeric"
-                                    editable={true}
-                                    style={{ paddingLeft: 40, backgroundColor: '#fff', borderColor: '#2E8331', borderWidth: 2, borderRadius: 8, color: '#222' }}
-                                />
+                                >
+                                    {hora || '00:00'}
+                                </Text>
                             </View>
                         </TouchableOpacity>
                     </View>

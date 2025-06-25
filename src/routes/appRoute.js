@@ -471,41 +471,19 @@ export default function AppTabs() {
             <Stack.Screen
                 name="AccountUser"
                 component={AccountUser}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Conta do Usuário",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Conta do Usuário" navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen
                 name="DataUser"
                 component={DataUser}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Dados do Usuário",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Dados do Usuário" navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen
@@ -520,21 +498,10 @@ export default function AppTabs() {
             <Stack.Screen
                 name="EditHealth"
                 component={EditHealth}
-                options={{
+                options={({ navigation }) => ({
                     headerShown: true,
-                    headerTitle: "Editar Dados de Saúde",
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        color: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                        fontSize: 20,
-                    },
-                    headerStyle: {
-                        backgroundColor: colorScheme === 'dark' ? '#1C1C1E' : '#FFFFFF',
-                        elevation: 0,
-                        shadowOpacity: 0,
-                    },
-                    headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#2E8331',
-                }}
+                    header: () => <GradientHeader title="Editar Dados de Saúde" navigation={navigation} />,
+                })}
             />
 
             <Stack.Screen

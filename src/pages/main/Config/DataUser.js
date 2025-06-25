@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import CustomButton from '../../../components/CustomButton.js';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
+import CustomModal from '../../../components/CustomModal';
 import { View, SafeAreaView, Text, Alert, useColorScheme, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ref, onValue, getDatabase, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function DataUser() {
   const colorScheme = useColorScheme();
@@ -19,6 +21,7 @@ export default function DataUser() {
   const [nome, setNome] = useState('');
   const [idade, setIdade] = useState('');
   const [objetivo, setObjetivo] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const db = getDatabase();
@@ -36,7 +39,11 @@ export default function DataUser() {
     });
   }, []);
 
-  function AtualizarDados() {
+  function handleSalvar() {
+    setShowConfirm(true);
+  }
+
+  function confirmarSalvar() {
     const db = getDatabase();
     const userID = auth.currentUser.uid;
     const userRef = ref(db, 'users/' + userID);
@@ -116,10 +123,38 @@ export default function DataUser() {
           </View>
 
           <View style={styles.centered}>
-            <CustomButton title='Salvar Dados' modeButton={true} onPress={AtualizarDados} size="large" style={{width: '100%'}} />
+            <CustomButton
+              title="Salvar"
+              onPress={handleSalvar}
+              modeButton={true}
+              size="large"
+              style={{width: '100%'}}
+            />
           </View>
         </View>
       </ImageBackground>
+      <CustomModal
+        visible={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        title="Confirmar alterações"
+        message="Tem certeza que deseja salvar as alterações dos dados pessoais?"
+        type="warning"
+        buttons={[
+          {
+            text: 'Cancelar',
+            onPress: () => setShowConfirm(false),
+            style: 'secondary'
+          },
+          {
+            text: 'Confirmar',
+            onPress: () => {
+              setShowConfirm(false);
+              confirmarSalvar();
+            },
+            style: 'primary'
+          }
+        ]}
+      />
     </SafeAreaView>
   );
 }

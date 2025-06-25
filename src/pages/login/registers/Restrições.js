@@ -1,10 +1,13 @@
-import { SafeAreaView, View, useColorScheme, Text, ImageBackground, ScrollView } from "react-native";
+import { SafeAreaView, View, useColorScheme, Text, ImageBackground, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import CustomField from "../../../components/CustomField";
 import React, { useState } from "react";
 import CustomButton from "../../../components/CustomButton.js";
 import { useNavigation } from "@react-navigation/native";
 import CustomMultiPicker from "../../../components/CustomMultiPicker";
 import styles from "../../../theme/styles";
+import { getDatabase, ref, update } from 'firebase/database';
+import { auth } from '../../../database/firebase';
+import CustomModal from '../../../components/CustomModal';
 
 export default function Restricoes() {
     const colorScheme = useColorScheme();
@@ -13,6 +16,7 @@ export default function Restricoes() {
     const [Alergias, setAlergias] = useState('');
     const [intolerancias, setIntolerancias] = useState([]);
     const [Condicoes, setCondicoes] = useState([]);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const intoleranciasOptions = [
         { id: 'Açucar', name: 'Açucar' },
@@ -49,20 +53,48 @@ export default function Restricoes() {
         { id: "Doenças Dermatológicas", name: "Doenças Dermatológicas" },
     ];
 
+    async function handleSalvar() {
+        setShowConfirm(true);
+    }
+
+    async function confirmarSalvar() {
+        const userId = auth.currentUser?.uid;
+        if (!userId) {
+            Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
+            return;
+        }
+        const db = getDatabase();
+        const restricoesRef = ref(db, `users/${userId}/restricoes`);
+        try {
+            await update(restricoesRef, {
+                alergias: Alergias,
+                intolerancias: intolerancias,
+                condicoes: Condicoes
+            });
+            Alert.alert('Restrições salvas!', 'Suas restrições alimentares foram salvas com sucesso.');
+            navigate.goBack();
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível salvar as restrições. Tente novamente.');
+        }
+    }
+
     return(
         <SafeAreaView style={{flex: 1, backgroundColor: background}}>
             <ImageBackground
                 source={require('../../../../assets/Frutas_home.png')}
-                style={{flex: 1, resizeMode: 'cover'}}
-            >
+                style={{flex: 1, resizeMode: 'cover'}}>
+                <KeyboardAvoidingView
+                    style={{flex: 1}}
+                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                >
                 <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 20}} keyboardShouldPersistTaps="handled">
-                    <View style={{width: '100%', maxWidth: 420, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 18, padding: 24, shadowColor: '#000', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 2 }, shadowRadius: 8, elevation: 3}}>
-                        <Text style={{fontSize: 28, fontWeight: 'bold', color: '#2E8331', textAlign: 'center', marginBottom: 8}}>Restrições Alimentares</Text>
-                        <Text style={{fontSize: 15, color: '#555', textAlign: 'center', marginBottom: 18}}>
+                    <View style={{width: '100%', maxWidth: 420, backgroundColor: 'rgba(255,255,255,0.97)', borderRadius: 18, padding: 28, shadowColor: '#000', shadowOpacity: 0.10, shadowOffset: { width: 0, height: 2 }, shadowRadius: 12, elevation: 4, alignItems: 'center'}}>
+                        <Text style={{fontSize: 28, fontWeight: 'bold', color: '#2E8331', textAlign: 'center', marginBottom: 8, letterSpacing: 0.5}}>Restrições Alimentares</Text>
+                        <Text style={{fontSize: 16, color: '#555', textAlign: 'center', marginBottom: 22, lineHeight: 22}}>
                             Informe alergias, intolerâncias e condições médicas para personalizar sua experiência.
                         </Text>
-                        <CustomField title="Alergias" placeholder="Insira suas alergias" value={Alergias} setValue={setAlergias}/>
-                        <View style={{marginVertical: 10}}>
+                        <CustomField title="Alergias" placeholder="Ex: Amendoim, frutos do mar..." value={Alergias} setValue={setAlergias}/>
+                        <View style={{marginVertical: 14, width: '100%', alignItems: 'center'}}>
                             <CustomMultiPicker
                                 label="Intolerâncias"
                                 options={intoleranciasOptions}
@@ -70,7 +102,7 @@ export default function Restricoes() {
                                 onSelectedItemsChange={setIntolerancias}
                             />
                         </View>
-                        <View style={{marginVertical: 10}}>
+                        <View style={{marginVertical: 14, width: '100%', alignItems: 'center'}}>
                             <CustomMultiPicker
                                 label="Condições Médicas"
                                 options={condicoesOptions}
@@ -78,11 +110,50 @@ export default function Restricoes() {
                                 onSelectedItemsChange={setCondicoes}
                             />
                         </View>
-                        <CustomButton title="Salvar" modeButton={true} size="large" style={{width: '100%', marginTop: 24}} onPress={()=>navigate.goBack()}/>
+                        <View style={{
+                            width: '100%',
+                            marginTop: 28,
+                            shadowColor: '#2E8331',
+                            shadowOffset: { width: 0, height: 4 },
+                            shadowOpacity: 0.3,
+                            shadowRadius: 8,
+                            elevation: 6,
+                            borderRadius: 12
+                        }}>
+                            <CustomButton 
+                                title="Salvar" 
+                                modeButton={true} 
+                                size="large" 
+                                style={{width: '100%'}} 
+                                onPress={handleSalvar}
+                            />
+                        </View>
                     </View>
                 </ScrollView>
+                </KeyboardAvoidingView>
             </ImageBackground>
+            <CustomModal
+                visible={showConfirm}
+                onClose={() => setShowConfirm(false)}
+                title="Confirmar alterações"
+                message="Tem certeza que deseja salvar as restrições alimentares?"
+                type="warning"
+                buttons={[
+                    {
+                        text: 'Cancelar',
+                        onPress: () => setShowConfirm(false),
+                        style: 'secondary'
+                    },
+                    {
+                        text: 'Confirmar',
+                        onPress: () => {
+                            setShowConfirm(false);
+                            confirmarSalvar();
+                        },
+                        style: 'primary'
+                    }
+                ]}
+            />
         </SafeAreaView>
     );
 }
-

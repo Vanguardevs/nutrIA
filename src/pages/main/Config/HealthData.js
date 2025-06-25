@@ -5,6 +5,8 @@ import { View, SafeAreaView, Text, useColorScheme, TouchableOpacity, StyleSheet,
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import CustomModal from '../../../components/CustomModal';
 
 export default function HealthData() {
     const navigation = useNavigation();
@@ -17,6 +19,7 @@ export default function HealthData() {
     const [altura, setAltura] = useState('');
     const [peso, setPeso] = useState('');
     const [loading, setLoading] = useState(true);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
         const db = getDatabase();
@@ -75,28 +78,26 @@ export default function HealthData() {
         return pesoNum >= 20 && pesoNum <= 400;
     }
 
-    function salvarDados() {
+    function handleSalvar() {
+        setShowConfirm(true);
+    }
+
+    function confirmarSalvar() {
         if (altura.length === 0 || peso.length === 0) {
             Alert.alert("Campos Vazios", "Por favor, preencha altura e peso.");
             return;
         }
-
-        // Validar altura
         if (!validarAltura(altura)) {
             Alert.alert("Altura Inválida", "A altura deve estar entre 1,30 e 2,10 metros. Exemplo: 1,75");
             return;
         }
-
-        // Validar peso
         if (!validarPeso(peso)) {
             Alert.alert("Peso Inválido", "O peso deve estar entre 20 e 400 kg. Exemplo: 70,5");
             return;
         }
-
         const db = getDatabase();
         const userId = auth.currentUser?.uid;
         const userRef = ref(db, `users/${userId}/`);
-
         update(userRef, {
             altura: altura,
             peso: peso
@@ -163,13 +164,35 @@ export default function HealthData() {
                 <CustomButton
                             title="Salvar Dados"
                             modeButton={true}
-                            onPress={salvarDados}
+                            onPress={handleSalvar}
                             size="large"
                             style={{width: '100%'}}
                 />
             </View>
                 </View>
             </ImageBackground>
+            <CustomModal
+                visible={showConfirm}
+                onClose={() => setShowConfirm(false)}
+                title="Confirmar alterações"
+                message="Tem certeza que deseja salvar as alterações de saúde?"
+                type="warning"
+                buttons={[
+                    {
+                        text: 'Cancelar',
+                        onPress: () => setShowConfirm(false),
+                        style: 'secondary'
+                    },
+                    {
+                        text: 'Confirmar',
+                        onPress: () => {
+                            setShowConfirm(false);
+                            confirmarSalvar();
+                        },
+                        style: 'primary'
+                    }
+                ]}
+            />
         </SafeAreaView>
     );
 }

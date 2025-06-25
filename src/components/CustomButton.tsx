@@ -45,14 +45,14 @@ const CustomButton = (props: CustomButtonProps) => {
     return baseStyle;
   };
 
-  const getGradientColors = () => {
+  const getGradientColors = (): [string, string] => {
     if (props.variant === 'danger') {
-      return ['#FF3B30', '#FF453A'];
+      return ['#FF3B30', '#FF453A'] as const;
     }
     if (props.variant === 'secondary') {
-      return ['#8E8E93', '#AEAEB2'];
+      return ['#8E8E93', '#AEAEB2'] as const;
     }
-    return mode ? ['#2E8331', '#2F9933'] : ['#2E8331', '#2F9933'];
+    return mode ? ['#2E8331', '#2F9933'] as const : ['#2E8331', '#2F9933'] as const;
   };
 
   return (
@@ -89,26 +89,27 @@ const styles = StyleSheet.create({
   button: {
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
   },
   buttonSmall: {
     height: 40,
     minWidth: 120,
     paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonMedium: {
     height: 50,
     minWidth: 200,
     paddingHorizontal: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonLarge: {
     height: 56,
     minWidth: 280,
     paddingHorizontal: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   gradient: {
     flex: 1,

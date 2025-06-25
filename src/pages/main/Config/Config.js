@@ -64,22 +64,6 @@ export default function Settings(){
                 barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
                 backgroundColor={colors.background}
             />
-            
-            {/* Header */}
-            <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
-                <View style={styles.headerContent}>
-                    <Image 
-                        source={require("../../../../assets/logoWelcome.png")} 
-                        style={styles.logo}
-                        resizeMode="contain"
-                    />
-                    <Text style={[styles.headerTitle, { color: colors.text }]}>Configurações</Text>
-                    <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-                        Gerencie suas preferências e dados
-                    </Text>
-                </View>
-            </View>
-
             <ScrollView 
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
@@ -164,30 +148,6 @@ export default function Settings(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    header: {
-        paddingTop: 20,
-        paddingBottom: 24,
-        borderBottomWidth: 1,
-    },
-    headerContent: {
-        alignItems: 'center',
-        paddingHorizontal: 24,
-    },
-    logo: {
-        height: 60,
-        width: 80,
-        marginBottom: 16,
-    },
-    headerTitle: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 4,
-        letterSpacing: 0.5,
-    },
-    headerSubtitle: {
-        fontSize: 16,
-        fontWeight: '400',
     },
     scrollView: {
         flex: 1,
