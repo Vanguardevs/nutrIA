@@ -7,7 +7,7 @@ import CustomButton from "../../components/CustomButton.js";
 import CustomField from "../../components/CustomField";
 import CustomModal from "../../components/CustomModal.js";
 import styles from "../../theme/styles.js";
-import { getDatabase, ref, set, get } from "firebase/database";
+import { getDatabase, ref, set, get, update } from "firebase/database";
 import { app } from "../../database/firebase.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -59,41 +59,19 @@ export default function LoginPag() {
           `Você ainda não verificou seu email.\n\n📧 Email: ${user.email}\n\n⚠️ IMPORTANTE: Verifique sua caixa de entrada (e pasta de spam) e clique no link de confirmação antes de fazer login.\n\n🔄 Após verificar o email, tente fazer login novamente.`, 
           "warning"
         );
-        
+      
         // Fazer logout para não manter o usuário logado
         await signOut(auth);
         return;
       }
+      // Email verificado, login permitido
+      update(ref(getDatabase(app), `users/${user.uid}`), {
+        emailVerified: true
+      });
       
       console.log("Email verificado - login permitido");
-      
       // Após login bem-sucedido, verificar se há restrições pendentes
-      const pendingHealthData = await AsyncStorage.getItem('pendingHealthData');
-      if (pendingHealthData) {
-        // Garantir que o UID está disponível
-        let userId = user.uid;
-        let tentativas = 0;
-        while ((!userId || userId === 'undefined') && tentativas < 10) {
-          await new Promise(res => setTimeout(res, 200));
-          userId = auth.currentUser?.uid;
-          tentativas++;
-        }
-        console.log('[Login] UID para salvar restrições:', userId);
-        if (userId && userId !== 'undefined') {
-          try {
-            const db = getDatabase();
-            const userHealthRef = ref(db, `users/${userId}/health`);
-            await set(userHealthRef, JSON.parse(pendingHealthData));
-            await AsyncStorage.removeItem('pendingHealthData');
-            showModal("Cadastro Finalizado!", "Suas restrições alimentares foram salvas com sucesso.", "success");
-          } catch (e) {
-            showModal("Erro ao salvar restrições", "Não foi possível salvar suas restrições alimentares no banco. Tente novamente em Editar Saúde.", "error");
-          }
-        } else {
-          showModal("Erro de autenticação", "Não foi possível identificar o usuário para salvar as restrições. Faça login novamente.", "error");
-        }
-      }
-      
+
       // Mostrar modal de sucesso
       showModal("Login Realizado!", "Bem-vindo de volta! Você foi logado com sucesso.", "success");
       console.log("Sucesso ao fazer o login!");

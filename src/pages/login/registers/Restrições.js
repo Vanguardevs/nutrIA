@@ -71,9 +71,7 @@ export default function Restricoes() {
         }
         const db = getDatabase();
         // Se for cadastro, buscar em pendingUsers; se for edição, buscar em users
-        const userHealthRef = route?.params?.uid
-            ? ref(db, `pendingUsers/${userId}/health`)
-            : ref(db, `users/${userId}/health`);
+        const userHealthRef = ref(db, `users/${userId}/`);
         const unsubscribe = onValue(userHealthRef, (snapshot) => {
             const data = snapshot.val();
             console.log('[Restricoes] Dados carregados:', data);
@@ -118,14 +116,13 @@ export default function Restricoes() {
                 createdAt: Date.now()
             };
             // Se for cadastro, salvar em pendingUsers; se for edição, salvar em users
-            const healthRef = route?.params?.uid
-                ? ref(db, `pendingUsers/${userId}/health`)
-                : ref(db, `users/${userId}/health`);
+            const healthRef = ref(db, `users/${userId}/health`);
             await set(healthRef, healthData);
             setShowSuccess(true);
         } catch (error) {
             setLoading(false);
             setShowConfirm(false);
+            console.log('[Restricoes] Erro ao salvar restrições:', error);
             Alert.alert('Erro', 'Não foi possível salvar as restrições. Tente novamente.');
         }
         setLoading(false);

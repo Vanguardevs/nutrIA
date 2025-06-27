@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react";
 import CustomPicker from "../../../components/CustomPicker";
 import CustomButton from "../../../components/CustomButton.js";
 import CustomModal from "../../../components/CustomModal.js";
-import { createUserWithEmailAndPassword, sendEmailVerification, signOut, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut} from "firebase/auth";
 import { auth, app } from "../../../database/firebase";
-import {getDatabase, ref, set} from "firebase/database";
+import {getDatabase, push, ref, set} from "firebase/database";
 import styles from "../../../theme/styles";
 
 export default function HealthRegister() {
@@ -108,25 +108,21 @@ export default function HealthRegister() {
                 const db = getDatabase(app);
                 const userId = userCredential.user.uid;
                 const userRef = ref(db, `users/${userId}`);
-                const pendingRef = ref(db, `pendingUsers/${userId}`);
-                const healthRef = ref(db, `healthData/${userId}`);
+                
                 const userData = {
                     nome,
                     email,
                     idade,
                     sexo,
                     createdAt: new Date().toISOString(),
-                    emailVerified: false
-                };
-                const healthData = {
+                    emailVerified: false,
                     altura: altura || '',
                     peso: peso || '',
-                    objetivo: objetivo || ''
+                    objetivo: objetivo || '',
                 };
+
                 try {
-                    await set(pendingRef, { ...userData, ...healthData });
                     await set(userRef, userData);
-                    await set(healthRef, healthData);
                     console.log("Dados salvos em pendingUsers, users e healthData!");
                 } catch (error) {
                     console.log("Erro ao salvar dados em pendingUsers, users/healthData:", error);
@@ -215,9 +211,6 @@ export default function HealthRegister() {
                             { label: "Musculo", value: "Musculo" }
                         ]}
                     />
-                    <TouchableOpacity onPress={() => navigation.navigate("Restrições")} style={styles.hrLink}>
-                        <Text style={styles.hrLinkText}>Restrições Alimentares</Text>
-                    </TouchableOpacity>
                     <View style={{width: '100%', alignItems: 'center'}}>
                         {loading ? (
                             <View style={{width: '100%', alignItems: 'center', marginTop: 20}}>
