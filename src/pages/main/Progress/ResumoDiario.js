@@ -1,4 +1,3 @@
-
 import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import foods from '../foods.json';
