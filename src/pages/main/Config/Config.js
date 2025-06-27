@@ -6,10 +6,13 @@ import CustomButton from "../../../components/CustomButton.js";
 import { auth } from "../../../database/firebase";
 import { signOut } from "firebase/auth";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5, Feather } from '@expo/vector-icons';
+import CustomModal from "../../../components/CustomModal.js";
 
 export default function Settings(){
     const navigation = useNavigation();
     const colorScheme = useColorScheme();
+
+    const [showModalAbout, setShowModalAbout] = useState(false);
 
     // Cores baseadas no tema
     const colors = {
@@ -120,11 +123,12 @@ export default function Settings(){
                             onPress={() => {}}
                         />
                         <View style={[styles.separator, { backgroundColor: colors.border }]} />
+
                         <ConfigItem
                             icon={<Ionicons name="information-circle" size={24} color={colors.primary} />}
                             title="Sobre o App"
                             subtitle="Versão 1.0.0"
-                            onPress={() => {}}
+                            onPress={() => {setShowModalAbout(true)}}
                             showArrow={false}
                         />
                     </View>
@@ -140,6 +144,17 @@ export default function Settings(){
                         style={styles.logoutButton}
                     />
                 </View>
+
+                <CustomModal
+                    visible={showModalAbout}
+                    onClose={() => setShowModalAbout(false)}
+                    icon='information-circle'
+                    title="Sobre o App"
+                    message="nutrIA é um aplicativo de nutrição que ajuda você a gerenciar sua saúde e bem-estar. Desenvolvido com carinho, esperamos que você goste!"
+                    primaryButtonText="Fechar"
+                    onPrimaryPress={() => setShowModalAbout(false)}
+                    showButtons={false}
+                />
             </ScrollView>
         </SafeAreaView>
     )

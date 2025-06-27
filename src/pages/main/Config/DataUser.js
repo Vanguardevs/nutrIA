@@ -70,8 +70,8 @@ export default function DataUser() {
     })
       .then(() => {
         console.log('Dados atualizados com sucesso!');
+        setShowConfirm(false);
         setSuccessModal(true);
-        navigation.goBack();
       })
       .catch((error) => {
         console.error('Erro ao atualizar os dados:', error);
@@ -152,7 +152,7 @@ export default function DataUser() {
         title="Sucesso"
         message="As alterações foram salvas com sucesso!"
         primaryButtonText="OK"
-        onPrimaryPress={() => setSuccessModal(false)}
+        onPrimaryPress={() => { setSuccessModal(false); navigation.goBack(); }}
       />
 
       <CustomModal
