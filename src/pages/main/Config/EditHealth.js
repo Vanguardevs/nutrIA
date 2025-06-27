@@ -3,7 +3,7 @@ import { SafeAreaView, Text, View, Alert, ScrollView, ActivityIndicator, Touchab
 import CustomField from '../../../components/CustomField';
 import CustomMultiPicker from '../../../components/CustomMultiPicker';
 import CustomButton from '../../../components/CustomButton';
-import CustomModal from '../../../components/CustomModal';
+import CustomModal from '../../../components/CustomModal.tsx';
 import { getDatabase, ref, onValue, set, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +15,9 @@ export default function EditHealth() {
     const [loading, setLoading] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [errorModal, setErrorModal] = useState(false);
     const [saving, setSaving] = useState(false);
+
     const navigation = useNavigation();
 
     const intoleranciasOptions = [
@@ -57,10 +59,9 @@ export default function EditHealth() {
         console.log('[EditHealth] Iniciando carregamento dos dados...');
         
         // Verificar se há usuário autenticado
-        const currentUser = auth.currentUser;
-        console.log('[EditHealth] Usuário atual:', currentUser?.uid);
-        
-        if (!currentUser) {
+        console.log('[EditHealth] Usuário atual:', auth.currentUser?.uid);
+
+        if (!auth.currentUser) {
             console.log('[EditHealth] Nenhum usuário autenticado');
             Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
             setLoading(false);
@@ -68,11 +69,9 @@ export default function EditHealth() {
         }
 
         const db = getDatabase();
-        const userId = currentUser.uid;
+        const userId = auth.currentUser?.uid;
         const healthRef = ref(db, `users/${userId}/health`);
         
-        console.log('[EditHealth] Caminho do Firebase:', `users/${userId}/health`);
-
         const unsubscribe = onValue(healthRef, (snapshot) => {
             console.log('[EditHealth] Snapshot recebido:', snapshot.exists());
             const data = snapshot.val();
@@ -126,9 +125,7 @@ export default function EditHealth() {
         setSaving(true);
         
         try {
-            // Verificar usuário novamente
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
+            if (!auth.currentUser) {
                 console.log('[EditHealth] Usuário não autenticado no momento do salvamento');
                 Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
                 setSaving(false);
@@ -136,7 +133,7 @@ export default function EditHealth() {
             }
 
             const db = getDatabase();
-            const userId = currentUser.uid;
+            const userId = auth.currentUser?.uid;
             console.log('[EditHealth] ID do usuário:', userId);
             
             // Processar dados para salvamento
@@ -162,6 +159,7 @@ export default function EditHealth() {
             console.log('[EditHealth] Dados salvos com sucesso no Firebase!');
             
             setSaving(false);
+            setShowConfirm(false);
             setShowSuccess(true);
             
         } catch (error) {
@@ -220,7 +218,7 @@ export default function EditHealth() {
                     </View>
                     <CustomButton
                         title={saving ? "Salvando..." : "Salvar"}
-                        onPress={confirmarSalvar}
+                        onPress={()=> setShowConfirm(true)}
                         modeButton={true}
                         size="large"
                         style={{width: '100%', opacity: saving ? 0.7 : 1}}
@@ -230,25 +228,40 @@ export default function EditHealth() {
             </ScrollView>
             
             <CustomModal
+                visible={showConfirm}
+                onClose={() => setShowConfirm(false)}
+                icon='alert-circle'
+                title="Confirmar"
+                message="Você tem certeza que deseja salvar as alterações?"
+                primaryButtonText="Salvar"
+                onPrimaryPress={confirmarSalvar}
+                secondaryButtonText="Cancelar"
+                onSecondaryPress={() => setShowConfirm(false)}
+            />
+
+            <CustomModal
                 visible={showSuccess}
-                onClose={() => {
+                onClose={() => setShowSuccess(false)}
+                icon='checkmark-circle'
+                title="Sucesso"
+                message="As alterações foram salvas com sucesso!"
+                primaryButtonText="OK"
+                onPrimaryPress={() => {
                     setShowSuccess(false);
                     navigation.goBack();
                 }}
-                title="Sucesso"
-                message="Condições médicas atualizadas com sucesso!"
-                type="success"
-                buttons={[
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            setShowSuccess(false);
-                            navigation.goBack();
-                        },
-                        style: 'primary'
-                    }
-                ]}
             />
+
+            <CustomModal
+                visible={errorModal}
+                onClose={() => setErrorModal(false)}
+                icon='alert-circle'
+                title="Erro"
+                message="Ocorreu um erro ao salvar as alterações."
+                primaryButtonText="OK"
+                onPrimaryPress={() => setErrorModal(false)}
+            />
+
         </SafeAreaView>
     );
 }
