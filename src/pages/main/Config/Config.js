@@ -155,7 +155,9 @@ export default function Settings(){
                     onPrimaryPress={() => setShowModalAbout(false)}
                     showButtons={false}
                 />
+
             </ScrollView>
+            
         </SafeAreaView>
     )
 }
