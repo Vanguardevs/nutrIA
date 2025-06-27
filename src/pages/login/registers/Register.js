@@ -219,7 +219,7 @@ export default function CreateUser() {
                                     ]}
                                 />
                             </View>
-                            
+                            <Text style={[styles.headerSubtitle, { color: textColor, marginBottom: 4, fontWeight: 'bold' }]}>Data de Nascimento</Text>
                             <TouchableOpacity
                                 style={[styles.dateField, { borderColor: colorScheme === 'dark' ? '#333' : '#2E8331' }]}
                                 onPress={openDatePicker}

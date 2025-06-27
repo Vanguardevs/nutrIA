@@ -1,11 +1,11 @@
 import { SafeAreaView, View, useColorScheme, Text, ImageBackground, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import CustomField from "../../../components/CustomField";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomButton from "../../../components/CustomButton.js";
 import { useNavigation } from "@react-navigation/native";
 import CustomMultiPicker from "../../../components/CustomMultiPicker";
 import styles from "../../../theme/styles";
-import { getDatabase, ref, update } from 'firebase/database';
+import { getDatabase, ref, set, onValue, push } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import CustomModal from '../../../components/CustomModal';
 
@@ -17,6 +17,8 @@ export default function Restricoes() {
     const [intolerancias, setIntolerancias] = useState([]);
     const [Condicoes, setCondicoes] = useState([]);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const intoleranciasOptions = [
         { id: 'Açucar', name: 'Açucar' },
@@ -53,7 +55,47 @@ export default function Restricoes() {
         { id: "Doenças Dermatológicas", name: "Doenças Dermatológicas" },
     ];
 
+    // Carregar dados existentes ao inicializar o componente
+    useEffect(() => {
+        carregarDadosExistentes();
+    }, []);
+
+    const carregarDadosExistentes = () => {
+        const userId = auth.currentUser?.uid;
+        if (!userId) {
+            console.log('[Restricoes] Usuário não autenticado');
+            return;
+        }
+
+        const db = getDatabase();
+        const userHealthRef = ref(db, `users/${userId}/health`);
+        
+        const unsubscribe = onValue(userHealthRef, (snapshot) => {
+            const data = snapshot.val();
+            console.log('[Restricoes] Dados carregados:', data);
+            
+            if (data) {
+                // Se as alergias forem "Nenhuma" ou vazio, mostrar campo vazio para edição
+                const alergiasValue = data.alergias;
+                setAlergias(alergiasValue === 'Nenhuma' || !alergiasValue ? '' : alergiasValue);
+                setIntolerancias(data.intolerancias || []);
+                setCondicoes(data.condicoes || []);
+            }
+        }, (error) => {
+            console.error('[Restricoes] Erro ao carregar dados:', error);
+        });
+
+        return unsubscribe;
+    };
+
     async function handleSalvar() {
+        // Permitir salvar mesmo se apenas alergias estiver vazio (será salvo como "Nenhuma")
+        // Só validar se TODOS os campos estiverem vazios
+        if (!Alergias.trim() && intolerancias.length === 0 && Condicoes.length === 0) {
+            // Ainda assim permitir salvar para cadastrar "Nenhuma" nas alergias
+            // Alert.alert('Atenção', 'Preencha pelo menos um campo antes de salvar.');
+            // return;
+        }
         setShowConfirm(true);
     }
 
@@ -63,18 +105,41 @@ export default function Restricoes() {
             Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
             return;
         }
+
+        setLoading(true);
         const db = getDatabase();
-        const restricoesRef = ref(db, `users/${userId}/restricoes`);
+        
+        // Estrutura organizada dos dados de saúde
+        const healthData = {
+            alergias: Alergias.trim() || 'Nenhuma', // Se vazio, salvar como "Nenhuma"
+            intolerancias: Array.isArray(intolerancias) ? intolerancias : [],
+            condicoes: Array.isArray(Condicoes) ? Condicoes : [],
+            updatedAt: Date.now(),
+            createdAt: Date.now() // Será preservado se já existir
+        };
+
         try {
-            await update(restricoesRef, {
-                alergias: Alergias,
-                intolerancias: intolerancias,
-                condicoes: Condicoes
+            // Verificar se já existem dados para preservar o createdAt
+            const userHealthRef = ref(db, `users/${userId}/health`);
+            const snapshot = await new Promise((resolve, reject) => {
+                onValue(userHealthRef, resolve, reject, { onlyOnce: true });
             });
-            Alert.alert('Restrições salvas!', 'Suas restrições alimentares foram salvas com sucesso.');
-            navigate.goBack();
+            
+            const existingData = snapshot.val();
+            if (existingData && existingData.createdAt) {
+                healthData.createdAt = existingData.createdAt;
+            }
+
+            // Salvar os dados de saúde
+            await set(userHealthRef, healthData);
+
+            console.log('[Restricoes] Dados salvos com sucesso:', healthData);
+            setShowSuccess(true);
         } catch (error) {
+            console.error('[Restricoes] Erro ao salvar:', error);
             Alert.alert('Erro', 'Não foi possível salvar as restrições. Tente novamente.');
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -93,7 +158,14 @@ export default function Restricoes() {
                         <Text style={{fontSize: 16, color: '#555', textAlign: 'center', marginBottom: 22, lineHeight: 22}}>
                             Informe alergias, intolerâncias e condições médicas para personalizar sua experiência.
                         </Text>
-                        <CustomField title="Alergias" placeholder="Ex: Amendoim, frutos do mar..." value={Alergias} setValue={setAlergias}/>
+                        
+                        <CustomField 
+                            title="Alergias" 
+                            placeholder="Ex: Amendoim, frutos do mar..." 
+                            value={Alergias} 
+                            setValue={setAlergias}
+                        />
+                        
                         <View style={{marginVertical: 14, width: '100%', alignItems: 'center'}}>
                             <CustomMultiPicker
                                 label="Intolerâncias"
@@ -102,6 +174,7 @@ export default function Restricoes() {
                                 onSelectedItemsChange={setIntolerancias}
                             />
                         </View>
+                        
                         <View style={{marginVertical: 14, width: '100%', alignItems: 'center'}}>
                             <CustomMultiPicker
                                 label="Condições Médicas"
@@ -110,49 +183,66 @@ export default function Restricoes() {
                                 onSelectedItemsChange={setCondicoes}
                             />
                         </View>
+                        
                         <View style={{
                             width: '100%',
                             marginTop: 28,
-                            shadowColor: '#2E8331',
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.3,
-                            shadowRadius: 8,
-                            elevation: 6,
                             borderRadius: 12
                         }}>
                             <CustomButton 
-                                title="Salvar" 
+                                title={loading ? "Salvando..." : "Salvar"} 
                                 modeButton={true} 
                                 size="large" 
-                                style={{width: '100%'}} 
-                                onPress={handleSalvar}
+                                style={{
+                                    width: '100%', 
+                                    elevation: 0, 
+                                    shadowColor: 'transparent', 
+                                    shadowOpacity: 0, 
+                                    shadowOffset: { width: 0, height: 0 }, 
+                                    shadowRadius: 0,
+                                    opacity: loading ? 0.6 : 1,
+                                    backgroundColor: '#FF3B30',
+                                }} 
+                                onPress={confirmarSalvar}
+                                disabled={loading}
                             />
                         </View>
                     </View>
                 </ScrollView>
                 </KeyboardAvoidingView>
             </ImageBackground>
+            
             <CustomModal
                 visible={showConfirm}
-                onClose={() => setShowConfirm(false)}
+                onClose={() => !loading && setShowConfirm(false)}
                 title="Confirmar alterações"
                 message="Tem certeza que deseja salvar as restrições alimentares?"
-                type="warning"
-                buttons={[
-                    {
-                        text: 'Cancelar',
-                        onPress: () => setShowConfirm(false),
-                        style: 'secondary'
-                    },
-                    {
-                        text: 'Confirmar',
-                        onPress: () => {
-                            setShowConfirm(false);
-                            confirmarSalvar();
-                        },
-                        style: 'primary'
-                    }
-                ]}
+                icon="warning"
+                primaryButtonText="Confirmar"
+                secondaryButtonText="Cancelar"
+                onPrimaryPress={async () => {
+                    setShowConfirm(false);
+                    await confirmarSalvar();
+                }}
+                onSecondaryPress={() => setShowConfirm(false)}
+                showButtons={true}
+            />
+            
+            <CustomModal
+                visible={showSuccess}
+                onClose={() => {
+                    setShowSuccess(false);
+                    navigate.goBack();
+                }}
+                title="Restrições salvas!"
+                message="Suas restrições alimentares foram salvas com sucesso."
+                icon="checkmark-circle"
+                primaryButtonText="OK"
+                onPrimaryPress={() => {
+                    setShowSuccess(false);
+                    navigate.goBack();
+                }}
+                showButtons={true}
             />
         </SafeAreaView>
     );

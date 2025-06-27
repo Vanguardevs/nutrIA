@@ -39,10 +39,9 @@ export default function HealthRegister() {
 
     const hideModal = () => {
         setModalVisible(false);
-        // Se o modal for de sucesso de cadastro, faz logout ao fechar e redireciona para o login
         if (modalConfig.type === 'success' && modalConfig.title.includes('Cadastro Realizado')) {
             signOut(auth);
-            navigation.navigate('Login');
+            navigation.goBack();
         }
     };
 
@@ -89,53 +88,51 @@ export default function HealthRegister() {
     function cadastro(){
         setLoading(true);
         try {
-            if(altura == 0 || peso == 0 || objetivo.length === 0){
-                setLoading(false);
-                showModal("Campos Vazios", "Alguns dos campos de cadastro estão vazios. Preencha todos os campos para continuar.", "warning");
-                return;
-            }
-
-            // Validar altura
-            if (!validarAltura(altura)) {
+            // Remover validação obrigatória dos campos
+            // Validar altura se preenchido
+            if (altura && !validarAltura(altura)) {
                 setLoading(false);
                 showModal("Altura Inválida", "A altura deve estar entre 1,30 e 2,10 metros. Exemplo: 1,75", "error");
                 return;
             }
-            
-            // Validar peso
-            if (!validarPeso(peso)) {
+            // Validar peso se preenchido
+            if (peso && !validarPeso(peso)) {
                 setLoading(false);
                 showModal("Peso Inválido", "O peso deve estar entre 20 e 400 kg. Exemplo: 70,5", "error");
                 return;
             }
-            
             createUserWithEmailAndPassword(auth, email, password)
-            
             .then(async (userCredential) => {
                 console.log("Usuário cadastrado com sucesso!");
-                // Salvar dados temporários em pendingUsers
+                // Salvar dados em pendingUsers primeiro
                 const db = getDatabase(app);
-                const pendingRef = ref(db, `pendingUsers/${userCredential.user.uid}`);
+                const userId = userCredential.user.uid;
+                const userRef = ref(db, `users/${userId}`);
+                const pendingRef = ref(db, `pendingUsers/${userId}`);
+                const healthRef = ref(db, `healthData/${userId}`);
                 const userData = {
                     nome,
                     email,
                     idade,
                     sexo,
-                    altura,
-                    peso,
-                    objetivo,
                     createdAt: new Date().toISOString(),
                     emailVerified: false
                 };
+                const healthData = {
+                    altura: altura || '',
+                    peso: peso || '',
+                    objetivo: objetivo || ''
+                };
                 try {
-                    await set(pendingRef, userData);
-                    console.log("Dados temporários salvos em pendingUsers!");
+                    await set(pendingRef, { ...userData, ...healthData });
+                    await set(userRef, userData);
+                    await set(healthRef, healthData);
+                    console.log("Dados salvos em pendingUsers, users e healthData!");
                 } catch (error) {
-                    console.log("Erro ao salvar dados temporários:", error);
+                    console.log("Erro ao salvar dados em pendingUsers, users/healthData:", error);
                 }
                 // Enviar email de verificação
                 await sendEmailVerification(userCredential.user);
-                setLoading(false);
                 // Mostrar modal de sucesso com informações sobre verificação
                 showModal(
                     "Cadastro Realizado com Sucesso! 🎉", 
@@ -146,7 +143,6 @@ export default function HealthRegister() {
             .catch((error)=>{
                 setLoading(false);
                 console.log("Erro ao cadastrar usuário:", error);
-                
                 if (error.code === "auth/email-already-in-use") {
                     showModal(
                         "Email Já Cadastrado", 
@@ -179,7 +175,6 @@ export default function HealthRegister() {
                     );
                 }
             });
-
         } catch (error) { 
             setLoading(false);
             console.log("Erro inesperado:", error);
@@ -234,7 +229,21 @@ export default function HealthRegister() {
                                 <Text style={{marginTop: 10, color: '#2E8331', fontSize: 16}}>Cadastrando...</Text>
                             </View>
                         ) : (
-                            <CustomButton title="Cadastrar" modeButton={true} onPress={() => setTimeout(cadastro, 100)} size="large" style={{width: '100%', marginTop: 20}}/>
+                            <CustomButton
+                                title="Cadastrar"
+                                modeButton={true}
+                                onPress={cadastro}
+                                size="large"
+                                style={{
+                                    width: '100%',
+                                    marginTop: 20,
+                                    elevation: 0,
+                                    shadowColor: 'transparent',
+                                    shadowOpacity: 0,
+                                    shadowOffset: { width: 0, height: 0 },
+                                    shadowRadius: 0
+                                }}
+                            />
                         )}
                     </View>
                 </View>

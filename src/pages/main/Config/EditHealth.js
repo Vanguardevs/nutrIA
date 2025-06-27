@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { SafeAreaView, Text, View, Alert, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import CustomField from '../../../components/CustomField';
 import CustomMultiPicker from '../../../components/CustomMultiPicker';
 import CustomButton from '../../../components/CustomButton';
 import CustomModal from '../../../components/CustomModal';
-import { getDatabase, ref, onValue, update } from 'firebase/database';
+import { getDatabase, ref, onValue, set, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
+import { useNavigation } from '@react-navigation/native';
 
 export default function EditHealth() {
-    const [Alergias, setAlergias] = useState('');
+    const [alergias, setAlergias] = useState('');
     const [intolerancias, setIntolerancias] = useState([]);
-    const [Condicoes, setCondicoes] = useState([]);
+    const [condicoes, setCondicoes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const navigation = useNavigation();
 
     const intoleranciasOptions = [
         { id: 'Açucar', name: 'Açucar' },
@@ -50,38 +54,126 @@ export default function EditHealth() {
     ];
 
     useEffect(() => {
+        console.log('[EditHealth] Iniciando carregamento dos dados...');
+        
+        // Verificar se há usuário autenticado
+        const currentUser = auth.currentUser;
+        console.log('[EditHealth] Usuário atual:', currentUser?.uid);
+        
+        if (!currentUser) {
+            console.log('[EditHealth] Nenhum usuário autenticado');
+            Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
+            setLoading(false);
+            return;
+        }
+
         const db = getDatabase();
-        const userId = auth.currentUser?.uid;
+        const userId = currentUser.uid;
         const restricoesRef = ref(db, `users/${userId}/restricoes`);
+        
+        console.log('[EditHealth] Caminho do Firebase:', `users/${userId}/restricoes`);
+
         const unsubscribe = onValue(restricoesRef, (snapshot) => {
+            console.log('[EditHealth] Snapshot recebido:', snapshot.exists());
             const data = snapshot.val();
+            console.log('[EditHealth] Dados do Firebase:', JSON.stringify(data, null, 2));
+            
             if (data) {
-                setAlergias(data.alergias || '');
-                setIntolerancias(data.intolerancias || []);
-                setCondicoes(data.condicoes || []);
+                const alergiaValue = data.alergias === 'Nenhuma' || !data.alergias ? '' : data.alergias;
+                const intoleranciasValue = Array.isArray(data.intolerancias) ? data.intolerancias : [];
+                const condicoesValue = Array.isArray(data.condicoes) ? data.condicoes : [];
+                
+                console.log('[EditHealth] Definindo estados:');
+                console.log('- Alergias:', alergiaValue);
+                console.log('- Intolerâncias:', intoleranciasValue);
+                console.log('- Condições:', condicoesValue);
+                
+                setAlergias(alergiaValue);
+                setIntolerancias(intoleranciasValue);
+                setCondicoes(condicoesValue);
+            } else {
+                console.log('[EditHealth] Nenhum dado encontrado, inicializando com valores vazios');
+                setAlergias('');
+                setIntolerancias([]);
+                setCondicoes([]);
             }
             setLoading(false);
+        }, (error) => {
+            console.error('[EditHealth] Erro ao carregar dados:', error);
+            Alert.alert('Erro', `Não foi possível carregar os dados: ${error.message}`);
+            setLoading(false);
         });
-        return () => unsubscribe();
+
+        return () => {
+            console.log('[EditHealth] Limpando listener');
+            unsubscribe();
+        };
     }, []);
 
     function handleSalvar() {
+        console.log('[EditHealth] Botão salvar pressionado');
+        console.log('Estados atuais:');
+        console.log('- Alergias:', alergias);
+        console.log('- Intolerâncias:', intolerancias);
+        console.log('- Condições:', condicoes);
         setShowConfirm(true);
     }
 
     async function confirmarSalvar() {
-        const db = getDatabase();
-        const userId = auth.currentUser?.uid;
-        const restricoesRef = ref(db, `users/${userId}/restricoes`);
+        console.log('[EditHealth] ===== INICIANDO PROCESSO DE SALVAMENTO =====');
+        console.log('[EditHealth] confirmarSalvar() foi chamada!');
+        
+        setSaving(true);
+        
         try {
-            await update(restricoesRef, {
-                alergias: Alergias,
-                intolerancias: intolerancias,
-                condicoes: Condicoes
-            });
-            Alert.alert('Sucesso', 'Condições médicas atualizadas com sucesso!');
+            // Verificar usuário novamente
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                console.log('[EditHealth] Usuário não autenticado no momento do salvamento');
+                Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
+                setSaving(false);
+                return;
+            }
+
+            const db = getDatabase();
+            const userId = currentUser.uid;
+            console.log('[EditHealth] ID do usuário:', userId);
+            
+            // Processar dados para salvamento
+            const alergiasTratadas = alergias.trim() === '' ? 'Nenhuma' : alergias.trim();
+            const intoleranciasArray = Array.isArray(intolerancias) ? intolerancias : [];
+            const condicoesArray = Array.isArray(condicoes) ? condicoes : [];
+            
+            const dadosParaSalvar = {
+                alergias: alergiasTratadas,
+                intolerancias: intoleranciasArray,
+                condicoes: condicoesArray,
+                updatedAt: new Date().toISOString()
+            };
+
+            console.log('[EditHealth] Dados preparados para salvamento:', JSON.stringify(dadosParaSalvar, null, 2));
+            
+            const restricoesRef = ref(db, `users/${userId}/restricoes`);
+            console.log('[EditHealth] Referência do Firebase:', `users/${userId}/restricoes`);
+
+            // Tentar primeiro com set (sobrescrever completamente)
+            await set(restricoesRef, dadosParaSalvar);
+            
+            console.log('[EditHealth] Dados salvos com sucesso no Firebase!');
+            
+            setSaving(false);
+            setShowSuccess(true);
+            
         } catch (error) {
-            Alert.alert('Erro', 'Não foi possível salvar as condições. Tente novamente.');
+            console.error('[EditHealth] Erro detalhado ao salvar:', error);
+            console.error('[EditHealth] Tipo do erro:', typeof error);
+            console.error('[EditHealth] Stack trace:', error.stack);
+            
+            setSaving(false);
+            Alert.alert(
+                'Erro ao Salvar',
+                `Não foi possível salvar as informações.\n\nDetalhes: ${error.message || error.toString()}\n\nTente novamente ou contate o suporte.`
+            );
         }
     }
 
@@ -102,7 +194,14 @@ export default function EditHealth() {
                     <Text style={{fontSize: 16, color: '#555', textAlign: 'center', marginBottom: 22, lineHeight: 22}}>
                         Edite suas alergias, intolerâncias e condições médicas.
                     </Text>
-                    <CustomField title="Alergias" placeholder="Ex: Amendoim, frutos do mar..." value={Alergias} setValue={setAlergias}/>
+                    <View style={{width: '100%', position: 'relative'}}>
+                        <CustomField 
+                            title="Alergias" 
+                            placeholder="Ex: Amendoim, frutos do mar..." 
+                            value={alergias} 
+                            setValue={setAlergias}
+                        />
+                    </View>
                     <View style={{marginVertical: 14, width: '100%', alignItems: 'center'}}>
                         <CustomMultiPicker
                             label="Intolerâncias"
@@ -115,36 +214,36 @@ export default function EditHealth() {
                         <CustomMultiPicker
                             label="Condições Médicas"
                             options={condicoesOptions}
-                            selectedItems={Condicoes}
+                            selectedItems={condicoes}
                             onSelectedItemsChange={setCondicoes}
                         />
                     </View>
                     <CustomButton
-                        title="Salvar"
-                        onPress={handleSalvar}
+                        title={saving ? "Salvando..." : "Salvar"}
+                        onPress={confirmarSalvar}
                         modeButton={true}
                         size="large"
-                        style={{width: '100%'}}
+                        style={{width: '100%', opacity: saving ? 0.7 : 1}}
+                        disabled={saving}
                     />
                 </View>
             </ScrollView>
+            
             <CustomModal
-                visible={showConfirm}
-                onClose={() => setShowConfirm(false)}
-                title="Confirmar alterações"
-                message="Tem certeza que deseja salvar as condições médicas?"
-                type="warning"
+                visible={showSuccess}
+                onClose={() => {
+                    setShowSuccess(false);
+                    navigation.goBack();
+                }}
+                title="Sucesso"
+                message="Condições médicas atualizadas com sucesso!"
+                type="success"
                 buttons={[
                     {
-                        text: 'Cancelar',
-                        onPress: () => setShowConfirm(false),
-                        style: 'secondary'
-                    },
-                    {
-                        text: 'Confirmar',
+                        text: 'OK',
                         onPress: () => {
-                            setShowConfirm(false);
-                            confirmarSalvar();
+                            setShowSuccess(false);
+                            navigation.goBack();
                         },
                         style: 'primary'
                     }

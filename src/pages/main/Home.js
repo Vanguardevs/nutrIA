@@ -31,7 +31,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08);
 
 // Componente para balão de mensagem
-const MessageBubble = React.memo(({ message, isUser, index }) => {
+const MessageBubble = React.memo(({ message, isUser, index, timestamp }) => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -51,6 +51,18 @@ const MessageBubble = React.memo(({ message, isUser, index }) => {
             })
         ]).start();
     }, [message, fadeAnim, slideAnim, index]);
+
+    // Função para formatar data/hora no padrão brasileiro
+    const formatDateTime = (isoString) => {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const ano = date.getFullYear();
+        const hora = String(date.getHours()).padStart(2, '0');
+        const min = String(date.getMinutes()).padStart(2, '0');
+        return `${dia}/${mes}/${ano} ${hora}:${min}`;
+    };
 
     return (
         <View style={{ flexDirection: isUser ? 'row-reverse' : 'row', alignItems: 'flex-end', marginVertical: 4 }}>
@@ -76,6 +88,9 @@ const MessageBubble = React.memo(({ message, isUser, index }) => {
                     { color: isUser ? '#FFFFFF' : '#1C1C1E' }
                 ]}>
                     {message}
+                </Text>
+                <Text style={{ fontSize: 11, color: isUser ? '#E0E0E0' : '#888', marginTop: 4, textAlign: isUser ? 'right' : 'left' }}>
+                    {formatDateTime(timestamp)}
                 </Text>
             </Animated.View>
         </View>
@@ -534,6 +549,7 @@ export default function Home({ navigation }) {
             message={item.message} 
             isUser={item.isUser} 
             index={index}
+            timestamp={item.timestamp}
         />
     ), []);
 
@@ -559,6 +575,19 @@ export default function Home({ navigation }) {
     const handleSuggestionSelect = useCallback((text) => {
         setInput(text);
         setShowSuggestions(false);
+    }, []);
+
+    // Exemplo de useEffect para buscar mensagens ao renderizar
+    useEffect(() => {
+        // Aqui você pode fazer uma requisição para buscar mensagens do usuário
+        // Exemplo fictício:
+        // async function fetchMessages() {
+        //     const response = await fetch('URL_DA_API_OU_FIREBASE');
+        //     const data = await response.json();
+        //     setMessages(data);
+        // }
+        // fetchMessages();
+        // No seu caso, adapte para buscar do backend ou Firebase se desejar
     }, []);
 
     return (

@@ -32,9 +32,29 @@ export default function App() {
       console.log('[APP] Resposta da notificação:', response);
     });
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       setIsLoading(false);
+
+      // Se o usuário está logado e email verificado, mover dados de pendingUsers para users
+      if (user && user.emailVerified) {
+        try {
+          const { getDatabase, ref, get, set, remove } = await import('firebase/database');
+          const db = getDatabase();
+          const userId = user.uid;
+          const pendingRef = ref(db, `pendingUsers/${userId}`);
+          const userRef = ref(db, `users/${userId}`);
+          const snap = await get(pendingRef);
+          if (snap.exists()) {
+            const data = snap.val();
+            await set(userRef, data);
+            await remove(pendingRef);
+            console.log('[APP] Dados migrados de pendingUsers para users com sucesso!');
+          }
+        } catch (e) {
+          console.log('[APP] Erro ao migrar dados de pendingUsers para users:', e);
+        }
+      }
     });
 
     return () => {

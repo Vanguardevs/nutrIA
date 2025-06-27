@@ -158,6 +158,9 @@ export default function Diary() {
           continue;
       }
 
+      // Corrigir campo de refeição
+      const refeicaoValue = agenda.refeicao || agenda.tipo_refeicao || 'Refeição';
+
       const hora = horaFormatada(horarioValue);
       if (!hora) {
           console.error("[NOTIFICATIONS] Erro ao formatar o horário:", horarioValue);
@@ -168,9 +171,9 @@ export default function Diary() {
       try {
         const notificationId = await Notifications.scheduleNotificationAsync({
           content: {
-              title: `Hora de se alimentar! (${agenda.refeicao})`,
-              body: "Este é o horário de se alimentar de " + agenda.refeicao,
-                data: { agendaId: agenda.id, refeicao: agenda.refeicao },
+              title: `Hora de se alimentar! (${refeicaoValue})`,
+              body: "Este é o horário de se alimentar de " + refeicaoValue,
+              data: { agendaId: agenda.id, refeicao: refeicaoValue },
           },
           trigger: {
                 hour: hora.horas,
