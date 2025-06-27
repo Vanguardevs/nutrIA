@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import CustomButton from '../../../components/CustomButton.js';
 import CustomField from '../../../components/CustomField';
 import CustomPicker from '../../../components/CustomPicker';
-import CustomModal from '../../../components/CustomModal';
+import CustomModal from '../../../components/CustomModal.tsx';
 import { View, SafeAreaView, Text, Alert, useColorScheme, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ref, onValue, getDatabase, update } from 'firebase/database';
+import { ref, onValue, getDatabase, update, set } from 'firebase/database';
 import { auth } from '../../../database/firebase';
-import { Ionicons } from '@expo/vector-icons';
+
 
 export default function DataUser() {
   const colorScheme = useColorScheme();
@@ -22,11 +22,13 @@ export default function DataUser() {
   const [idade, setIdade] = useState('');
   const [objetivo, setObjetivo] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
 
   useEffect(() => {
     const db = getDatabase();
-    const userID = auth.currentUser.uid;
-    const userRef = ref(db, 'users/' + userID);
+    const userID = auth.currentUser?.uid;
+    const userRef = ref(db, `users/${userID}`);
 
     onValue(userRef, (resp) => {
       const data = resp.val();
@@ -45,15 +47,11 @@ export default function DataUser() {
 
   function confirmarSalvar() {
     const db = getDatabase();
-    const userID = auth.currentUser.uid;
-    const userRef = ref(db, 'users/' + userID);
+    const userID = auth.currentUser?.uid;
+    const userRef = ref(db, `users/${userID}`);
 
-    if (
-      nome.length === 0 ||
-      idade.length === 0 ||
-      objetivo.length === 0
-    ) {
-      Alert.alert("Campos Vazios", "Por favor, preencha todos os campos obrigatórios.");
+    if (nome.length === 0 || idade.length === 0 || objetivo.length === 0) {
+      setErrorModal(true);
       console.log("Campos vazios detectados");
       return;
     }
@@ -72,12 +70,12 @@ export default function DataUser() {
     })
       .then(() => {
         console.log('Dados atualizados com sucesso!');
-        Alert.alert('Sucesso', 'Dados pessoais atualizados com sucesso!');
+        setSuccessModal(true);
         navigation.goBack();
       })
       .catch((error) => {
         console.error('Erro ao atualizar os dados:', error);
-        Alert.alert('Erro', 'Não foi possível atualizar os dados. Tente novamente mais tarde.');
+        setErrorModal(true);
       });
   }
 
@@ -133,28 +131,40 @@ export default function DataUser() {
           </View>
         </View>
       </ImageBackground>
+
       <CustomModal
         visible={showConfirm}
         onClose={() => setShowConfirm(false)}
-        title="Confirmar alterações"
-        message="Tem certeza que deseja salvar as alterações dos dados pessoais?"
-        type="warning"
-        buttons={[
-          {
-            text: 'Cancelar',
-            onPress: () => setShowConfirm(false),
-            style: 'secondary'
-          },
-          {
-            text: 'Confirmar',
-            onPress: () => {
-              setShowConfirm(false);
-              confirmarSalvar();
-            },
-            style: 'primary'
-          }
-        ]}
+        icon='warning'
+        title="Confirmar"
+        message="Você tem certeza que deseja salvar as alterações?"
+        primaryButtonText="Confirmar"
+        onPrimaryPress={() => confirmarSalvar()}
+        secondaryButtonText="Cancelar"
+        onSecondaryPress={() => setShowConfirm(false)}
+        showButtons={true}
       />
+
+      <CustomModal
+        visible={successModal}
+        onClose={() => setSuccessModal(false)}
+        icon='checkmark-circle'
+        title="Sucesso"
+        message="As alterações foram salvas com sucesso!"
+        primaryButtonText="OK"
+        onPrimaryPress={() => setSuccessModal(false)}
+      />
+
+      <CustomModal
+        visible={errorModal}
+        onClose={() => setErrorModal(false)}
+        icon='alert-circle'
+        title="Erro"
+        message="Ocorreu um erro ao salvar as alterações."
+        primaryButtonText="OK"
+        onPrimaryPress={() => setErrorModal(false)}
+      />
+
     </SafeAreaView>
   );
 }

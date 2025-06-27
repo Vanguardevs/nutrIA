@@ -6,7 +6,7 @@ import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import CustomModal from '../../../components/CustomModal';
+import CustomModal from '../../../components/CustomModal.tsx';
 
 export default function HealthData() {
     const navigation = useNavigation();
@@ -20,6 +20,7 @@ export default function HealthData() {
     const [peso, setPeso] = useState('');
     const [loading, setLoading] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     useEffect(() => {
         const db = getDatabase();
@@ -83,6 +84,9 @@ export default function HealthData() {
     }
 
     function confirmarSalvar() {
+        
+        setShowConfirm(false);
+
         if (altura.length === 0 || peso.length === 0) {
             Alert.alert("Campos Vazios", "Por favor, preencha altura e peso.");
             return;
@@ -95,16 +99,19 @@ export default function HealthData() {
             Alert.alert("Peso Inválido", "O peso deve estar entre 20 e 400 kg. Exemplo: 70,5");
             return;
         }
+
         const db = getDatabase();
         const userId = auth.currentUser?.uid;
-        const userRef = ref(db, `users/${userId}/`);
-        update(userRef, {
-            altura: altura,
-            peso: peso
-        })
+        console.log('Salvando dados para userId:', userId, 'altura:', altura, 'peso:', peso);
+        if (!userId) {
+            Alert.alert('Erro', 'Usuário não autenticado.');
+            return;
+        }
+        const userRef = ref(db, `users/${userId}`);
+        update(userRef, { altura, peso })
         .then(() => {
             console.log('Dados de saúde atualizados com sucesso!');
-            Alert.alert('Sucesso', 'Dados de saúde atualizados com sucesso!');
+            setShowSuccess(true);
         })
         .catch((error) => {
             console.error('Erro ao atualizar dados de saúde:', error);
@@ -135,21 +142,21 @@ export default function HealthData() {
                         Atualize suas medidas corporais
                     </Text>
 
-                <CustomField
+                    <CustomField
                         title="Altura (metros)"
                         placeholder="Ex: 1,75 (1,30 - 2,10)"
                         value={altura}
                         setValue={handleAltura}
                         keyboardType="decimal-pad"
-                />
+                    />
                     
-                <CustomField
+                    <CustomField
                         title="Peso (kg)"
                         placeholder="Ex: 70,5 (20 - 400 kg)"
                         value={peso}
                         setValue={handlePeso}
                         keyboardType="decimal-pad"
-                />
+                    />
 
                     <TouchableOpacity 
                         onPress={() => navigation.navigate("EditHealth")} 
@@ -158,40 +165,51 @@ export default function HealthData() {
                         <Text style={[styles.medicalButtonText, { color: '#FFFFFF' }]}>
                             📋 Condições Médicas
                         </Text>
-                </TouchableOpacity>
+                    </TouchableOpacity>
 
                     <View style={styles.buttonContainer}>
-                <CustomButton
+
+                        <CustomButton
                             title="Salvar Dados"
                             modeButton={true}
                             onPress={handleSalvar}
                             size="large"
                             style={{width: '100%'}}
-                />
-            </View>
+                        />
+
+                    </View>
+                    
                 </View>
             </ImageBackground>
+
             <CustomModal
                 visible={showConfirm}
                 onClose={() => setShowConfirm(false)}
                 title="Confirmar alterações"
                 message="Tem certeza que deseja salvar as alterações de saúde?"
-                type="warning"
-                buttons={[
-                    {
-                        text: 'Cancelar',
-                        onPress: () => setShowConfirm(false),
-                        style: 'secondary'
-                    },
-                    {
-                        text: 'Confirmar',
-                        onPress: () => {
-                            setShowConfirm(false);
-                            confirmarSalvar();
-                        },
-                        style: 'primary'
-                    }
-                ]}
+                icon="warning"
+                primaryButtonText="Confirmar"
+                secondaryButtonText="Cancelar"
+                onPrimaryPress={confirmarSalvar}
+                onSecondaryPress={() => setShowConfirm(false)}
+                showButtons={true}
+            />
+            
+            <CustomModal
+                visible={showSuccess}
+                onClose={() => {
+                    setShowSuccess(false);
+                    navigation.goBack();
+                }}
+                title="Sucesso"
+                message="Dados de saúde atualizados com sucesso!"
+                icon="checkmark-circle"
+                primaryButtonText="OK"
+                onPrimaryPress={() => {
+                    setShowSuccess(false);
+                    navigation.goBack();
+                }}
+                showButtons={true}
             />
         </SafeAreaView>
     );
