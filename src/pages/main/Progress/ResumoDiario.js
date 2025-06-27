@@ -1,12 +1,14 @@
-import React, { useLayoutEffect } from 'react';
+
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
-import CustomButton from '../../../components/CustomButton.js';
+import foods from '../foods.json';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
+const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08);
 
 export default function ResumoDiario({ route, navigation }) {
     const { comidos = [], naoComidos = [] } = route.params || {};
+    const [alimentosDetalhes, setAlimentosDetalhes] = useState({});
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -20,45 +22,119 @@ export default function ResumoDiario({ route, navigation }) {
         });
     }, [navigation]);
 
-    const alimentosDetalhes = {
-        Banana: { calorias: 89, valorEnergetico: 370 },
-        Aveia: { calorias: 389, valorEnergetico: 1630 },
-        Ovos: { calorias: 155, valorEnergetico: 650 },
-        Maçã: { calorias: 52, valorEnergetico: 218 },
-        Iogurte: { calorias: 59, valorEnergetico: 247 },
+    const normalizarTexto = (texto) => texto.trim().toLowerCase();
+
+    const removerParenteses = (texto) => texto.replace(/\([^)]*\)/g, '').trim();
+
+    useEffect(() => {
+        const detalhes = {};
+
+        foods.forEach(item => {
+            const nomeParaBusca = normalizarTexto(removerParenteses(item.descricao));
+            const nutrientes = item.nutrientes;
+
+            const kcalObj = nutrientes.find(n =>
+                n.Componente.trim().toLowerCase() === 'energia' &&
+                n.Unidades.trim().toLowerCase() === 'kcal'
+            );
+
+            const kjObj = nutrientes.find(n =>
+                n.Componente.trim().toLowerCase() === 'energia' &&
+                n.Unidades.trim().toLowerCase() === 'kj'
+            );
+
+            const calorias = kcalObj ? parseFloat(kcalObj['Valor por 100g'].replace(',', '.')) : 0;
+            const valorEnergetico = kjObj ? parseFloat(kjObj['Valor por 100g'].replace(',', '.')) : 0;
+
+            if (calorias || valorEnergetico) {
+                detalhes[nomeParaBusca] = {
+                    calorias,
+                    valorEnergetico,
+                    descricaoOriginal: item.descricao
+                };
+            }
+        });
+
+        setAlimentosDetalhes(detalhes);
+    }, []);
+
+    const buscarDetalheAlimento = (nome) => {
+    const nomeNormalizado = normalizarTexto(removerParenteses(nome));
+
+    // 1. Busca exata
+    if (alimentosDetalhes[nomeNormalizado]) {
+        return alimentosDetalhes[nomeNormalizado];
+    }
+
+    const escapeRegex = (texto) => {
+        return texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     };
 
-    let totalCalorias = 0;
-    let totalValorEnergetico = 0;
+    // 2. Busca por palavras sequenciais
+    const palavrasBusca = nomeNormalizado.split(' ').filter(Boolean);
+    const regexSequencia = new RegExp(palavrasBusca.map(escapeRegex).join('.*'), 'i');
+
+    for (const chave in alimentosDetalhes) {
+        if (regexSequencia.test(chave)) {
+            return alimentosDetalhes[chave];
+        }
+    }
+
+    // 3. Busca por substring simples
+    for (const chave in alimentosDetalhes) {
+        if (chave.includes(nomeNormalizado)) {
+            return alimentosDetalhes[chave];
+        }
+    }
+
+    return null;
+};
+
+    const calcularTotais = (lista) => {
+        return lista.reduce((totais, item) => {
+            const detalhe = buscarDetalheAlimento(item);
+            if (detalhe) {
+                totais.calorias += detalhe.calorias;
+                totais.energia += detalhe.valorEnergetico;
+            }
+            return totais;
+        }, { calorias: 0, energia: 0 });
+    };
 
     const renderAlimentos = (lista) => {
         return lista.map((item, index) => {
-            const detalhe = alimentosDetalhes[item];
-            if (detalhe) {
-                totalCalorias += detalhe.calorias;
-                totalValorEnergetico += detalhe.valorEnergetico;
-            }
+            const detalhe = buscarDetalheAlimento(item);
             return (
                 <View key={index} style={styles.itemCard}>
-                    <Text style={styles.nome}>{item}</Text>
+                    <Text style={styles.nome}>
+                        {detalhe ? detalhe.descricaoOriginal : item}
+                    </Text>
                     {detalhe ? (
                         <Text style={styles.detalhe}>
                             Calorias: {detalhe.calorias} kcal | Valor energético: {detalhe.valorEnergetico} kJ
                         </Text>
-                    ) : null}
+                    ) : (
+                        <Text style={styles.detalhe}>Dados nutricionais não encontrados.</Text>
+                    )}
                 </View>
             );
         });
     };
 
+    const totaisComidos = calcularTotais(comidos);
+    const totaisNaoComidos = calcularTotais(naoComidos);
+
+    const totalCalorias = totaisComidos.calorias + totaisNaoComidos.calorias;
+    const totalValorEnergetico = totaisComidos.energia + totaisNaoComidos.energia;
+
     return (
-        <View style={{flex: 1, backgroundColor: '#fff'}}>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <ScrollView contentContainerStyle={[
-              styles.container,
-              {
-                paddingBottom: TAB_BAR_HEIGHT + 16,
-                minHeight: (comidos.length + naoComidos.length) === 0 ? SCREEN_HEIGHT * 0.7 : undefined
-              }
+                styles.container,
+                {
+                    paddingBottom: TAB_BAR_HEIGHT + 16,
+                    minHeight: (comidos.length + naoComidos.length) === 0 ? SCREEN_HEIGHT * 0.7 : undefined
+                }
             ]}>
                 <Text style={styles.title}>🍽️ Refeições Realizadas</Text>
                 {comidos.length ? renderAlimentos(comidos) : <Text style={styles.vazio}>Nenhuma refeição realizada.</Text>}

@@ -23,14 +23,14 @@ const ENVIRONMENTS = {
     },
     RENDER: {
         name: 'render',
-        baseUrl: 'https://nutria-6uny.onrender.com',
+        baseUrl: 'http://34.95.173.174:8000',
         questionEndpoint: '/question',
         timeout: 15000,
         retries: 3
     },
     PRODUCTION: {
         name: 'production',
-        baseUrl: 'https://nutria-6uny.onrender.com', // Mesmo do Render por enquanto
+        baseUrl: 'http://34.95.173.174:8000', // Mesmo do Render por enquanto
         questionEndpoint: '/question',
         timeout: 15000,
         retries: 3
