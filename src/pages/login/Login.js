@@ -9,6 +9,7 @@ import CustomModal from "../../components/CustomModal.js";
 import styles from "../../theme/styles.js";
 import { getDatabase, ref, set, get } from "firebase/database";
 import { app } from "../../database/firebase.js";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginPag() {
   const colorScheme = useColorScheme();
@@ -65,6 +66,33 @@ export default function LoginPag() {
       }
       
       console.log("Email verificado - login permitido");
+      
+      // Após login bem-sucedido, verificar se há restrições pendentes
+      const pendingHealthData = await AsyncStorage.getItem('pendingHealthData');
+      if (pendingHealthData) {
+        // Garantir que o UID está disponível
+        let userId = user.uid;
+        let tentativas = 0;
+        while ((!userId || userId === 'undefined') && tentativas < 10) {
+          await new Promise(res => setTimeout(res, 200));
+          userId = auth.currentUser?.uid;
+          tentativas++;
+        }
+        console.log('[Login] UID para salvar restrições:', userId);
+        if (userId && userId !== 'undefined') {
+          try {
+            const db = getDatabase();
+            const userHealthRef = ref(db, `users/${userId}/health`);
+            await set(userHealthRef, JSON.parse(pendingHealthData));
+            await AsyncStorage.removeItem('pendingHealthData');
+            showModal("Cadastro Finalizado!", "Suas restrições alimentares foram salvas com sucesso.", "success");
+          } catch (e) {
+            showModal("Erro ao salvar restrições", "Não foi possível salvar suas restrições alimentares no banco. Tente novamente em Editar Saúde.", "error");
+          }
+        } else {
+          showModal("Erro de autenticação", "Não foi possível identificar o usuário para salvar as restrições. Faça login novamente.", "error");
+        }
+      }
       
       // Mostrar modal de sucesso
       showModal("Login Realizado!", "Bem-vindo de volta! Você foi logado com sucesso.", "success");

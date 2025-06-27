@@ -2,22 +2,25 @@ import { SafeAreaView, View, useColorScheme, Text, ImageBackground, ScrollView, 
 import CustomField from "../../../components/CustomField";
 import React, { useState, useEffect } from "react";
 import CustomButton from "../../../components/CustomButton.js";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import CustomMultiPicker from "../../../components/CustomMultiPicker";
 import styles from "../../../theme/styles";
 import { getDatabase, ref, set, onValue, push } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import CustomModal from '../../../components/CustomModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Restricoes() {
     const colorScheme = useColorScheme();
     const background = colorScheme === 'dark'? "#1C1C1E" : "#F2F2F2";
     const navigate = useNavigation();
+    const route = useRoute();
     const [Alergias, setAlergias] = useState('');
     const [intolerancias, setIntolerancias] = useState([]);
     const [Condicoes, setCondicoes] = useState([]);
     const [showConfirm, setShowConfirm] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [showEmailConfirm, setShowEmailConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const intoleranciasOptions = [
@@ -61,21 +64,20 @@ export default function Restricoes() {
     }, []);
 
     const carregarDadosExistentes = () => {
-        const userId = auth.currentUser?.uid;
+        const userId = route?.params?.uid || auth.currentUser?.uid;
         if (!userId) {
-            console.log('[Restricoes] Usuário não autenticado');
+            console.log('[Restricoes] Usuário não identificado');
             return;
         }
-
         const db = getDatabase();
-        const userHealthRef = ref(db, `users/${userId}/health`);
-        
+        // Se for cadastro, buscar em pendingUsers; se for edição, buscar em users
+        const userHealthRef = route?.params?.uid
+            ? ref(db, `pendingUsers/${userId}/health`)
+            : ref(db, `users/${userId}/health`);
         const unsubscribe = onValue(userHealthRef, (snapshot) => {
             const data = snapshot.val();
             console.log('[Restricoes] Dados carregados:', data);
-            
             if (data) {
-                // Se as alergias forem "Nenhuma" ou vazio, mostrar campo vazio para edição
                 const alergiasValue = data.alergias;
                 setAlergias(alergiasValue === 'Nenhuma' || !alergiasValue ? '' : alergiasValue);
                 setIntolerancias(data.intolerancias || []);
@@ -84,7 +86,6 @@ export default function Restricoes() {
         }, (error) => {
             console.error('[Restricoes] Erro ao carregar dados:', error);
         });
-
         return unsubscribe;
     };
 
@@ -100,47 +101,34 @@ export default function Restricoes() {
     }
 
     async function confirmarSalvar() {
-        const userId = auth.currentUser?.uid;
-        if (!userId) {
-            Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
-            return;
-        }
-
         setLoading(true);
-        const db = getDatabase();
-        
-        // Estrutura organizada dos dados de saúde
-        const healthData = {
-            alergias: Alergias.trim() || 'Nenhuma', // Se vazio, salvar como "Nenhuma"
-            intolerancias: Array.isArray(intolerancias) ? intolerancias : [],
-            condicoes: Array.isArray(Condicoes) ? Condicoes : [],
-            updatedAt: Date.now(),
-            createdAt: Date.now() // Será preservado se já existir
-        };
-
         try {
-            // Verificar se já existem dados para preservar o createdAt
-            const userHealthRef = ref(db, `users/${userId}/health`);
-            const snapshot = await new Promise((resolve, reject) => {
-                onValue(userHealthRef, resolve, reject, { onlyOnce: true });
-            });
-            
-            const existingData = snapshot.val();
-            if (existingData && existingData.createdAt) {
-                healthData.createdAt = existingData.createdAt;
+            const userId = route?.params?.uid || auth.currentUser?.uid;
+            if (!userId) {
+                Alert.alert('Erro', 'Usuário não identificado. Faça o cadastro novamente.');
+                setLoading(false);
+                return;
             }
-
-            // Salvar os dados de saúde
-            await set(userHealthRef, healthData);
-
-            console.log('[Restricoes] Dados salvos com sucesso:', healthData);
+            const db = getDatabase();
+            const healthData = {
+                alergias: Alergias.trim() || 'Nenhuma',
+                intolerancias: Array.isArray(intolerancias) ? intolerancias : [],
+                condicoes: Array.isArray(Condicoes) ? Condicoes : [],
+                updatedAt: Date.now(),
+                createdAt: Date.now()
+            };
+            // Se for cadastro, salvar em pendingUsers; se for edição, salvar em users
+            const healthRef = route?.params?.uid
+                ? ref(db, `pendingUsers/${userId}/health`)
+                : ref(db, `users/${userId}/health`);
+            await set(healthRef, healthData);
             setShowSuccess(true);
         } catch (error) {
-            console.error('[Restricoes] Erro ao salvar:', error);
-            Alert.alert('Erro', 'Não foi possível salvar as restrições. Tente novamente.');
-        } finally {
             setLoading(false);
+            setShowConfirm(false);
+            Alert.alert('Erro', 'Não foi possível salvar as restrições. Tente novamente.');
         }
+        setLoading(false);
     }
 
     return(
@@ -201,7 +189,6 @@ export default function Restricoes() {
                                     shadowOffset: { width: 0, height: 0 }, 
                                     shadowRadius: 0,
                                     opacity: loading ? 0.6 : 1,
-                                    backgroundColor: '#FF3B30',
                                 }} 
                                 onPress={confirmarSalvar}
                                 disabled={loading}
@@ -232,7 +219,7 @@ export default function Restricoes() {
                 visible={showSuccess}
                 onClose={() => {
                     setShowSuccess(false);
-                    navigate.goBack();
+                    setShowEmailConfirm(true);
                 }}
                 title="Restrições salvas!"
                 message="Suas restrições alimentares foram salvas com sucesso."
@@ -240,7 +227,23 @@ export default function Restricoes() {
                 primaryButtonText="OK"
                 onPrimaryPress={() => {
                     setShowSuccess(false);
-                    navigate.goBack();
+                    setShowEmailConfirm(true);
+                }}
+                showButtons={true}
+            />
+            <CustomModal
+                visible={showEmailConfirm}
+                onClose={() => {
+                    setShowEmailConfirm(false);
+                    navigate.replace('Login');
+                }}
+                title="Confirme seu e-mail"
+                message="Um e-mail de confirmação foi enviado. Verifique sua caixa de entrada e spam, clique no link de confirmação e só então faça login."
+                icon="mail"
+                primaryButtonText="OK"
+                onPrimaryPress={() => {
+                    setShowEmailConfirm(false);
+                    navigate.replace('Login');
                 }}
                 showButtons={true}
             />

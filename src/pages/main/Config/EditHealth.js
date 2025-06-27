@@ -69,11 +69,11 @@ export default function EditHealth() {
 
         const db = getDatabase();
         const userId = currentUser.uid;
-        const restricoesRef = ref(db, `users/${userId}/restricoes`);
+        const healthRef = ref(db, `users/${userId}/health`);
         
-        console.log('[EditHealth] Caminho do Firebase:', `users/${userId}/restricoes`);
+        console.log('[EditHealth] Caminho do Firebase:', `users/${userId}/health`);
 
-        const unsubscribe = onValue(restricoesRef, (snapshot) => {
+        const unsubscribe = onValue(healthRef, (snapshot) => {
             console.log('[EditHealth] Snapshot recebido:', snapshot.exists());
             const data = snapshot.val();
             console.log('[EditHealth] Dados do Firebase:', JSON.stringify(data, null, 2));
@@ -153,11 +153,11 @@ export default function EditHealth() {
 
             console.log('[EditHealth] Dados preparados para salvamento:', JSON.stringify(dadosParaSalvar, null, 2));
             
-            const restricoesRef = ref(db, `users/${userId}/restricoes`);
-            console.log('[EditHealth] Referência do Firebase:', `users/${userId}/restricoes`);
+            const healthRef = ref(db, `users/${userId}/health`);
+            console.log('[EditHealth] Referência do Firebase:', `users/${userId}/health`);
 
             // Tentar primeiro com set (sobrescrever completamente)
-            await set(restricoesRef, dadosParaSalvar);
+            await set(healthRef, dadosParaSalvar);
             
             console.log('[EditHealth] Dados salvos com sucesso no Firebase!');
             

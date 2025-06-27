@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import CustomPicker from "../../../components/CustomPicker";
 import CustomButton from "../../../components/CustomButton.js";
 import CustomModal from "../../../components/CustomModal.js";
-import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, app } from "../../../database/firebase";
 import {getDatabase, ref, set} from "firebase/database";
 import styles from "../../../theme/styles";
@@ -86,6 +86,7 @@ export default function HealthRegister() {
     }
 
     function cadastro(){
+        if (loading) return;
         setLoading(true);
         try {
             // Remover validação obrigatória dos campos
@@ -104,7 +105,6 @@ export default function HealthRegister() {
             createUserWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
                 console.log("Usuário cadastrado com sucesso!");
-                // Salvar dados em pendingUsers primeiro
                 const db = getDatabase(app);
                 const userId = userCredential.user.uid;
                 const userRef = ref(db, `users/${userId}`);
@@ -133,12 +133,8 @@ export default function HealthRegister() {
                 }
                 // Enviar email de verificação
                 await sendEmailVerification(userCredential.user);
-                // Mostrar modal de sucesso com informações sobre verificação
-                showModal(
-                    "Cadastro Realizado com Sucesso! 🎉", 
-                    `Parabéns, ${nome}! Sua conta foi criada com sucesso.\n\n📧 Um email de verificação foi enviado para:\n${email}\n\n⚠️ IMPORTANTE: Verifique sua caixa de entrada (e spam) e clique no link de confirmação para ativar sua conta antes de fazer login.\n\nApós verificar o email, você poderá fazer login normalmente.`, 
-                    "success"
-                );
+                // Navegar para a tela de restrições alimentares, passando o UID como parâmetro
+                navigation.replace("Restrições", { uid: userId });
             })
             .catch((error)=>{
                 setLoading(false);
@@ -243,6 +239,7 @@ export default function HealthRegister() {
                                     shadowOffset: { width: 0, height: 0 },
                                     shadowRadius: 0
                                 }}
+                                disabled={loading}
                             />
                         )}
                     </View>
