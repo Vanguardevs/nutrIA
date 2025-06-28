@@ -196,7 +196,7 @@ export default function HealthRegister() {
                     />
                     <CustomField
                         title="Peso (kg)"
-                        placeholder="Ex: 70,5 (20 - 400 kg)"
+                        placeholder="Ex: 70,5 (20 - 200 kg)"
                         value={peso}
                         setValue={handlePeso}
                         keyboardType='numeric'

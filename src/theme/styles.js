@@ -169,18 +169,19 @@ const styles = StyleSheet.create({
   hrContainer: {
    flex: 1,
    backgroundColor: '#f5f5f5',
-   paddingHorizontal: 20,
    overflow: 'hidden',
+   width: '100%',
   },
   hrBackgroundImage: {
-   flex: 1,
+    flex: 1,
   },
   hrForm: {
-   flex: 1,
-   alignItems: 'center',
-   justifyContent: 'center',
-   gap: 20,
-   width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 35,
+    gap: 20,
+    width: '100%',
   },
   hrLink: {
    alignItems: 'center',
