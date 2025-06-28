@@ -1,91 +1,129 @@
-import {  TouchableOpacity, View, Text, Button, TextInput, StyleSheet, Modal } from "react-native";
-import Theme from "../theme/theme";
 import React, { useState, useEffect } from "react";
-import styles from "../theme/styles";
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { useTheme } from '../theme/theme';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ActivityIndicator } from "react-native";
 
 interface CustomButtonProps {
   title: string;
   onPress: () => void;
-  style: StyleSheet;
-  modeButton: boolean;
+  style?: any;
+  modeButton?: boolean;
+  isLoading?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger';
+  size?: 'small' | 'medium' | 'large';
 }
 
-const CustomButton = ({ title, onPress, modeButton }: CustomButtonProps) => {
+const CustomButton = (props: CustomButtonProps) => {
+  const { borderRadius, font, colors } = useTheme();
   const [mode, setMode] = useState(false);
 
   useEffect(() => {
-    setMode(modeButton);
-  }, [modeButton]);
+    setMode(props.modeButton || false);
+  }, [props.modeButton]);
+
+  const getButtonStyle = () => {
+    const baseStyle = [styles.button, { borderRadius: borderRadius.lg }];
+    
+    // Size variants
+    switch (props.size) {
+      case 'small':
+        baseStyle.push(styles.buttonSmall);
+        break;
+      case 'large':
+        baseStyle.push(styles.buttonLarge);
+        break;
+      default:
+        baseStyle.push(styles.buttonMedium);
+    }
+
+    // Custom style override
+    if (props.style) {
+      baseStyle.push(props.style);
+    }
+
+    return baseStyle;
+  };
+
+  const getGradientColors = (): [string, string] => {
+    if (props.variant === 'danger') {
+      return ['#FF3B30', '#FF453A'] as const;
+    }
+    if (props.variant === 'secondary') {
+      return ['#8E8E93', '#AEAEB2'] as const;
+    }
+    return mode ? ['#2E8331', '#2F9933'] as const : ['#2E8331', '#2F9933'] as const;
+  };
 
   return (
-    <TouchableOpacity 
-      onPress={onPress}
-      style={[
-        styless.button,
-        mode
-          ? styless.activeButton
-          : styless.inactiveButton,
-      ]}
+    <TouchableOpacity
+      onPress={props.isLoading ? undefined : props.onPress}
+      style={getButtonStyle()}
+      disabled={props.isLoading}
     >
       <LinearGradient
-        colors={mode ? ['#2E8331', '#2F9933'] : ['#b71c1c', '#ff4e50']}
+        colors={getGradientColors()}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={styless.gradient}
+        style={[styles.gradient, { borderRadius: borderRadius.lg }]}
       >
-        <Text
-          style={[
-            styless.ButtonText,
-            mode ? styless.activeButtonText : styless.inactiveButtonText
-          ]}
-        >
-          {title}
-        </Text>
+        {props.isLoading ? (
+          <ActivityIndicator size="small" color="#FFF" />
+        ) : (
+          <Text
+            style={[
+              styles.buttonText,
+              { fontFamily: font.fontFamily },
+              styles.activeButtonText
+            ]}
+          >
+            {props.title}
+          </Text>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );
 };
 
-const styless = StyleSheet.create({
+const styles = StyleSheet.create({
   button: {
-    borderRadius: Theme.borderRadius,
-    height: 50,
-    width: 200, 
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
+  },
+  buttonSmall: {
+    height: 40,
+    minWidth: 120,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonMedium: {
+    height: 50,
+    minWidth: 200,
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonLarge: {
+    height: 56,
+    minWidth: 280,
+    paddingHorizontal: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   gradient: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: Theme.borderRadius,
     width: '100%',
   },
-  activeButton: {
-    borderWidth: 2,
-    borderColor: '#2F9933',
-  },
-  inactiveButton: {
-    borderWidth: 2,
-    borderColor: '#ccc',
-  },
-  ButtonText: {
-    fontFamily: Theme.font.fontFamily,
+  buttonText: {
     fontSize: 16,
     textAlign: 'center',
+    fontWeight: '600',
   },
   activeButtonText: {
     color: 'white',
-  },
-  inactiveButtonText: {
-    color: '#black',
   },
 });
 

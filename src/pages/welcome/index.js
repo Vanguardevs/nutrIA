@@ -1,9 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { useColorScheme, ImageBackground, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Image } from "react-native";
 import styles from "../../theme/styles";
-import CustomButton from "../../components/CustomButton";
-
-
+import CustomButton from "../../components/CustomButton.js";
+import { useEffect } from "react";
 
 export default function Welcome() {
 
@@ -31,7 +30,7 @@ export default function Welcome() {
                     <Image source={require('../../../assets/logoWelcome.png')} style={styles.welcomeImage} />
                 </View>
 
-                <CustomButton title="Começar" onPress={() => navigation.navigate("Login")} modeButton={true}/>
+                <CustomButton title="Começar" onPress={() => navigation.navigate("Login")} modeButton={true} size="large" style={{width: '100%', marginTop: 20}}/>
 
             </ImageBackground>
 

@@ -7,12 +7,17 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Precisamos do microfone para reconhecimento de voz.",
+        "NSLocationWhenInUseUsageDescription": "Precisamos da sua localização para mostrar clínicas próximas.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Precisamos da sua localização para mostrar clínicas próximas."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +25,13 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.vanguardnutria.softwareAssistant",
-      "newArchEnabled": true
+      "newArchEnabled": true,
+      "permissions": [
+        "RECORD_AUDIO",
+        "INTERNET",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,6 +41,11 @@
         "projectId": "e02f7476-de94-4d3f-b571-f429ee9c38c0"
       }
     },
-    "owner": "vanguard-nutria"
+    "owner": "vanguard-nutria",
+    "plugins": [
+      "expo-font",
+      "expo-location",
+      "expo-notifications"
+    ]
   }
 }

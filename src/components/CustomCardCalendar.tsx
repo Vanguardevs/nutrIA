@@ -1,25 +1,42 @@
 import {View, StyleSheet, Text, TouchableOpacity, useColorScheme} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { useState } from 'react';
 
 interface CustomCard {
     horario: string;
-    alimentacao: string;
+    alimentos: string[];
     onPressEdit: () => void;
+    onPressConcluido: () => void;
 }
 
-const CardCustomCalendar = ({horario, alimentacao, onPressEdit}: CustomCard) => {
+const CardCustomCalendar = ({horario, alimentos, onPressEdit, onPressConcluido}: CustomCard) => {
 
     const colorSheme = useColorScheme();
 
-    const backgoundH = colorSheme === 'dark'? "#1C1C1E" : "#F2F2F2"
+    const backgoundH = colorSheme === 'dark'? "#2C2C2E" : "#F5F5F5"
     const backgoundIcons = colorSheme === 'dark'? "#F2F2F2" : "#1C1C1E"
+    const textColor = colorSheme === 'dark'? "#FFFFFF" : "#333333"
+    const [expandido, setExpandido] = useState(false);
+    const mostrarAlimentos = expandido ? alimentos : alimentos.slice(0, 4);
 
     return (
         <View style={[styles.container,{backgroundColor: backgoundH}]}>
             <View style={styles.header}>
-                <Text style={[styles.alimentacaoText,{color: backgoundIcons}]}>{alimentacao}</Text>
-                <TouchableOpacity onPress={onPressEdit}>
-                    <Ionicons name="create-outline" size={28} color="#4CAF50" />
+                <View style={styles.alimentacaoContainer}>
+                    {mostrarAlimentos.map((alimento, idx) => (
+                        <Text key={idx} style={[styles.alimentacaoText,{color: textColor}]}> {idx + 1}. {alimento} </Text>
+                    ))}
+                    {alimentos.length > 4 && (
+                        <TouchableOpacity onPress={() => setExpandido(e => !e)} style={{ marginTop: 4 }}>
+                            <Text style={{ color: '#2E8331', fontWeight: 'bold', fontSize: 14 }}>{expandido ? 'Ver menos' : `Ver mais (${alimentos.length - 4})`}</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+                <TouchableOpacity 
+                    style={styles.editButton}
+                    onPress={onPressEdit}
+                >
+                    <Ionicons name="create-outline" size={24} color="#4CAF50" />
                 </TouchableOpacity>
             </View>
 
@@ -30,8 +47,8 @@ const CardCustomCalendar = ({horario, alimentacao, onPressEdit}: CustomCard) => 
             </View>
 
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.concluidoButton}>
-                    <Ionicons name="thumbs-up" size={32} color="#FFF" />
+                <TouchableOpacity style={styles.concluidoButton} onPress={onPressConcluido}>
+                    <Ionicons name="thumbs-up" size={24} color="#FFF" />
                     <Text style={styles.concluidoText}>Concluído</Text>
                 </TouchableOpacity>
             </View>
@@ -41,14 +58,11 @@ const CardCustomCalendar = ({horario, alimentacao, onPressEdit}: CustomCard) => 
 
 const styles = StyleSheet.create({
     container: {
-        alignContent: 'center',
-        justifyContent: 'center',
-        width: '80%',
-        height: 180,
-        backgroundColor: '#F5F5F5',
+        width: '100%',
+        minHeight: 160,
         borderRadius: 15,
-        marginTop: 10,
-        padding: 15,
+        marginVertical: 8,
+        padding: 16,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
@@ -58,24 +72,40 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
+        alignItems: 'flex-start',
+        marginBottom: 12,
+        minHeight: 40,
+    },
+    alimentacaoContainer: {
+        flex: 1,
+        marginRight: 12,
+        justifyContent: 'center',
     },
     alimentacaoText: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        fontSize: 18,
-        color: '#333',
+        fontSize: 16,
+        lineHeight: 20,
+        flexWrap: 'wrap',
+    },
+    editButton: {
+        padding: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+        minWidth: 32,
+        minHeight: 32,
     },
     horarioContainer: {
         alignItems: 'center',
-        marginVertical: 10,
+        marginVertical: 12,
     },
     horarioBox: {
         backgroundColor: '#4CAF50',
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-        borderRadius: 10,
+        paddingVertical: 6,
+        paddingHorizontal: 16,
+        borderRadius: 12,
+        minWidth: 80,
+        alignItems: 'center',
     },
     horarioText: {
         color: '#FFF',
@@ -84,22 +114,24 @@ const styles = StyleSheet.create({
     },
     footer: {
         alignItems: 'center',
+        marginTop: 8,
     },
     concluidoButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#4CAF50',
-        paddingVertical: 8,
+        paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 20,
+        minHeight: 40,
     },
     concluidoText: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
         fontSize: 14,
         color: '#FFF',
-        marginLeft: 8,
+        marginLeft: 6,
     },
 });
 

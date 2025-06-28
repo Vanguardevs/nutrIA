@@ -1,24 +1,26 @@
 import { StyleSheet } from 'react-native';
-import Theme from './theme.js'
+// import Theme from './theme.js' // Removido para evitar dependência fixa de tema
 
 const styles = StyleSheet.create({
 
      // WELCOME === INDEX.JS
   welcomeContainer: {
     flex: 1,
-    backgroundColor: Theme.colors.secondary,
+    // backgroundColor: Theme.colors.secondary, // Remover dependência direta
     justifyContent: 'space-between',
     alignItems: 'center',
+    // Use a cor de fundo via props/contexto
   },
   welcomeCurtain: {
     backgroundColor: 'white',
     justifyContent: 'space-evenly',
     height: 250,
     width: '100%',
-    borderTopRightRadius: Theme.borderRadius,
-    borderTopLeftRadius: Theme.borderRadius,
+    // borderTopRightRadius: Theme.borderRadius, // Remover dependência direta
+    // borderTopLeftRadius: Theme.borderRadius, // Remover dependência direta
     marginTop: '40%',
     alignItems: 'center'
+    // Use borderRadius via props/contexto se necessário
   },
   welcomeButton: {
     height: 70,
@@ -76,48 +78,44 @@ const styles = StyleSheet.create({
 
    // LOGIN === LOGIN.JS
 
-  loginContainer: {
+  loginSafeArea: {
     flex: 1,
-    backgroundColor: '#EEEDE7',
   },
-  loginCenter: {
+  loginImageBackground: {
     flex: 1,
-    width: '50vg',
-    justifyContent: 'center',
-    marginTop: '50%',
+    resizeMode: "cover",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  loginInput: {
-    backgroundColor: 'gray',
-    width: '80%',
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 10,
-  },
-  loginBottom: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: '10vh'
-  },
-  loginModal: {
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: 'black', 
-    borderRadius: 10, 
-    opacity: 1
-},
-  loginModalMessage: {
-   flex: 1,
-   justifyContent: 'center', 
-   alignItems: 'center',
-   backgroundColor: 'white',
-},
-  loginBackground: {
-   height: '100%',
-   width: '100%',
-   },
+  loginCard: {
+    width: "85%",
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
+    alignItems: "center",
 
+  },  
+  loginForgotContainer: {
+    marginTop: 10,
+    marginBottom: 20,
+    width: "100%",
+    alignItems: "center",
+  },
+  loginForgotText: {
+    fontSize: 15,
+  },
+  loginButton: {
+    width: "100%",
+    marginBottom: 15,
+  },
+  loginRegisterContainer: {
+    marginTop: 10,
+    alignItems: "center",
+  },
 
 
    // REGISTER === Register.js
@@ -131,12 +129,13 @@ const styles = StyleSheet.create({
    flex: 1,
    justifyContent: 'center',
    gap: 20,
-   width: '100%',
+   width: '72%',
   },
   registerContainer: {
    flex: 1,
    backgroundColor: '#f5f5f5',
    paddingHorizontal: 20,
+   allignItems: 'center',
    overflow: 'hidden',
   },
   registerRow: {
@@ -156,8 +155,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     color:"#333",
     shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
     shadowRadius: 4,
   },
   registerBackground: {
@@ -170,15 +169,19 @@ const styles = StyleSheet.create({
   hrContainer: {
    flex: 1,
    backgroundColor: '#f5f5f5',
-   paddingHorizontal: 20,
    overflow: 'hidden',
+   width: '100%',
+  },
+  hrBackgroundImage: {
+    flex: 1,
   },
   hrForm: {
-   flex: 1,
-   alignItems: 'center',
-   justifyContent: 'center',
-   gap: 20,
-   width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 35,
+    gap: 20,
+    width: '100%',
   },
   hrLink: {
    alignItems: 'center',
@@ -213,7 +216,10 @@ const styles = StyleSheet.create({
   rtButton: {
    justifyContent: 'flex-end',
    alignItems: 'center',
-   marginTop: 150,
+   marginTop: 70,
+  },
+  rtField: {
+    width: '82.5%',
   },
 
 });
