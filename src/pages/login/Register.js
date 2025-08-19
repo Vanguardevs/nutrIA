@@ -1,9 +1,9 @@
 import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, Alert, useColorScheme, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import CustomField from "../../components/CustomField";
+import CustomField from "../../components/shared/CustomField";
 import CustomButton from "../../components/CustomButton";
-import CustomPicker from "../../components/CustomPicker";
+import CustomPicker from "../../components/shared/CustomPicker";
 import styles from "../../theme/styles";
 import RNPickerSelect from 'react-native-picker-select';
 

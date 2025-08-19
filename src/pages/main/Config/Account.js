@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CustomField from '../../../components/CustomField';
+import CustomField from '../../../components/shared/CustomField';
 import CustomButton from '../../../components/CustomButton.js';
 import { View, SafeAreaView, Text, StyleSheet, useColorScheme, Alert, ImageBackground } from 'react-native';
 import { getDatabase, onValue, ref, update } from 'firebase/database';

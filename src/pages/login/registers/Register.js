@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Text, TouchableOpacity, StyleSheet, View, SafeAreaView, useColorScheme, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import CustomField from "../../../components/CustomField"; 
+import CustomField from "../../../components/shared/CustomField"; 
 import CustomButton from "../../../components/CustomButton.js";
-import CustomPicker from "../../../components/CustomPicker";
+import CustomPicker from "../../../components/shared/CustomPicker";
 import CustomModal from "../../../components/CustomModal.js";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 

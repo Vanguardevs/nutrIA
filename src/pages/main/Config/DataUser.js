@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CustomButton from '../../../components/CustomButton.js';
-import CustomField from '../../../components/CustomField';
-import CustomPicker from '../../../components/CustomPicker';
+import CustomField from '../../../components/shared/CustomField.js';
+import CustomPicker from '../../../components/shared/CustomPicker.js';
 import CustomModal from '../../../components/CustomModal.tsx';
 import { View, SafeAreaView, Text, Alert, useColorScheme, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';

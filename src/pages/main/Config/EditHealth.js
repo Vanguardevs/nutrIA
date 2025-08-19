@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Text, View, Alert, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import CustomField from '../../../components/CustomField';
-import CustomMultiPicker from '../../../components/CustomMultiPicker';
+import CustomField from '../../../components/shared/CustomField';
+import CustomMultiPicker from '../../../components/shared/CustomMultiPicker';
 import CustomButton from '../../../components/CustomButton';
 import CustomModal from '../../../components/CustomModal.tsx';
 import { getDatabase, ref, onValue, set, update } from 'firebase/database';

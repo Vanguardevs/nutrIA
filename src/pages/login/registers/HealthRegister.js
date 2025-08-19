@@ -1,8 +1,8 @@
 import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text, useColorScheme, ImageBackground, ActivityIndicator } from "react-native";
-import CustomField from "../../../components/CustomField";
+import CustomField from "../../../components/shared/CustomField";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import CustomPicker from "../../../components/CustomPicker";
+import CustomPicker from "../../../components/shared/CustomPicker";
 import CustomButton from "../../../components/CustomButton.js";
 import CustomModal from "../../../components/CustomModal.js";
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut} from "firebase/auth";

@@ -1,6 +1,6 @@
 import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text, ScrollView, FlatList} from 'react-native';
-import CustomField from '../../../components/CustomField';
-import CustomPicker from '../../../components/CustomPicker';
+import CustomField from '../../../components/shared/CustomField';
+import CustomPicker from '../../../components/shared/CustomPicker';
 import CustomButton from '../../../components/CustomButton.js';
 import CustomModal from '../../../components/CustomModal.tsx';
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';

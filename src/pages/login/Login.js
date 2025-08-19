@@ -4,7 +4,7 @@ import { auth } from "../../database/firebase.js";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton.js";
-import CustomField from "../../components/CustomField";
+import CustomField from "../../components/shared/CustomField.js";
 import CustomModal from "../../components/CustomModal.js";
 import styles from "../../theme/styles.js";
 import { getDatabase, ref, set, get, update } from "firebase/database";

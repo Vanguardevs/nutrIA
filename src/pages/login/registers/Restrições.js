@@ -1,9 +1,9 @@
 import { SafeAreaView, View, useColorScheme, Text, ImageBackground, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
-import CustomField from "../../../components/CustomField";
+import CustomField from "../../../components/shared/CustomField";
 import React, { useState, useEffect } from "react";
 import CustomButton from "../../../components/CustomButton.js";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import CustomMultiPicker from "../../../components/CustomMultiPicker";
+import CustomMultiPicker from "../../../components/shared/CustomMultiPicker";
 import styles from "../../../theme/styles";
 import { getDatabase, ref, set, onValue, push } from 'firebase/database';
 import { auth } from '../../../database/firebase';

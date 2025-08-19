@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CustomButton from '../../../components/CustomButton.js';
-import CustomField from '../../../components/CustomField';
+import CustomField from '../../../components/shared/CustomField.js';
 import { View, SafeAreaView, Text, useColorScheme, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
