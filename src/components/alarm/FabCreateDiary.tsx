@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import type { ViewStyle } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface FabCreateDiaryProps {

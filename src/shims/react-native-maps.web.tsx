@@ -1,6 +1,7 @@
 // Simple web shim for react-native-maps to prevent native-only imports on web.
 // Provides minimal no-op components to avoid crashes.
-import React, { PropsWithChildren, CSSProperties } from "react";
+import React from "react";
+import type { PropsWithChildren, CSSProperties } from "react";
 
 export const Marker: React.FC = () => null;
 export const PROVIDER_GOOGLE = "google" as const;

@@ -55,6 +55,7 @@
     "@react-native-community/cli": "latest",
     "@types/jest": "^30.0.0",
     "@types/react": "~18.3.12",
+    "babel-plugin-module-resolver": "^5.0.2",
     "rimraf": "^6.0.1",
     "typescript": "^5.3.3"
   },

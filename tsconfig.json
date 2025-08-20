@@ -1,18 +1,24 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": false,
     "noEmit": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "strict": false,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "useUnknownInCatchVariables": true,
+    "moduleResolution": "Bundler",
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
     "baseUrl": ".",
     "paths": {
-      "*": ["*"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["App.tsx", "src", "app.json", "global.d.ts"],
+  "include": ["App.tsx", "src", "global.d.ts"],
   "exclude": ["node_modules"]
 }

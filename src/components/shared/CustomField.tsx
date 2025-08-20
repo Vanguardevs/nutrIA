@@ -6,7 +6,7 @@ import {
   Modal,
   useColorScheme,
   TextInput,
-  TextInputProps,
+  type TextInputProps,
 } from "react-native";
 
 interface CustomFieldProps extends TextInputProps {
