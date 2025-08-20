@@ -1,15 +1,15 @@
 import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text, ScrollView} from 'react-native';
 import CustomField from '../../../components/shared/CustomField';
-import CustomButton from '../../../components/CustomButton.js';
+import CustomButton from '../../../components/shared/CustomButton.tsx';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, remove, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import CustomPicker from '../../../components/shared/CustomPicker';
+import CustomPicker from '../../../components/shared/CustomPicker.tsx';
 import { Ionicons } from 'react-native-vector-icons';
-import CustomModal from '../../../components/CustomModal';
+import CustomModal from '../../../components/shared/CustomModal.tsx';
 import { loadFoodsData } from '../../../utils/foodsLoader';
 
 export default function EditDiary(){
