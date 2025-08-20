@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { SafeAreaView, View, ImageBackground, useColorScheme, ScrollView, Dimensions } from "react-native";
 import DiaryAgendaList from "../../../components/alarm/DiaryAgendaList";
 import EmptyDiaryState from "../../../components/alarm/EmptyDiaryState";
@@ -11,16 +11,16 @@ import { useDiaryAgendas } from "../../../hooks/diary/useDiaryAgendas";
 import { useDiaryNotifications } from "../../../hooks/diary/useDiaryNotifications";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08); // 8% da tela, igual ao appRoute.js
+const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08);
 
 export default function Diary() {
   const colorScheme = useColorScheme();
   const backgroundH = colorScheme === "dark" ? "#1C1C1E" : "#F2F2F2";
-  const navigate = useNavigation();
-  const { agendas, loading, error } = useDiaryAgendas();
+  const navigate = useNavigation<any>();
+  const { agendas } = useDiaryAgendas();
   useDiaryNotifications(agendas);
 
-  async function AgendaConcluida(id) {
+  async function AgendaConcluida(id: string) {
     const userID = auth.currentUser?.uid;
     const db = getDatabase();
     const data = new Date();
@@ -38,12 +38,10 @@ export default function Diary() {
         style={styles.homeBackground}
         resizeMode="cover"
       >
-        {/* Botão de criar agenda dentro do plano de fundo */}
         <View style={styles.fabTopContainer}>
-          <FabCreateDiary onPress={() => navigate.navigate("CreateDiary")} />
+          <FabCreateDiary onPress={() => navigate.navigate("CreateDiary" as never)} />
         </View>
 
-        {/* Container principal com ScrollView */}
         <View style={styles.contentContainer}>
           <ScrollView
             style={styles.scrollView}
@@ -58,17 +56,20 @@ export default function Diary() {
           >
             {agendas.length > 0 ? (
               <DiaryAgendaList
-                agendas={agendas}
-                onEdit={(agenda) => {
-                  navigate.navigate("EditDiary", {
-                    id: agenda.id,
-                    alimentos: Array.isArray(agenda.alimentos)
-                      ? agenda.alimentos
-                      : agenda.refeicao
-                      ? [agenda.refeicao]
-                      : [],
-                    hora: agenda.horario || agenda.hora,
-                  });
+                agendas={agendas as any}
+                onEdit={(agenda: any) => {
+                  navigate.navigate(
+                    "EditDiary" as never,
+                    {
+                      id: agenda.id,
+                      alimentos: Array.isArray(agenda.alimentos)
+                        ? agenda.alimentos
+                        : agenda.refeicao
+                        ? [agenda.refeicao]
+                        : [],
+                      hora: agenda.horario || agenda.hora,
+                    } as never,
+                  );
                 }}
                 onConcluido={AgendaConcluida}
               />
