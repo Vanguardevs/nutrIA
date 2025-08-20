@@ -6,8 +6,8 @@ import { auth } from "./src/database/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import AppTabs from "./src/routes/appRoute.js";
 import AuthTabs from "./src/routes/authRoute.js";
-import AnimatedSplash from "./src/components/AnimatedSplash.js";
-import ErrorBoundary from "./src/components/ErrorBoundary.js";
+import AnimatedSplash from "./src/components/AnimatedSplash";
+import ErrorBoundary from "./src/components/ErrorBoundary";
 import * as Notifications from "expo-notifications";
 
 // Configuração global de notificações (apenas em native)
