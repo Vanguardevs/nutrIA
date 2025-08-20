@@ -1,4 +1,18 @@
 {
-  "compilerOptions": {},
-  "extends": "expo/tsconfig.base"
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*"]
+    }
+  },
+  "include": ["App.js", "src", "app.json", "global.d.ts"],
+  "exclude": ["node_modules"]
 }

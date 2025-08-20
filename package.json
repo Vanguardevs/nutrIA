@@ -6,7 +6,9 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "build-apk": "eas build -p android --profile preview",
-    "gc-kc": "npm i react-native-keyboard-controller react-native-gifted-chat"
+    "gc-kc": "npm i react-native-keyboard-controller react-native-gifted-chat",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf node_modules && rimraf $npm_config_cache && rimraf android/.gradle && rimraf android/app/build || true"
   },
   "dependencies": {
     "@expo-google-fonts/k2d": "^0.2.3",
@@ -51,7 +53,9 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@react-native-community/cli": "latest",
+    "@types/jest": "^30.0.0",
     "@types/react": "~18.3.12",
+    "rimraf": "^6.0.1",
     "typescript": "^5.3.3"
   },
   "private": true,
