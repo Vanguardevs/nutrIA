@@ -1,5 +1,7 @@
-import { initializeApp, FirebaseApp } from "firebase/app";
-import { initializeAuth, browserLocalPersistence, getAuth, setPersistence, Auth } from "firebase/auth";
+import * as firebaseApp from "firebase/app";
+import * as firebaseAuth from "firebase/auth";
+import type { FirebaseApp } from "firebase/app";
+import type { Auth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
 
@@ -20,18 +22,18 @@ const firebaseConfig = {
   measurementId: "G-S784H05KTT",
 };
 
-const app: FirebaseApp = initializeApp(firebaseConfig);
+const app: FirebaseApp = firebaseApp.initializeApp(firebaseConfig);
 
 let auth: Auth;
 if (Platform.OS === "web") {
-  auth = getAuth(app);
+  auth = firebaseAuth.getAuth(app);
   // Ensure browser persistence on web
-  setPersistence(auth, browserLocalPersistence).catch((e) => {
+  firebaseAuth.setPersistence(auth, firebaseAuth.browserLocalPersistence).catch((e) => {
     console.warn("[Firebase] Failed to set browser persistence:", e);
   });
 } else {
   // React Native (iOS/Android)
-  auth = initializeAuth(app, {
+  auth = firebaseAuth.initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage),
   });
 }

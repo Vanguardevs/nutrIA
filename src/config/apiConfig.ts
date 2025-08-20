@@ -41,7 +41,8 @@ const ENVIRONMENTS: Record<"LOCAL" | "RENDER" | "PRODUCTION", EnvConfig> = {
 };
 
 // Ambiente atual - MUDAR AQUI para alternar entre local e render
-const CURRENT_ENV: keyof typeof ENVIRONMENTS = "RENDER";
+// Use a non-literal variable to avoid TS2367 constant comparison warnings
+let CURRENT_ENV: keyof typeof ENVIRONMENTS = "RENDER";
 
 const currentConfig = ENVIRONMENTS[CURRENT_ENV];
 
@@ -73,10 +74,10 @@ export const getCurrentConfig = () => {
 };
 
 // Função para verificar se está em desenvolvimento
-export const isDevelopment = (): boolean => CURRENT_ENV === "LOCAL";
+export const isDevelopment = (): boolean => currentConfig.name === "local";
 
 // Função para verificar se está em produção
-export const isProduction = (): boolean => CURRENT_ENV === "PRODUCTION";
+export const isProduction = (): boolean => currentConfig.name === "production";
 
 // Log da configuração atual
 /* eslint-disable no-console */

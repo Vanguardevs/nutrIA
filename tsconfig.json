@@ -13,6 +13,6 @@
       "*": ["*"]
     }
   },
-  "include": ["App.js", "src", "app.json", "global.d.ts"],
+  "include": ["App.tsx", "src", "app.json", "global.d.ts"],
   "exclude": ["node_modules"]
 }

@@ -9,6 +9,7 @@ import AuthTabs from "./src/routes/authRoute";
 import AnimatedSplash from "./src/components/AnimatedSplash";
 import ErrorBoundary from "./src/components/ErrorBoundary";
 import * as Notifications from "expo-notifications";
+import * as firebaseDatabase from "firebase/database";
 
 // Configuração global de notificações (apenas em native)
 if (Platform.OS !== "web") {
@@ -47,16 +48,15 @@ export default function App() {
       // Se o usuário está logado e email verificado, mover dados de pendingUsers para users
       if (user && user.emailVerified) {
         try {
-          const { getDatabase, ref, get, set, remove } = await import("firebase/database");
-          const db = getDatabase();
+          const db = firebaseDatabase.getDatabase();
           const userId = user.uid;
-          const pendingRef = ref(db, `pendingUsers/${userId}`);
-          const userRef = ref(db, `users/${userId}`);
-          const snap = await get(pendingRef);
+          const pendingRef = firebaseDatabase.ref(db, `pendingUsers/${userId}`);
+          const userRef = firebaseDatabase.ref(db, `users/${userId}`);
+          const snap = await firebaseDatabase.get(pendingRef);
           if (snap.exists()) {
             const data = snap.val();
-            await set(userRef, data);
-            await remove(pendingRef);
+            await firebaseDatabase.set(userRef, data);
+            await firebaseDatabase.remove(pendingRef);
             console.log("[APP] Dados migrados de pendingUsers para users com sucesso!");
           }
         } catch (e) {
