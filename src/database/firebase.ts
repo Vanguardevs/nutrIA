@@ -8,9 +8,15 @@ import { Platform } from "react-native";
 let getReactNativePersistence: ((storage: any) => any) | undefined;
 
 try {
+  // Use require to avoid bundler issues; the module may not be present in some setups.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const rn = require("firebase/auth/react-native");
-  getReactNativePersistence = rn.getReactNativePersistence;
-} catch (e) {}
+  if (rn && typeof rn.getReactNativePersistence === "function") {
+    getReactNativePersistence = rn.getReactNativePersistence;
+  }
+} catch (e) {
+  // Module not available or different SDK version — will fall back below.
+}
 
 const firebaseConfig = {
   apiKey: "AIzaSyD_XRGEfu32U4V1GIawL_CBvivf2CYeNmQ",
@@ -33,9 +39,24 @@ if (Platform.OS === "web") {
   });
 } else {
   // React Native (iOS/Android)
-  auth = firebaseAuth.initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
+  // initializeAuth may not exist in some SDK builds; getReactNativePersistence may also be undefined.
+  const initAuthFn = (firebaseAuth as any).initializeAuth;
+  if (typeof initAuthFn === "function") {
+    if (getReactNativePersistence) {
+      auth = initAuthFn(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
+    } else {
+      console.warn("[Firebase] react-native persistence not available; initializing auth without persistence.");
+      auth = initAuthFn(app);
+    }
+  } else {
+    // Fallback: use getAuth if initializeAuth isn't present.
+    console.warn(
+      "[Firebase] initializeAuth not available; falling back to getAuth(). Persistence may be limited.",
+    );
+    auth = firebaseAuth.getAuth(app);
+  }
 }
 
 export { app, auth };
