@@ -8,19 +8,19 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 // Páginas de navegação do aplicativo já logado
-import Progress from "../pages/main/Progress/Progress";
-import CreateDiary from "../pages/main/Diary/CreateDiary";
-import EditDiary from "../pages/main/Diary/EditDiary";
-import Diary from "../pages/main/Diary/Diary";
-import Home from "../pages/main/Home";
-import AccountUser from "../pages/main/Config/Account";
-import DataUser from "../pages/main/Config/DataUser";
-import HealthData from "../pages/main/Config/HealthData";
-import Settings from "../pages/main/Config/Config";
-import ResumoDiario from "../pages/main/Progress/ResumoDiario";
-import EditHealth from "../pages/main/Config/EditHealth";
-import Map from "../pages/main/Map/Map";
-import HeaderMapButton from "../components/HeaderMapButton";
+import Progress from "src/pages/main/Progress/Progress";
+import CreateDiary from "src/pages/main/Diary/CreateDiary";
+import EditDiary from "src/pages/main/Diary/EditDiary";
+import Diary from "src/pages/main/Diary/Diary";
+import Home from "src/pages/main/Home";
+import AccountUser from "src/pages/main/Config/Account";
+import DataUser from "src/pages/main/Config/DataUser";
+import HealthData from "src/pages/main/Config/HealthData";
+import Settings from "src/pages/main/Config/Config";
+import ResumoDiario from "src/pages/main/Progress/ResumoDiario";
+import EditHealth from "src/pages/main/Config/EditHealth";
+import Map from "src/pages/main/Map/Map";
+import HeaderMapButton from "src/components/HeaderMapButton";
 
 // Tipagens leves para evitar any-gaps excessivos
 type GradientHeaderProps = { title: string; navigation: any };

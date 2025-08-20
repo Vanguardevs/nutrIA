@@ -12,11 +12,11 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getDatabase, ref, set, onValue } from "firebase/database";
-import { auth } from "../../../database/firebase";
-import CustomField from "../../../components/shared/CustomField";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomMultiPicker from "../../../components/shared/CustomMultiPicker";
-import CustomModal from "../../../components/shared/CustomModal";
+import { auth } from "src/database/firebase";
+import CustomField from "src/components/shared/CustomField";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomMultiPicker from "src/components/shared/CustomMultiPicker";
+import CustomModal from "src/components/shared/CustomModal";
 
 type Option = { id: string; name: string };
 
@@ -140,7 +140,7 @@ export default function Restricoes() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: background }}>
       <ImageBackground
-        source={require("../../../../assets/Frutas_home.png")}
+        source={require("@assets/Frutas_home.png")}
         style={{ flex: 1 }}
         resizeMode="cover"
       >

@@ -1,6 +1,6 @@
 // Função para testar a extração de dados nutricionais
-import { loadFoodsData } from "./foodsLoader";
-import { getNutritionalInfo, buscarSugestoesParaIA } from "./simpleFoodSearch";
+import { loadFoodsData } from "src/utils/foodsLoader";
+import { getNutritionalInfo, buscarSugestoesParaIA } from "src/utils/simpleFoodSearch";
 
 export const testNutritionalExtraction = async () => {
   try {

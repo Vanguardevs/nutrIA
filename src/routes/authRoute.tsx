@@ -7,12 +7,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
 // Páginas de navegação do aplicativo não logado
-import Welcome from "../pages/welcome";
-import Login from "../pages/login/Login";
-import Register from "../pages/login/registers/Register";
-import ForgetPassword from "../pages/login/ForgetPassword";
-import HealthRegister from "../pages/login/registers/HealthRegister";
-import Restrições from "../pages/login/registers/Restrições";
+import Welcome from "src/pages/welcome";
+import Login from "src/pages/login/Login";
+import Register from "src/pages/login/registers/Register";
+import ForgetPassword from "src/pages/login/ForgetPassword";
+import HealthRegister from "src/pages/login/registers/HealthRegister";
+import Restrições from "src/pages/login/registers/Restrições";
 
 const GradientHeader: React.FC<{ title: string; showBack: boolean; navigation: any }> = ({
   title,

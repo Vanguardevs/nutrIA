@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Alert } from "react-native";
 import { ref, onValue, getDatabase, type DataSnapshot } from "firebase/database";
-import { auth } from "../../database/firebase";
+import { auth } from "src/database/firebase";
 
 export type DiaryAgenda = {
   id: string;

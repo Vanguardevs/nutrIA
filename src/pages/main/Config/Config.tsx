@@ -10,11 +10,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomModal from "../../../components/shared/CustomModal";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomModal from "src/components/shared/CustomModal";
 import { signOut } from "firebase/auth";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
-import { auth } from "../../../database/firebase";
+import { auth } from "src/database/firebase";
 
 export default function Settings() {
   const navigation = useNavigation<any>();

@@ -1,6 +1,6 @@
 import { TouchableOpacity, Text, Image, StyleSheet, View } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useTheme } from '../../theme/theme';
+import { useTheme } from 'src/theme/theme';
 
 interface CustomCard{
     title: string;

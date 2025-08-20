@@ -7,16 +7,16 @@ import {
   ImageBackground,
   ActivityIndicator,
 } from "react-native";
-import CustomField from "../../../components/shared/CustomField";
+import CustomField from "src/components/shared/CustomField";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import CustomPicker from "../../../components/shared/CustomPicker";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomModal from "../../../components/shared/CustomModal";
+import CustomPicker from "src/components/shared/CustomPicker";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomModal from "src/components/shared/CustomModal";
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
-import { auth, app } from "../../../database/firebase";
+import { auth, app } from "src/database/firebase";
 import { getDatabase, ref, set } from "firebase/database";
-import styles from "../../../theme/styles";
+import styles from "src/theme/styles";
 
 export default function HealthRegister() {
   const colorScheme = useColorScheme();
@@ -176,7 +176,7 @@ export default function HealthRegister() {
   return (
     <SafeAreaView style={[styles.hrContainer, { backgroundColor: background }]}>
       <ImageBackground
-        source={require("../../../../assets/Frutas_home.png")}
+        source={require("@assets/Frutas_home.png")}
         style={{ flex: 1 }}
         resizeMode="cover"
       >

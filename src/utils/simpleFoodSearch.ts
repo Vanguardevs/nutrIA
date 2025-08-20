@@ -1,4 +1,4 @@
-import { loadFoodsData } from "./foodsLoader";
+import { loadFoodsData } from "src/utils/foodsLoader";
 
 let searchCache = new Map<string, any[]>();
 let foodsDataCache: any[] | null = null;

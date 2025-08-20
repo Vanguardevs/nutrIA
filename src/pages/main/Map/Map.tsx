@@ -17,9 +17,9 @@ import {
 import MapView, { Marker, type Region } from "react-native-maps";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
-import { searchNearbyClinics, getFallbackClinics } from "../../../utils/clinicsAPI";
-import realClinicsData from "../../../utils/realClinicsData.json";
-import nutricionistasData from "../../../utils/nutricionistas_sao_paulo.json";
+import { searchNearbyClinics, getFallbackClinics } from "src/utils/clinicsAPI";
+import realClinicsData from "src/utils/realClinicsData.json";
+import nutricionistasData from "src/utils/nutricionistas_sao_paulo.json";
 import { useFocusEffect } from "@react-navigation/native";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");

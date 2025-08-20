@@ -65,7 +65,7 @@ const saveCacheSafely = async (key: string, data: any) => {
 const loadFoodsJsonLazy = async () => {
   try {
     console.log("Carregando dados de alimentos do arquivo JSON...");
-    const foodsData = require("../pages/main/foods.json");
+    const foodsData = require("src/pages/main/foods.json");
 
     const alimentosOtimizados = foodsData.map((item: any) => ({
       ...item,

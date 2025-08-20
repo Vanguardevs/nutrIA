@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadFoodsData } from "./foodsLoader";
+import { loadFoodsData } from "src/utils/foodsLoader";
 
 let searchCache = new Map<string, any[]>();
 let foodsIndex: any = null;

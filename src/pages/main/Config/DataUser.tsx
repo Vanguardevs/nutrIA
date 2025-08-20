@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { View, SafeAreaView, Text, Alert, useColorScheme, StyleSheet, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ref, onValue, getDatabase, update } from "firebase/database";
-import { auth } from "../../../database/firebase";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomField from "../../../components/shared/CustomField";
-import CustomPicker from "../../../components/shared/CustomPicker";
-import CustomModal from "../../../components/shared/CustomModal";
+import { auth } from "src/database/firebase";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomField from "src/components/shared/CustomField";
+import CustomPicker from "src/components/shared/CustomPicker";
+import CustomModal from "src/components/shared/CustomModal";
 
 export default function DataUser() {
   const colorScheme = useColorScheme();
@@ -70,7 +70,7 @@ export default function DataUser() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: background }]}>
       <ImageBackground
-        source={require("../../../../assets/frutas_fundo.png")}
+        source={require("@assets/frutas_fundo.png")}
         style={styles.imageBackground}
         imageStyle={{ opacity: 0.5 }}
       >

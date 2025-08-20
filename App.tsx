@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
-import { auth } from "./src/database/firebase";
+import { auth } from "src/database/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
-import AppTabs from "./src/routes/appRoute";
-import AuthTabs from "./src/routes/authRoute";
-import AnimatedSplash from "./src/components/AnimatedSplash";
-import ErrorBoundary from "./src/components/ErrorBoundary";
+import AppTabs from "src/routes/appRoute";
+import AuthTabs from "src/routes/authRoute";
+import AnimatedSplash from "src/components/AnimatedSplash";
+import ErrorBoundary from "src/components/ErrorBoundary";
 import * as Notifications from "expo-notifications";
 import * as firebaseDatabase from "firebase/database";
 

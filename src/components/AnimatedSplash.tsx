@@ -118,7 +118,7 @@ export default function AnimatedSplash({ onAnimationFinish }: Props): JSX.Elemen
           >
             {/* Círculo branco de fundo */}
             <View style={styles.whiteCircle}>
-              <Image source={require("../../assets/icon.png")} style={styles.logo} resizeMode="contain" />
+              <Image source={require("@assets/icon.png")} style={styles.logo} resizeMode="contain" />
 
               {/* Efeito de brilho perfeitamente alinhado com o ícone */}
               <Animated.View

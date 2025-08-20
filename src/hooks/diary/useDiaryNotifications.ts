@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Alert } from "react-native";
 import * as Notifications from "expo-notifications";
 import type { CalendarTriggerInput } from "expo-notifications";
-import type { DiaryAgenda } from "./useDiaryAgendas";
+import type { DiaryAgenda } from "src/hooks/diary/useDiaryAgendas";
 
 export function useDiaryNotifications(agendas: DiaryAgenda[]) {
   // Helper to format hour string

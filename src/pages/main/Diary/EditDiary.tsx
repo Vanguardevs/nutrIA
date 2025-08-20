@@ -9,17 +9,17 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import CustomField from "../../../components/shared/CustomField";
-import CustomButton from "../../../components/shared/CustomButton";
+import CustomField from "src/components/shared/CustomField";
+import CustomButton from "src/components/shared/CustomButton";
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, remove, update } from "firebase/database";
-import { auth } from "../../../database/firebase";
+import { auth } from "src/database/firebase";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import CustomPicker from "../../../components/shared/CustomPicker";
+import CustomPicker from "src/components/shared/CustomPicker";
 import { Ionicons } from "@expo/vector-icons";
-import CustomModal from "../../../components/shared/CustomModal";
-import { loadFoodsData } from "../../../utils/foodsLoader";
+import CustomModal from "src/components/shared/CustomModal";
+import { loadFoodsData } from "src/utils/foodsLoader";
 
 export default function EditDiary() {
   const colorSheme = useColorScheme();
@@ -79,7 +79,7 @@ export default function EditDiary() {
           setAlimentos(foodsData as any[]);
         } catch (cacheError) {
           console.warn("Cache de alimentos falhou, usando require como fallback:", cacheError);
-          const foodsData: any[] = require("../foods.json");
+          const foodsData: any[] = require("src/pages/main/foods.json");
           setAlimentos(foodsData);
         }
       } catch (e) {
@@ -229,7 +229,7 @@ export default function EditDiary() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
-      <ImageBackground source={require("../../../../assets/Frutas_home.png")} style={styles.imgBackgound}>
+      <ImageBackground source={require("@assets/Frutas_home.png")} style={styles.imgBackgound}>
         <View style={styles.container_items}>
           <CustomPicker
             label="Refeição"

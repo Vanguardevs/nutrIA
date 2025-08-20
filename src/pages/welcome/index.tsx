@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useColorScheme, ImageBackground, Text, View, SafeAreaView, Image } from "react-native";
-import styles from "../../theme/styles";
-import CustomButton from "../../components/shared/CustomButton";
+import styles from "src/theme/styles";
+import CustomButton from "src/components/shared/CustomButton";
 
 export default function Welcome() {
   const colorScheme = useColorScheme();
@@ -10,13 +10,13 @@ export default function Welcome() {
 
   return (
     <SafeAreaView style={[styles.welcomeContainer, { backgroundColor: background }]}>
-      <ImageBackground source={require("../../../assets/Frutas_home.png")} style={styles.welcomeBackground}>
+      <ImageBackground source={require("@assets/Frutas_home.png")} style={styles.welcomeBackground}>
         <View>
           <Text style={styles.welcomeText}>CONTROLE SUAS DIETAS</Text>
         </View>
 
         <View>
-          <Image source={require("../../../assets/logoWelcome.png")} style={styles.welcomeImage} />
+          <Image source={require("@assets/logoWelcome.png")} style={styles.welcomeImage} />
         </View>
 
         <CustomButton

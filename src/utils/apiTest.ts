@@ -2,7 +2,7 @@
 // TESTE DE CONECTIVIDADE DA API
 // ========================================
 
-import { API_URLS, API_CONFIG, getCurrentConfig } from "../config/apiConfig";
+import { API_URLS, API_CONFIG, getCurrentConfig } from "src/config/apiConfig";
 import axios from "axios";
 
 type TestResult = {

@@ -18,10 +18,10 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import CustomMessageCamp from "../../components/CustomMessageCamp";
+import CustomMessageCamp from "src/components/CustomMessageCamp";
 import axios from "axios";
-import { auth } from "../../database/firebase";
-import { API_URLS, API_CONFIG, getCurrentConfig } from "../../config/apiConfig";
+import { auth } from "src/database/firebase";
+import { API_URLS, API_CONFIG, getCurrentConfig } from "src/config/apiConfig";
 
 type Message = {
   id: string;
@@ -76,7 +76,7 @@ const MessageBubble = React.memo(({ message, isUser, index, timestamp }: Message
     <View style={{ flexDirection: isUser ? "row-reverse" : "row", alignItems: "flex-end", marginVertical: 4 }}>
       {!isUser && (
         <Image
-          source={require("../../../assets/icon.png")}
+          source={require("@assets/icon.png")}
           style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8, marginLeft: 4 }}
         />
       )}

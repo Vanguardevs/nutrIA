@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { useTheme } from '../../theme/theme';
+import { useTheme } from 'src/theme/theme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator } from "react-native";
 

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View, SafeAreaView, Text, StyleSheet, useColorScheme, Alert, ImageBackground } from "react-native";
 import { getDatabase, onValue, ref, update } from "firebase/database";
 import { sendPasswordResetEmail, updateEmail } from "firebase/auth";
-import { auth } from "../../../database/firebase";
-import CustomField from "../../../components/shared/CustomField";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomModal from "../../../components/shared/CustomModal";
+import { auth } from "src/database/firebase";
+import CustomField from "src/components/shared/CustomField";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomModal from "src/components/shared/CustomModal";
 
 export default function AccountUser() {
   const [email, setEmail] = useState<string>("");
@@ -113,7 +113,7 @@ export default function AccountUser() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: background }]}>
       <ImageBackground
-        source={require("../../../../assets/frutas_fundo.png")}
+        source={require("@assets/frutas_fundo.png")}
         style={styles.imageBackground}
         imageStyle={{ opacity: 0.5 }}
       >

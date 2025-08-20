@@ -1,5 +1,5 @@
 import React from 'react';
-import CardCustomCalendar from '../CustomCardCalendar';
+import CardCustomCalendar from 'src/components/CustomCardCalendar';
 
 interface Agenda {
   id: string;

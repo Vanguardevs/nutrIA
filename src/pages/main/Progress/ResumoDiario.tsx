@@ -25,7 +25,7 @@ export default function ResumoDiario({ route, navigation }: any) {
 
   useEffect(() => {
     const detalhes: Record<string, any> = {};
-    const foods = require("../foods.json") as any[];
+    const foods = require("src/pages/main/foods.json") as any[];
 
     foods.forEach((item) => {
       const nomeParaBusca = normalizarTexto(removerParenteses(item.descricao));

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, useColorScheme, ImageBackground, StyleSheet, Text } from "react-native";
-import CustomButton from "../../components/shared/CustomButton";
-import CustomField from "../../components/shared/CustomField";
-import CustomModal from "../../components/shared/CustomModal";
-import { auth } from "../../database/firebase";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomField from "src/components/shared/CustomField";
+import CustomModal from "src/components/shared/CustomModal";
+import { auth } from "src/database/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
@@ -60,7 +60,7 @@ export default function ForgetPassword() {
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: background }]}>
-      <ImageBackground source={require("../../../assets/Frutas_home.png")} style={styles.backgroundImage}>
+      <ImageBackground source={require("@assets/Frutas_home.png")} style={styles.backgroundImage}>
         <View style={[styles.card, { backgroundColor: cardBackground }]}>
           <Text style={[styles.title, { color: texts }]}>Redefinir Senha</Text>
           <Text style={[styles.subtitle, { color: colorScheme === "dark" ? "#8E8E93" : "#6C757D" }]}>

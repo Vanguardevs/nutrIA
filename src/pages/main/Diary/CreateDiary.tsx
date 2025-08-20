@@ -9,16 +9,16 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import CustomField from "../../../components/shared/CustomField";
-import CustomPicker from "../../../components/shared/CustomPicker";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomModal from "../../../components/shared/CustomModal";
+import CustomField from "src/components/shared/CustomField";
+import CustomPicker from "src/components/shared/CustomPicker";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomModal from "src/components/shared/CustomModal";
 import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getDatabase, ref, push } from "firebase/database";
-import { auth } from "../../../database/firebase";
+import { auth } from "src/database/firebase";
 import { useNavigation } from "@react-navigation/native";
-import { loadFoodsData } from "../../../utils/foodsLoader";
+import { loadFoodsData } from "src/utils/foodsLoader";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function CreateDiary() {
@@ -57,7 +57,7 @@ export default function CreateDiary() {
           setAlimentos(foodsData as any[]);
         } catch (cacheError) {
           console.warn("Cache de alimentos falhou, usando require como fallback:", cacheError);
-          const foodsData: any[] = require("../foods.json");
+          const foodsData: any[] = require("src/pages/main/foods.json");
           setAlimentos(foodsData);
         }
       } catch (e) {
@@ -241,7 +241,7 @@ export default function CreateDiary() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: backgoundH }]}>
-      <ImageBackground source={require("../../../../assets/Frutas_home.png")} style={styles.imgBackgound}>
+      <ImageBackground source={require("@assets/Frutas_home.png")} style={styles.imgBackgound}>
         <View style={styles.container_items}>
           <CustomPicker
             label="Tipo de Refeição"

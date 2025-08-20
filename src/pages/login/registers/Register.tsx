@@ -14,10 +14,10 @@ import {
   TextInput,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import CustomField from "../../../components/shared/CustomField";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomPicker from "../../../components/shared/CustomPicker";
-import CustomModal from "../../../components/shared/CustomModal";
+import CustomField from "src/components/shared/CustomField";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomPicker from "src/components/shared/CustomPicker";
+import CustomModal from "src/components/shared/CustomModal";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default function CreateUser() {
@@ -204,7 +204,7 @@ export default function CreateUser() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: background }]}>
       <ImageBackground
-        source={require("../../../../assets/Frutas_home.png")}
+        source={require("@assets/Frutas_home.png")}
         style={styles.backgroundImage}
         resizeMode="cover"
       >

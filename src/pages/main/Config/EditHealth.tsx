@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, Text, ScrollView, ActivityIndicator, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, onValue, ref, set } from "firebase/database";
-import { auth } from "../../../database/firebase";
-import CustomField from "../../../components/shared/CustomField";
-import CustomMultiPicker from "../../../components/shared/CustomMultiPicker";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomModal from "../../../components/shared/CustomModal";
+import { auth } from "src/database/firebase";
+import CustomField from "src/components/shared/CustomField";
+import CustomMultiPicker from "src/components/shared/CustomMultiPicker";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomModal from "src/components/shared/CustomModal";
 
 export default function EditHealth() {
   const [alergias, setAlergias] = useState<string>("");

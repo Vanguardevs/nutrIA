@@ -134,8 +134,8 @@ export const getOptimizedAnimationConfig = () => {
   return { duration: isSlow ? 200 : 300, useNativeDriver: true, isInteraction: false } as const;
 };
 
-import { clearAllCaches, getCacheInfo as getApiCacheInfo } from "./apiCache";
-import { clearAllCache, getCacheInfo as getFoodsCacheInfo } from "./foodsLoader";
+import { clearAllCaches, getCacheInfo as getApiCacheInfo } from "src/utils/apiCache";
+import { clearAllCache, getCacheInfo as getFoodsCacheInfo } from "src/utils/foodsLoader";
 
 export async function clearAllAppCaches() {
   try {

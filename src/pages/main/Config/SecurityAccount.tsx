@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, SafeAreaView, Text, useColorScheme, Alert, Platform } from "react-native";
-import CustomButton from "../../../components/shared/CustomButton";
-import CustomField from "../../../components/shared/CustomField";
-import { auth } from "../../../database/firebase";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomField from "src/components/shared/CustomField";
+import { auth } from "src/database/firebase";
 import { multiFactor, PhoneMultiFactorGenerator, RecaptchaVerifier } from "firebase/auth";
 
 export default function SecurityAccount() {

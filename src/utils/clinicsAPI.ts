@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_CONFIG, validateApiConfig } from "../config/apiKeys";
+import { API_CONFIG, validateApiConfig } from "src/config/apiKeys";
 
 let realClinicsDataCache: any = null;
 
@@ -11,7 +11,7 @@ const loadRealClinicsData = async () => {
 
   try {
     console.log("Carregando dados de clínicas do arquivo JSON...");
-    const data = require("./realClinicsData.json");
+    const data = require("src/utils/realClinicsData.json");
     console.log("Arquivo JSON importado com sucesso");
     console.log("Estrutura dos dados:", Object.keys(data));
     console.log("Número de clínicas:", data.clinics.length);
@@ -261,7 +261,7 @@ function splitUppercaseWords(str?: string) {
 
 export async function getFallbackClinics() {
   try {
-    const data = require("./nutricionistas_sao_paulo.json");
+    const data = require("src/utils/nutricionistas_sao_paulo.json");
     return data.map((item: any, idx: number) => ({
       id: item.CO_CNES || `nutri_${idx}`,
       name:

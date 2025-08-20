@@ -3,11 +3,11 @@ import { useColorScheme, View, Text, TouchableOpacity, SafeAreaView, ImageBackgr
 import { useNavigation } from "@react-navigation/native";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getDatabase, ref, update } from "firebase/database";
-import CustomButton from "../../components/shared/CustomButton";
-import CustomField from "../../components/shared/CustomField";
-import CustomModal from "../../components/shared/CustomModal";
-import styles from "../../theme/styles";
-import { auth, app } from "../../database/firebase";
+import CustomButton from "src/components/shared/CustomButton";
+import CustomField from "src/components/shared/CustomField";
+import CustomModal from "src/components/shared/CustomModal";
+import styles from "src/theme/styles";
+import { auth, app } from "src/database/firebase";
 
 export default function LoginPag() {
   const colorScheme = useColorScheme();
@@ -85,7 +85,7 @@ export default function LoginPag() {
   return (
     <SafeAreaView style={[styles.loginSafeArea, { backgroundColor: background }]}>
       <ImageBackground
-        source={require("../../../assets/Frutas_home.png")}
+        source={require("@assets/Frutas_home.png")}
         style={styles.loginImageBackground}
         imageStyle={{ opacity: 1 }}
       >

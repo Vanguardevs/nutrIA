@@ -9,11 +9,11 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import CustomButton from "../../../components/shared/CustomButton";
+import CustomButton from "src/components/shared/CustomButton";
 import { LineChart } from "react-native-chart-kit";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../../../database/firebase";
+import { auth } from "src/database/firebase";
 import { getDatabase, ref, onValue } from "firebase/database";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -93,7 +93,7 @@ export default function Progress() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: backgroundH }]}>
       <ImageBackground
-        source={require("../../../../assets/Frutas_home.png")}
+        source={require("@assets/Frutas_home.png")}
         style={styles.homeBackground}
         resizeMode="cover"
       >

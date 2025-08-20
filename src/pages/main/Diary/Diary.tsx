@@ -1,14 +1,14 @@
 import React from "react";
 import { SafeAreaView, View, ImageBackground, useColorScheme, ScrollView, Dimensions } from "react-native";
-import DiaryAgendaList from "../../../components/alarm/DiaryAgendaList";
-import EmptyDiaryState from "../../../components/alarm/EmptyDiaryState";
+import DiaryAgendaList from "src/components/alarm/DiaryAgendaList";
+import EmptyDiaryState from "src/components/alarm/EmptyDiaryState";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update } from "firebase/database";
-import { auth } from "../../../database/firebase";
-import FabCreateDiary from "../../../components/alarm/FabCreateDiary";
-import styles from "../../../theme/styles/diary";
-import { useDiaryAgendas } from "../../../hooks/diary/useDiaryAgendas";
-import { useDiaryNotifications } from "../../../hooks/diary/useDiaryNotifications";
+import { auth } from "src/database/firebase";
+import FabCreateDiary from "src/components/alarm/FabCreateDiary";
+import styles from "src/theme/styles/diary";
+import { useDiaryAgendas } from "src/hooks/diary/useDiaryAgendas";
+import { useDiaryNotifications } from "src/hooks/diary/useDiaryNotifications";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08);
@@ -34,7 +34,7 @@ export default function Diary() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: backgroundH }]}>
       <ImageBackground
-        source={require("../../../../assets/Frutas_home.png")}
+        source={require("@assets/Frutas_home.png")}
         style={styles.homeBackground}
         resizeMode="cover"
       >

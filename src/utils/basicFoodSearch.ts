@@ -1,4 +1,4 @@
-import { loadFoodsData } from "./foodsLoader";
+import { loadFoodsData } from "src/utils/foodsLoader";
 
 type Food = any; // You can refine this type later if a schema exists
 

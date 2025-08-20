@@ -16,7 +16,8 @@
     "moduleDetection": "force",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@assets/*": ["assets/*"]
     }
   },
   "include": ["App.tsx", "src", "global.d.ts"],
