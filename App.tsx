@@ -3,9 +3,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
 import { auth } from "./src/database/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import AppTabs from "./src/routes/appRoute.js";
-import AuthTabs from "./src/routes/authRoute.js";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import AppTabs from "./src/routes/appRoute";
+import AuthTabs from "./src/routes/authRoute";
 import AnimatedSplash from "./src/components/AnimatedSplash";
 import ErrorBoundary from "./src/components/ErrorBoundary";
 import * as Notifications from "expo-notifications";
@@ -22,15 +22,15 @@ if (Platform.OS !== "web") {
 }
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   // On web, don't block initial render while waiting for Firebase; show AuthTabs quickly
   const [isLoading, setIsLoading] = useState(Platform.OS !== "web");
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
     // Configurar listener de notificações (apenas native)
-    let notificationListener;
-    let responseListener;
+    let notificationListener: Notifications.Subscription | undefined;
+    let responseListener: Notifications.Subscription | undefined;
     if (Platform.OS !== "web") {
       notificationListener = Notifications.addNotificationReceivedListener((notification) => {
         console.log("[APP] Notificação recebida:", notification);
