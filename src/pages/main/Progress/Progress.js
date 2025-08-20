@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, ImageBackground, SafeAreaView, StyleSheet, useColorScheme, Text, ScrollView, Dimensions } from 'react-native';
-import CustomButton from '../../../components/CustomButton.js';
+import CustomButton from '../../../components/shared/CustomButton.tsx';
 import { LineChart } from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import CustomField from '../../../components/shared/CustomField';
-import CustomButton from '../../../components/CustomButton.js';
+import CustomField from '../../../components/shared/CustomField.tsx';
+import CustomButton from '../../../components/shared/CustomButton.tsx';
 import { View, SafeAreaView, Text, StyleSheet, useColorScheme, Alert, ImageBackground } from 'react-native';
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import { sendPasswordResetEmail, updateEmail } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
-import CustomModal from '../../../components/CustomModal';
+import CustomModal from '../../../components/shared/CustomModal.tsx';
 
 export default function AccountUser() {
   const [email, setEmail] = useState('');

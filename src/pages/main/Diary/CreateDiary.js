@@ -1,8 +1,8 @@
 import {View, SafeAreaView, ImageBackground, StyleSheet, Alert, useColorScheme, TouchableOpacity, Text, ScrollView, FlatList} from 'react-native';
-import CustomField from '../../../components/shared/CustomField';
-import CustomPicker from '../../../components/shared/CustomPicker';
-import CustomButton from '../../../components/CustomButton.js';
-import CustomModal from '../../../components/CustomModal.tsx';
+import CustomField from '../../../components/shared/CustomField.tsx';
+import CustomPicker from '../../../components/shared/CustomPicker.tsx';
+import CustomButton from '../../../components/shared/CustomButton.tsx';
+import CustomModal from '../../../components/shared/CustomModal.tsx';
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getDatabase, ref, push } from 'firebase/database';

@@ -2,11 +2,11 @@ import { SafeAreaView, View, Image, StyleSheet, useColorScheme, Text, ScrollView
 import { useEffect, useState } from "react";
 import {ref, onValue, getDatabase} from "firebase/database";
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import CustomButton from "../../../components/CustomButton.js";
+import CustomButton from "../../../components/shared/CustomButton.tsx";
 import { auth } from "../../../database/firebase";
 import { signOut } from "firebase/auth";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5, Feather } from '@expo/vector-icons';
-import CustomModal from "../../../components/CustomModal.js";
+import CustomModal from "../../../components/shared/CustomModal.tsx";
 
 export default function Settings(){
     const navigation = useNavigation();

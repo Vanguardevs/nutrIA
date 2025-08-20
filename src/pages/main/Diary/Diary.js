@@ -329,4 +329,3 @@ export default function Diary() {
     </SafeAreaView>
   );
 }
-

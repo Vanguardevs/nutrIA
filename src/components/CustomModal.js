@@ -226,4 +226,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomModal; 
+// export default CustomModal; 

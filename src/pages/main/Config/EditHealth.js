@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Text, View, Alert, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import CustomField from '../../../components/shared/CustomField';
-import CustomMultiPicker from '../../../components/shared/CustomMultiPicker';
-import CustomButton from '../../../components/CustomButton';
-import CustomModal from '../../../components/CustomModal.tsx';
+import CustomField from '../../../components/shared/CustomField.tsx';
+import CustomMultiPicker from '../../../components/shared/CustomMultiPicker.tsx';
+import CustomButton from '../../../components/shared/CustomButton.tsx';
+import CustomModal from '../../../components/shared/CustomModal.tsx';
 import { getDatabase, ref, onValue, set, update } from 'firebase/database';
 import { auth } from '../../../database/firebase';
 import { useNavigation } from '@react-navigation/native';
