@@ -3,91 +3,55 @@ import {
   SafeAreaView,
   ImageBackground,
   StyleSheet,
-  Alert,
-  useColorScheme,
-  TouchableOpacity,
   Text,
   ScrollView,
+  useColorScheme,
+  TouchableOpacity,
 } from "react-native";
 import CustomField from "src/components/shared/CustomField";
 import CustomPicker from "src/components/shared/CustomPicker";
 import CustomButton from "src/components/shared/CustomButton";
 import CustomModal from "src/components/shared/CustomModal";
-import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useRef, useCallback } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { getDatabase, ref, push } from "firebase/database";
-import { auth } from "src/database/firebase";
-import { useNavigation } from "@react-navigation/native";
-import { loadFoodsData } from "src/utils/foodsLoader";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useFoodsData } from "src/hooks/diary/CreateDiary/useFoodsData";
+import { useSaveDiaryAgenda } from "src/hooks/diary/CreateDiary/useSaveDiaryAgenda";
 
 export default function CreateDiary() {
-  const [isTimePickerVisible, setTimePickerVisibility] = useState<boolean>(false);
-  const [refeicao, setRefeicao] = useState<string>("");
-  const [hora, setHora] = useState<string>("");
-  const [tipoRefeicao, setTipoRefeicao] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [sugestoes, setSugestoes] = useState<any[]>([]);
-  const [alimentos, setAlimentos] = useState<any[]>([]);
-  const [isLoadingFoods, setIsLoadingFoods] = useState<boolean>(true);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [agendaData, setAgendaData] = useState<any | null>(null);
-  const [alimentoInput, setAlimentoInput] = useState<string>("");
-  const [alimentosAgenda, setAlimentosAgenda] = useState<string[]>([]);
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [refeicao, setRefeicao] = useState("");
+  const [hora, setHora] = useState("");
+  const [tipoRefeicao, setTipoRefeicao] = useState("");
+  const [sugestoes, setSugestoes] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [agendaData, setAgendaData] = useState(null);
+  const [alimentoInput, setAlimentoInput] = useState("");
+  const [alimentosAgenda, setAlimentosAgenda] = useState([]);
 
-  const colorSheme = useColorScheme();
-  const backgoundH = colorSheme === "dark" ? "#1C1C1E" : "#F2F2F2";
+  const colorScheme = useColorScheme();
+  const backgroundH = colorScheme === "dark" ? "#1C1C1E" : "#F2F2F2";
+  const navigation = useNavigation();
 
-  const navigation = useNavigation<any>();
+  // Custom hooks
+  const { alimentos, isLoadingFoods } = useFoodsData();
+  const { saveAgenda, loading, isSaving } = useSaveDiaryAgenda();
 
-  const ignoreNextInput = useRef<boolean>(false);
-  const isSavingRef = useRef<boolean>(false);
-  const lastSaveTime = useRef<number>(0);
-  const saveInProgress = useRef<boolean>(false);
-  const saveCount = useRef<number>(0); // Contador para debug
-
-  useEffect(() => {
-    const loadFoods = async () => {
-      try {
-        setIsLoadingFoods(true);
-
-        try {
-          const foodsData = await loadFoodsData();
-          setAlimentos(foodsData as any[]);
-        } catch (cacheError) {
-          console.warn("Cache de alimentos falhou, usando require como fallback:", cacheError);
-          const foodsData: any[] = require("src/pages/main/foods.json");
-          setAlimentos(foodsData);
-        }
-      } catch (e) {
-        console.error("Erro ao carregar foods.json", e);
-        Alert.alert("Erro", "Não foi possível carregar a base de dados de alimentos.");
-        setAlimentos([]);
-      } finally {
-        setIsLoadingFoods(false);
-      }
-    };
-
-    loadFoods();
-  }, []);
-
-  const alimentosOtimizados = useMemo(() => {
-    if (!alimentos || alimentos.length === 0) return [] as any[];
-    return alimentos;
-  }, [alimentos]);
+  // Memoize alimentos
+  const alimentosOtimizados = useMemo(() => alimentos || [], [alimentos]);
 
   const showTimePicker = useCallback(() => setTimePickerVisibility(true), []);
   const hideTimePicker = useCallback(() => setTimePickerVisibility(false), []);
 
   const handleTimeConfirm = useCallback(
-    (time: Date) => {
+    (time) => {
       const hours = time.getHours().toString().padStart(2, "0");
       const minutes = time.getMinutes().toString().padStart(2, "0");
       setHora(`${hours}:${minutes}`);
       hideTimePicker();
     },
-    [hideTimePicker],
+    [hideTimePicker]
   );
 
   const adicionarAlimento = useCallback(() => {
@@ -99,12 +63,13 @@ export default function CreateDiary() {
     }
   }, [alimentoInput, alimentosAgenda]);
 
-  const removerAlimento = useCallback((alimento: string) => {
-    setAlimentosAgenda((prev) => prev.filter((a) => a !== alimento));
-  }, []);
+  const removerAlimento = useCallback(
+    (alimento) => setAlimentosAgenda((prev) => prev.filter((a) => a !== alimento)),
+    []
+  );
 
   const filtrarSugestoes = useCallback(
-    (texto: string) => {
+    (texto) => {
       setAlimentoInput(texto);
       if (texto.length < 2) {
         setSugestoes([]);
@@ -115,115 +80,46 @@ export default function CreateDiary() {
         .replace(/[^a-zA-Z0-9 ]/g, "")
         .toLowerCase();
       const filtrados = alimentosOtimizados
-        .filter((item: any) => item.descricaoNormalizada && item.descricaoNormalizada.includes(textoNormalizado))
+        .filter((item) => item.descricaoNormalizada && item.descricaoNormalizada.includes(textoNormalizado))
         .slice(0, 6);
       setSugestoes(filtrados);
     },
-    [alimentosOtimizados],
+    [alimentosOtimizados]
   );
 
-  const handleSugestaoPress = useCallback((item: any) => {
+  const handleSugestaoPress = useCallback((item) => {
     setAlimentoInput(item.descricao);
     setSugestoes([]);
   }, []);
 
-  const showSuccessModal = useCallback((data: any) => {
+  const showSuccessModal = useCallback((data) => {
     setAgendaData(data);
     setShowModal(true);
   }, []);
 
   const hideSuccessModal = useCallback(() => {
-    console.log("[MODAL] Botão pressionado - hideSuccessModal chamado!");
-    console.log("[MODAL] Fechando modal de sucesso...");
     setShowModal(false);
     setAgendaData(null);
-
     setRefeicao("");
     setHora("");
     setTipoRefeicao("");
     setSugestoes([]);
     setAlimentosAgenda([]);
     setAlimentoInput("");
-
-    console.log("[MODAL] Navegando para tab Diary...");
-    navigation.navigate("MainTabs", { screen: "Diary" });
+    const navigation = useNavigation<any>();
   }, [navigation]);
 
   const cancelModal = useCallback(() => {
-    console.log("[MODAL] Botão cancelar pressionado!");
-    console.log("[MODAL] Fechando modal sem navegar...");
     setShowModal(false);
     setAgendaData(null);
   }, []);
 
-  const salvarAgenda = useCallback(async () => {
-    const saveId = ++saveCount.current;
-    console.log(`[SAVE ${saveId}] Iniciando tentativa de salvamento`);
-
-    const now = Date.now();
-
-    if (saveInProgress.current) {
-      console.log(`[SAVE ${saveId}] Salvamento já em progresso, ignorando...`);
-      return;
-    }
-
-    if (now - lastSaveTime.current < 3000) {
-      console.log(`[SAVE ${saveId}] Debounce: clique muito próximo, ignorando...`);
-      return;
-    }
-
-    if (alimentosAgenda.length === 0 || hora === "" || tipoRefeicao === "") {
-      console.log(`[SAVE ${saveId}] Campos vazios, ignorando...`);
-      Alert.alert("Tente novamente", "Alguns dos campos de cadastro estão vazios");
-      return;
-    }
-
-    console.log(`[SAVE ${saveId}] Passou por todas as verificações, iniciando salvamento...`);
-
-    lastSaveTime.current = now;
-    saveInProgress.current = true;
-    isSavingRef.current = true;
-    setIsSaving(true);
-    setLoading(true);
-
-    try {
-      const db = getDatabase();
-      const userId = auth.currentUser?.uid;
-      if (!userId) throw new Error("Usuário não autenticado");
-      const diariesRef = ref(db, `users/${userId}/diaries`);
-
-      const pushResult = await push(diariesRef, {
-        tipo_refeicao: tipoRefeicao,
-        alimentos: alimentosAgenda,
-        hora: hora,
-        progress: [false, false, false, false, false, false, false],
-        createdAt: new Date().toISOString(),
-        saveId: saveId,
-        debugTimestamp: Date.now(),
-      });
-
-      console.log(`[SAVE ${saveId}] Firebase salvo com sucesso! Key:`, pushResult.key);
-
-      showSuccessModal({
-        tipoRefeicao,
-        alimentos: alimentosAgenda,
-        horario: hora,
-        id: pushResult.key,
-      });
-    } catch (error) {
-      console.error(`[SAVE ${saveId}] ERRO ao salvar agenda:`, error);
-      Alert.alert("Erro", "Erro ao cadastrar a agenda no banco de dados");
-    } finally {
-      console.log(`[SAVE ${saveId}] Finalizando salvamento, resetando proteções...`);
-      setLoading(false);
-      setIsSaving(false);
-      isSavingRef.current = false;
-      saveInProgress.current = false;
-    }
-  }, [alimentosAgenda, hora, tipoRefeicao]);
+  const salvarAgenda = useCallback(() => {
+    saveAgenda(alimentosAgenda, hora, tipoRefeicao, showSuccessModal);
+  }, [alimentosAgenda, hora, tipoRefeicao, showSuccessModal, saveAgenda]);
 
   const renderSugestao = useCallback(
-    ({ item, index }: { item: any; index: number }) => (
+    ({ item, index }) => (
       <TouchableOpacity
         key={index}
         onPress={() => handleSugestaoPress(item)}
@@ -236,11 +132,11 @@ export default function CreateDiary() {
         <Text style={{ color: "#222", fontSize: 15 }}>{item.descricao}</Text>
       </TouchableOpacity>
     ),
-    [sugestoes.length, handleSugestaoPress],
+    [sugestoes.length, handleSugestaoPress]
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: backgoundH }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: backgroundH }]}>
       <ImageBackground source={require("@assets/Frutas_home.png")} style={styles.imgBackgound}>
         <View style={styles.container_items}>
           <CustomPicker

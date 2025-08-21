@@ -57,7 +57,7 @@ export default function AccountUser() {
       Alert.alert("Usuário não autenticado.");
       return;
     }
-    sendPasswordResetEmail(auth, auth.currentUser.email)
+    sendPasswordResetEmail(auth, email)
       .then(() => {
         Alert.alert("Email de redefinição de senha enviado com sucesso!");
       })
