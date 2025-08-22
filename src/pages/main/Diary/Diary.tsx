@@ -8,7 +8,9 @@ import { auth } from "src/database/firebase";
 import FabCreateDiary from "src/components/alarm/FabCreateDiary";
 import styles from "src/theme/styles/diary";
 import { useDiaryAgendas } from "src/hooks/diary/useDiaryAgendas";
-import { useDiaryNotifications } from "src/hooks/diary/useDiaryNotifications";
+export function useDiaryNotifications(agendas: any[]) {
+  // ...
+}
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const TAB_BAR_HEIGHT = Math.round(SCREEN_HEIGHT * 0.08);

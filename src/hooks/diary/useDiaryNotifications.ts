@@ -1,17 +1,24 @@
-import { useEffect } from 'react';
-import { Alert } from 'react-native';
-import notifee, { AuthorizationStatus, TriggerType, RepeatFrequency } from '@notifee/react-native';
-import type { TimestampTrigger } from '@notifee/react-native';
+import { useEffect } from "react";
+import { Alert } from "react-native";
+import notifee, {
+  TriggerType,
+  RepeatFrequency,
+  TimestampTrigger,
+} from "@notifee/react-native";
+
+// Em algumas versões o AuthorizationStatus não está exportado direto.
+// Podemos tratar como número (0 = DENIED, 1 = AUTHORIZED).
+const AUTHORIZED = 1;
 
 export function useDiaryNotifications(agendas: any[]) {
   // Formatação da hora
   function horaFormatada(hora?: string | null) {
     if (!hora) return null;
-    const [horasStr, minutosStr] = hora.split(':');
+    const [horasStr, minutosStr] = hora.split(":");
     const horas = parseInt(horasStr, 10);
     const minutos = parseInt(minutosStr, 10);
     if (Number.isNaN(horas) || Number.isNaN(minutos)) {
-      console.error('Formato de hora inválido:', hora);
+      console.error("Formato de hora inválido:", hora);
       return null;
     }
     return { horas, minutos };
@@ -20,10 +27,11 @@ export function useDiaryNotifications(agendas: any[]) {
   // Verificar permissões de notificação
   async function verificarNotificacao() {
     const settings = await notifee.requestPermission();
-    if (settings.authorizationStatus < AuthorizationStatus.AUTHORIZED) {
+
+    if (settings.authorizationStatus < AUTHORIZED) {
       Alert.alert(
-        'Permissão de notificação',
-        'Para receber notificações, ative as permissões de notificação nas configurações do aplicativo.'
+        "Permissão de notificação",
+        "Para receber notificações, ative as permissões de notificação nas configurações do aplicativo."
       );
       return false;
     }
@@ -32,20 +40,19 @@ export function useDiaryNotifications(agendas: any[]) {
 
   // Criar notificações
   async function createNotification() {
-    // Cancela todas as notificações existentes
     await notifee.cancelAllNotifications();
-
+  
     for (const agenda of agendas) {
       const horarioValue = agenda.horario || agenda.hora;
       if (!horarioValue) continue;
-
-      const refeicaoValue = agenda.refeicao || agenda.tipo_refeicao || 'Refeição';
+  
+      const refeicaoValue = agenda.refeicao || agenda.tipo_refeicao || "Refeição";
       const hora = horaFormatada(horarioValue);
       if (!hora) continue;
-
+  
       try {
         const now = new Date();
-        const triggerTimestamp = new Date(
+        const triggerDate = new Date(
           now.getFullYear(),
           now.getMonth(),
           now.getDate(),
@@ -53,14 +60,20 @@ export function useDiaryNotifications(agendas: any[]) {
           hora.minutos,
           0,
           0
-        ).getTime();
-
+        );
+  
+        if (triggerDate.getTime() <= Date.now()) {
+          triggerDate.setDate(triggerDate.getDate() + 1); // se horário já passou, agenda para amanhã
+        }
+  
         const trigger: TimestampTrigger = {
           type: TriggerType.TIMESTAMP,
-          timestamp: triggerTimestamp,
+          timestamp: triggerDate.getTime(),
           repeatFrequency: RepeatFrequency.DAILY,
         };
-
+  
+        console.log("Agendando notificação:", triggerDate.toString());
+  
         await notifee.createTriggerNotification(
           {
             title: `Hora de se alimentar! (${refeicaoValue})`,
@@ -70,10 +83,10 @@ export function useDiaryNotifications(agendas: any[]) {
           trigger
         );
       } catch (error) {
-        console.error('[NOTIFICATIONS] Erro ao agendar notificação recorrente:', error);
+        console.error("[NOTIFICATIONS] Erro ao agendar notificação:", error);
       }
     }
-  }
+  }  
 
   // Recriar notificações quando as agendas mudam
   useEffect(() => {
@@ -98,7 +111,7 @@ export function useDiaryNotifications(agendas: any[]) {
           }
         }
       } catch (error) {
-        console.error('[NOTIFICATIONS] Erro ao limpar notificação:', error);
+        console.error("[NOTIFICATIONS] Erro ao limpar notificação:", error);
       }
     },
   } as const;
