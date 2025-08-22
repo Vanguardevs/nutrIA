@@ -12,87 +12,61 @@ import CustomField from "src/components/shared/CustomField";
 import CustomPicker from "src/components/shared/CustomPicker";
 import CustomButton from "src/components/shared/CustomButton";
 import CustomModal from "src/components/shared/CustomModal";
-import React, { useState, useMemo, useRef, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useFoodsData } from "src/hooks/diary/CreateDiary/useFoodsData";
-import { useSaveDiaryAgenda } from "src/hooks/diary/CreateDiary/useSaveDiaryAgenda";
+import { useFoodsData } from "@/hooks/diary/useFoodsData";
+import { useSaveDiaryAgenda } from "@/hooks/diary/useSaveDiaryAgenda";
+import { useDiaryFoods } from "@/hooks/diary/useDiaryFoods";
+import { useTimePicker } from "@/hooks/diary/useTimePicker";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type RootStackParamList = {
+  MainTabs: { screen: string };
+  Diary: undefined;
+};
 
 export default function CreateDiary() {
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-  const [refeicao, setRefeicao] = useState("");
-  const [hora, setHora] = useState("");
-  const [tipoRefeicao, setTipoRefeicao] = useState("");
-  const [sugestoes, setSugestoes] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [agendaData, setAgendaData] = useState(null);
-  const [alimentoInput, setAlimentoInput] = useState("");
-  const [alimentosAgenda, setAlimentosAgenda] = useState([]);
-
   const colorScheme = useColorScheme();
   const backgroundH = colorScheme === "dark" ? "#1C1C1E" : "#F2F2F2";
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  // Custom hooks
   const { alimentos, isLoadingFoods } = useFoodsData();
   const { saveAgenda, loading, isSaving } = useSaveDiaryAgenda();
 
-  // Memoize alimentos
+  const {
+    alimentosAgenda,
+    alimentoInput,
+    sugestoes,
+    filtrarSugestoes,
+    adicionarAlimento,
+    removerAlimento,
+  } = useDiaryFoods(alimentos, []);
+
+  const { hora, setTime, isVisible, showTimePicker, hideTimePicker } = useTimePicker("");
+
+  const [tipoRefeicao, setTipoRefeicao] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [agendaData, setAgendaData] = useState<any>(null);
+
   const alimentosOtimizados = useMemo(() => alimentos || [], [alimentos]);
 
-  const showTimePicker = useCallback(() => setTimePickerVisibility(true), []);
-  const hideTimePicker = useCallback(() => setTimePickerVisibility(false), []);
-
   const handleTimeConfirm = useCallback(
-    (time) => {
+    (time: Date) => {
       const hours = time.getHours().toString().padStart(2, "0");
       const minutes = time.getMinutes().toString().padStart(2, "0");
-      setHora(`${hours}:${minutes}`);
+      setTime(`${hours}:${minutes}`);
       hideTimePicker();
     },
-    [hideTimePicker]
+    [setTime, hideTimePicker]
   );
 
-  const adicionarAlimento = useCallback(() => {
-    const valor = alimentoInput.trim();
-    if (valor.length > 0 && !alimentosAgenda.includes(valor)) {
-      setAlimentosAgenda((prev) => [...prev, valor]);
-      setAlimentoInput("");
-      setSugestoes([]);
-    }
-  }, [alimentoInput, alimentosAgenda]);
+  const handleSugestaoPress = useCallback((item: any) => {
+    filtrarSugestoes(item.descricao);
+  }, [filtrarSugestoes]);
 
-  const removerAlimento = useCallback(
-    (alimento) => setAlimentosAgenda((prev) => prev.filter((a) => a !== alimento)),
-    []
-  );
-
-  const filtrarSugestoes = useCallback(
-    (texto) => {
-      setAlimentoInput(texto);
-      if (texto.length < 2) {
-        setSugestoes([]);
-        return;
-      }
-      const textoNormalizado = texto
-        .normalize("NFD")
-        .replace(/[^a-zA-Z0-9 ]/g, "")
-        .toLowerCase();
-      const filtrados = alimentosOtimizados
-        .filter((item) => item.descricaoNormalizada && item.descricaoNormalizada.includes(textoNormalizado))
-        .slice(0, 6);
-      setSugestoes(filtrados);
-    },
-    [alimentosOtimizados]
-  );
-
-  const handleSugestaoPress = useCallback((item) => {
-    setAlimentoInput(item.descricao);
-    setSugestoes([]);
-  }, []);
-
-  const showSuccessModal = useCallback((data) => {
+  const showSuccessModal = useCallback((data: any) => {
     setAgendaData(data);
     setShowModal(true);
   }, []);
@@ -100,26 +74,17 @@ export default function CreateDiary() {
   const hideSuccessModal = useCallback(() => {
     setShowModal(false);
     setAgendaData(null);
-    setRefeicao("");
-    setHora("");
     setTipoRefeicao("");
-    setSugestoes([]);
-    setAlimentosAgenda([]);
-    setAlimentoInput("");
-    const navigation = useNavigation<any>();
-  }, [navigation]);
+    setTime("");
+    navigation.navigate("MainTabs", { screen: "Diary" });
+  }, [navigation, setTime]);
 
-  const cancelModal = useCallback(() => {
-    setShowModal(false);
-    setAgendaData(null);
-  }, []);
-
-  const salvarAgenda = useCallback(() => {
+  const salvarAgendaHandler = useCallback(() => {
     saveAgenda(alimentosAgenda, hora, tipoRefeicao, showSuccessModal);
-  }, [alimentosAgenda, hora, tipoRefeicao, showSuccessModal, saveAgenda]);
+  }, [alimentosAgenda, hora, tipoRefeicao, saveAgenda, showSuccessModal]);
 
   const renderSugestao = useCallback(
-    ({ item, index }) => (
+    ({ item, index }: { item: any; index: number }) => (
       <TouchableOpacity
         key={index}
         onPress={() => handleSugestaoPress(item)}
@@ -150,6 +115,7 @@ export default function CreateDiary() {
               { label: "Lanche da Tarde", value: "Lanche da Tarde" },
             ]}
           />
+
           <CustomField
             title="Alimento"
             placeholder="Ex: Omelete, Salada..."
@@ -157,6 +123,7 @@ export default function CreateDiary() {
             setValue={filtrarSugestoes}
             onSubmitEditing={adicionarAlimento}
           />
+
           <TouchableOpacity
             onPress={adicionarAlimento}
             style={{
@@ -171,6 +138,7 @@ export default function CreateDiary() {
           >
             <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>Adicionar</Text>
           </TouchableOpacity>
+
           {alimentosAgenda.length > 0 && (
             <View style={{ width: "100%", marginVertical: 8 }}>
               {alimentosAgenda.map((alimento, idx) => (
@@ -197,6 +165,7 @@ export default function CreateDiary() {
               ))}
             </View>
           )}
+
           {sugestoes.length > 0 && (
             <View
               style={{
@@ -224,6 +193,7 @@ export default function CreateDiary() {
               </ScrollView>
             </View>
           )}
+
           <View style={{ width: "100%", marginBottom: 8 }}>
             <Text
               style={{
@@ -267,17 +237,13 @@ export default function CreateDiary() {
               </View>
             </TouchableOpacity>
           </View>
-          <DateTimePickerModal
-            isVisible={isTimePickerVisible}
-            mode="time"
-            onConfirm={handleTimeConfirm}
-            onCancel={hideTimePicker}
-          />
+
+          <DateTimePickerModal isVisible={isVisible} mode="time" onConfirm={handleTimeConfirm} onCancel={hideTimePicker} />
 
           <CustomButton
             title={loading ? "Salvando..." : "Salvar"}
-            onPress={salvarAgenda}
-            modeButton={true}
+            onPress={salvarAgendaHandler}
+            modeButton
             isLoading={loading || isLoadingFoods || isSaving}
             size="large"
             style={styles.saveButton}
@@ -301,20 +267,15 @@ export default function CreateDiary() {
         iconColor="#28A745"
         iconBgColor="#D4EDDA"
         primaryButtonText="Entendi"
-        secondaryButtonText="Cancelar"
         onPrimaryPress={hideSuccessModal}
-        onSecondaryPress={cancelModal}
-        showButtons={true}
+        showButtons
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
+  container: { flex: 1, justifyContent: "center" },
   container_items: {
     flex: 1,
     justifyContent: "center",
@@ -325,12 +286,6 @@ const styles = StyleSheet.create({
     padding: 20,
     width: "100%",
   },
-  imgBackgound: {
-    height: "100%",
-    width: "100%",
-  },
-  saveButton: {
-    width: "100%",
-    marginTop: 20,
-  },
+  imgBackgound: { height: "100%", width: "100%" },
+  saveButton: { width: "100%", marginTop: 20 },
 });

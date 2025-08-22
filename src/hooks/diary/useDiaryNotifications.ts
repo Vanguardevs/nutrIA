@@ -1,71 +1,81 @@
-import { useEffect } from "react";
-import { Alert } from "react-native";
-import * as Notifications from "expo-notifications";
-import type { CalendarTriggerInput } from "expo-notifications";
-import type { DiaryAgenda } from "src/hooks/diary/useDiaryAgendas";
+import { useEffect } from 'react';
+import { Alert } from 'react-native';
+import notifee, { AuthorizationStatus, TriggerType, RepeatFrequency } from '@notifee/react-native';
+import type { TimestampTrigger } from '@notifee/react-native';
 
-export function useDiaryNotifications(agendas: DiaryAgenda[]) {
-  // Helper to format hour string
-  function horaFormatada(hora: string | undefined | null): { horas: number; minutos: number } | null {
+export function useDiaryNotifications(agendas: any[]) {
+  // Formatação da hora
+  function horaFormatada(hora?: string | null) {
     if (!hora) return null;
-    const [horasStr, minutosStr] = hora.split(":");
+    const [horasStr, minutosStr] = hora.split(':');
     const horas = parseInt(horasStr, 10);
     const minutos = parseInt(minutosStr, 10);
     if (Number.isNaN(horas) || Number.isNaN(minutos)) {
-      console.error("Formato de hora inválido:", hora);
+      console.error('Formato de hora inválido:', hora);
       return null;
     }
     return { horas, minutos };
   }
 
-  // Check and request notification permissions
-  async function verificarNotificacao(): Promise<boolean> {
-    const { status } = await Notifications.getPermissionsAsync();
-    if (status !== "granted") {
+  // Verificar permissões de notificação
+  async function verificarNotificacao() {
+    const settings = await notifee.requestPermission();
+    if (settings.authorizationStatus < AuthorizationStatus.AUTHORIZED) {
       Alert.alert(
-        "Permissão de notificação",
-        "Para receber notificações, ative as permissões de notificação nas configurações do aplicativo.",
+        'Permissão de notificação',
+        'Para receber notificações, ative as permissões de notificação nas configurações do aplicativo.'
       );
-      const { status: newStatus } = await Notifications.requestPermissionsAsync();
-      if (newStatus !== "granted") {
-        return false;
-      }
+      return false;
     }
     return true;
   }
 
-  // Schedule notifications for all agendas
+  // Criar notificações
   async function createNotification() {
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    // Cancela todas as notificações existentes
+    await notifee.cancelAllNotifications();
+
     for (const agenda of agendas) {
-      const horarioValue = (agenda as any).horario || (agenda as any).hora;
+      const horarioValue = agenda.horario || agenda.hora;
       if (!horarioValue) continue;
-      const refeicaoValue = (agenda as any).refeicao || (agenda as any).tipo_refeicao || "Refeição";
+
+      const refeicaoValue = agenda.refeicao || agenda.tipo_refeicao || 'Refeição';
       const hora = horaFormatada(horarioValue);
       if (!hora) continue;
+
       try {
-        const trigger: CalendarTriggerInput = {
-          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
-          hour: hora.horas,
-          minute: hora.minutos,
-          repeats: true,
+        const now = new Date();
+        const triggerTimestamp = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          hora.horas,
+          hora.minutos,
+          0,
+          0
+        ).getTime();
+
+        const trigger: TimestampTrigger = {
+          type: TriggerType.TIMESTAMP,
+          timestamp: triggerTimestamp,
+          repeatFrequency: RepeatFrequency.DAILY,
         };
 
-        await Notifications.scheduleNotificationAsync({
-          content: {
+        await notifee.createTriggerNotification(
+          {
             title: `Hora de se alimentar! (${refeicaoValue})`,
-            body: "Este é o horário de se alimentar de " + refeicaoValue,
-            data: { agendaId: (agenda as any).id, refeicao: refeicaoValue },
+            body: `Este é o horário de se alimentar de ${refeicaoValue}`,
+            data: { agendaId: agenda.id, refeicao: refeicaoValue },
           },
-          trigger,
-        });
+          trigger
+        );
       } catch (error) {
-        console.error("[NOTIFICATIONS] Erro ao agendar notificação recorrente:", error);
+        console.error('[NOTIFICATIONS] Erro ao agendar notificação recorrente:', error);
       }
     }
   }
 
-  // Recreate notifications when agendas change
+  // Recriar notificações quando as agendas mudam
   useEffect(() => {
     if (agendas && agendas.length > 0) {
       (async () => {
@@ -77,18 +87,18 @@ export function useDiaryNotifications(agendas: DiaryAgenda[]) {
     }
   }, [agendas]);
 
-  // Optionally, return helpers for manual notification management
+  // Função para limpar notificações de uma agenda específica
   return {
     limparNotificacaoAgenda: async (agendaId: string) => {
       try {
-        const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
-        for (const notification of scheduledNotifications) {
-          if ((notification as any).content?.data?.agendaId === agendaId) {
-            await Notifications.cancelScheduledNotificationAsync((notification as any).identifier);
+        const notifications = await notifee.getDisplayedNotifications();
+        for (const { notification } of notifications) {
+          if (notification.data?.agendaId === agendaId) {
+            await notifee.cancelNotification(notification.id);
           }
         }
       } catch (error) {
-        console.error("[NOTIFICATIONS] Erro ao limpar notificação:", error);
+        console.error('[NOTIFICATIONS] Erro ao limpar notificação:', error);
       }
     },
   } as const;
